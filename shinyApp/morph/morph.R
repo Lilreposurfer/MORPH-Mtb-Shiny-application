@@ -1,3 +1,4 @@
+# Load packages ----
 library(shiny)
 library(readr)           # Read package for txt file
 library(writexl)         # Write excel file .xlsx
@@ -21,24 +22,30 @@ library(kohonen)         # SOM package
 library(pheatmap)        # Heatmap
 library(caroline)
 
-# Seeds for reproducibility
-#set.seed(2023)
+# Source ----
+source("clustering.R")
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
-
+  #Title of web application
   titlePanel("MORPH"),
   sidebarLayout(
     sidebarPanel(
       fileInput("file","Upload the file", multiple = TRUE), # fileinput() function is used to get the file upload control option
       helpText("Default max. file size is 5MB"),
-      helpText("Select the read.table parameters below"),
-      checkboxInput(inputId = 'header', label = 'Header', value = TRUE),
-      radioButtons(inputId = 'sep', label = 'Separator', choices = c(Comma=',',Semicolon=';',Tab='\t', Space=''), selected = '\t'),
+      helpText("Select the table parameters below"),
+      checkboxInput(inputId = 'header', label = 'Header', value = TRUE), #checkbox to select if file has a header
+      radioButtons(inputId = 'sep', label = 'Separator', choices = c(Comma=',',Semicolon=';',Tab='\t', Space=''), selected = ''), #radiobuttons to specify separator
+      numericInput("kmax", "Maximum K-clusters:", 10, min = 1, max = 100),
       uiOutput("selectfile")
     ),
     mainPanel(
-      uiOutput("tb")
+      uiOutput("tb"),
+      #fluidRow(
+      #  splitLayout(cellWidths = c("50%","50%"), plotOutput("kmeans"), plotOutput("som"))
+      #)
+      #plotOutput("kmeans")
+      
       
     )
     
@@ -47,6 +54,9 @@ ui <- fluidPage(
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
+  ## set seed for reproducibility
+  global_seed = reactive(input$chosen_seed)
+  set.seed(2023)
   
   ## input$file is a data frame and contains the details around the name, size and temp location of the files uploaded
   # this reactive output display the content of the input$file dataframe
@@ -84,8 +94,7 @@ server <- function(input, output) {
     if(is.null(input$file)){return()}
     summary(read.table(file=input$file$datapath[input$file$name==input$Select], 
                        sep=input$sep, 
-                       header = input$header, 
-                       stringsAsFactors = input$stringAsFactors))})
+                       header = input$header))})
   
   ## Dataset code ##
   # This reactive output contains the dataset and display the dataset in table format
@@ -95,7 +104,48 @@ server <- function(input, output) {
                sep=input$sep, 
                header = input$header)},
     striped=TRUE,
-    caption="Uploaded table:")
+    caption="Uploaded table")
+  
+  ## Clustering code ##
+  # This reactive output contains the K-means and the SOM plot of clustering next to each other
+  file <- reactive({
+    read.table(file=input$file$datapath[input$file$name==input$Select], 
+               sep=input$sep, 
+               header = input$header)
+  })
+  logs <- reactive({
+    log(file())
+  })
+  output$kmax <- reactive({
+    input$kmax
+  })
+  output$wssk <- reactive({
+    wsskmeans(logs())
+  })
+  output$wsss <- reactive({
+    wsssom(logs())
+  })
+  output$x <- reactive({
+    2:kmax
+  })
+  
+  output$kmeans = renderPlot({
+        plot(kmax, wssk(), 
+                   type="b", pch =10, frame = FALSE, 
+                   xlab="Number of clusters",
+                   ylab="Total Within sum of square",
+                   main="K-means",
+                   cex=2, cex.main=1.5, cex.lab=1.5, cex.axis=2)
+       #abline(v = 3, col = "red", lwd = 2)
+    })
+  #output$som = renderPlot({
+        #plot(kmax, wsss, type="b", pch =10, frame = FALSE, 
+     #            xlab="Number of clusters",
+     #            ylab="Total Within sum of square",
+     #            main="SOM",
+     #            cex=2, cex.main=1.5, cex.lab=1.5, cex.axis=2)
+     #abline(v = 3, col = "red", lwd = 2)
+    #})
   
   
   ## MainPanel tabset renderUI code ##
@@ -105,10 +155,13 @@ server <- function(input, output) {
     if(is.null(input$file)) {return()}
     else
       tabsetPanel(
-        tabPanel("Input File Object DF ", tableOutput("filedf"), tableOutput("filedf2")),
-        tabPanel("Input File Object Structure", verbatimTextOutput("fileob")),
         tabPanel("Dataset", tableOutput("table")),
-        tabPanel("Summary Stats", verbatimTextOutput("summ")))
+        tabPanel("Summary", verbatimTextOutput("summ")),
+        tabPanel("Input File Object DF ", tableOutput("filedf"), tableOutput("filedf2")),
+        tabPanel("Structure", verbatimTextOutput("fileob")),
+        tabPanel("Pre-processing", textOutput("wssk"), textOutput("wsss")),
+        tabPanel("Clustering", plotOutput("kmeans"))
+      )
   })
 }
 
