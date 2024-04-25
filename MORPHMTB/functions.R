@@ -1,8 +1,7 @@
-## MORPH ALGORITHM ##
 # Functions
 ## Reading data functions
 ### [1.1] getClusteringInformation
-getClusteringInformation = function(ClusterFile)
+getClusteringInformation <- function(ClusterFile)
 {
   Cluster = read.delim(ClusterFile, sep="\t", header=FALSE, row.names = 1,stringsAsFactors=F) #Read tab-delimited file.
   colnames(Cluster) = ClusterFile #Change cluster column name to file-name for future identification.
@@ -10,24 +9,22 @@ getClusteringInformation = function(ClusterFile)
 }
 
 ### [1.2] Get Pathways
-GetGOIs = function(GOI_File)
+GetGOIs <- function(GOI_File)
 {
   GOI = readLines(GOI_File, n=1) #Reads the first (and only) line from the pathway-genes file.
   GOI = strsplit(GOI,"\t")[[1]] #Splits names into a vector by tabs.
   return(GOI)
 }
 
-
 ### [1.3] getGeneExpression
-getGeneExpression = function(InputGE)
+getGeneExpression <- function(InputGE)
 {
   GE = (read.delim(InputGE, sep="\t", header=TRUE,row.names=1)) #Reads the gene-expression data from the tab-delimited file.
 }
 
-
 ## MORPH Algorithm
 ### [2.1] prepare Morph Object From Files {Input;Configuration file (data and cluster solution), Output:MORPH object}
-prepareMorphObjectFromFiles = function(InputConfig= NULL,InputGOI = NULL) {
+prepareMorphObjectFromFiles <- function(InputConfig= NULL,InputGOI = NULL) {
   Config = read.delim(InputConfig, sep = "\t", header=FALSE) #Reads the configs.txt file.
   List_GE = as.character(Config[,1]) #Reads the first column (containing paths to gene-expression data files)
   List_C = as.character(Config[,2]) #Reads the second column (containing paths to clustering solution files)
@@ -74,7 +71,7 @@ prepareMorphObjectFromFiles = function(InputConfig= NULL,InputGOI = NULL) {
   return (morph_obj)}
 
 ### [2.2] rankGenes {Input;G-pathway, C-cluster solution, GE-dataset, Output; Scores}
-rankGenes = function(G,C,GE,corrs_mat = NULL) #Ranks all candidates-vs-GOIs for a "data-couple" (GE data & Clustering solution)
+rankGenes <- function(G,C,GE,corrs_mat = NULL) #Ranks all candidates-vs-GOIs for a "data-couple" (GE data & Clustering solution)
 {if (is.null(corrs_mat)){ #Have we NOT received a coexpression (covariance) matrix (is it defined)?
   corrs_mat = cor(t(GE),t(GE[G,])) #Calculate the covariance matrix from scratch.
   print(corrs_mat)
@@ -117,9 +114,8 @@ rankGenes = function(G,C,GE,corrs_mat = NULL) #Ranks all candidates-vs-GOIs for 
 
 
 ### [2.3] Normalized correlation {Input; correlation matrix, pathway, genes, Outputl;Ordered vector}
-
 #Acquire cluster-specific ("current") pathway-genes and candidates.
-getNormalizedCorrelations = function(corrs_mat, CurrentG, Candidates)
+getNormalizedCorrelations <- function(corrs_mat, CurrentG, Candidates)
 {AverageCorrelations = c() #Initialize variable to contain average correlations.
 if (length(CurrentG)==1){ #Is there only ONE pathway gene in this cluster?
   AverageCorrelations = corrs_mat[Candidates,CurrentG] #Set average correlation as it's coexpression (covariance) score from our matrix.
@@ -136,7 +132,7 @@ return(NormalizedCorrelations)}
 
 
 ### [2.4] LOOCV (Leave-One-Out Cross Validation) {Input; G, C, GE, Output;Score}
-LOOCV = function(G,C,GE,K,corrs_mat = NULL, NameGE = NULL, NameC = NULL)
+LOOCV <- function(G,C,GE,K,corrs_mat = NULL, NameGE = NULL, NameC = NULL)
 {if (is.null(corrs_mat)){ #Have we NOT received a coexpression (covariance) matrix (is it defined)?
   corrs_mat = cor(t(GE),t(GE[G,])) #Calculate the covariance matrix from scratch.
 }
@@ -151,7 +147,7 @@ LOOCV = function(G,C,GE,K,corrs_mat = NULL, NameGE = NULL, NameC = NULL)
   return(AUSR(SelfRanks,K,NameGE,NameC))}
 
 ### [2.5] AUSR (Area Under the curve of the Self-Ranked genes) {Input; Self-ranks, K-threshold, Output;Score}
-AUSR = function(SelfRanks, K, NameGE = NULL, NameC = NULL)
+AUSR <- function(SelfRanks, K, NameGE = NULL, NameC = NULL)
 {nGOIs = length(SelfRanks) #Count the number of self-ranks in the vector.
 Fractions = numeric(0) #Initialize vector to contain fractions (i.e. fractions of pathway genes with self rank below threshold)
 AUC = 0 #Initialize accumulative variable to contain Area-Under-the-Curve score.
@@ -174,7 +170,7 @@ return((AUC / K))}
 
 
 ### [2.6] MORPH {Input; MORPH object, k, output;Ranks, Score, AUSR, C, GE, }
-MORPH = function(morph_obj, K=1000, view = FALSE)
+MORPH <- function(morph_obj, K=1000, view = FALSE)
 {#Acquire data from input MORPH object
   G = morph_obj$pathway_genes #Pathway-genes.
   List_C = as.character(morph_obj$config[,2]) #Paths to clustering solution files.
@@ -228,7 +224,7 @@ int = intersect(int,GENames) #Keep only pathway-genes that appear in gene-expres
 return (int)}
 
 ### [2.8] LOOCV_MORPH {Input; Morph object, k, output; AUSR score}
-LOOCV_MORPH = function(morph_obj,K=1000)
+LOOCV_MORPH <- function(morph_obj,K=1000)
 {SelfRanks = numeric(0) #Initialize variable to contain all self-ranks.
 for (V in morph_obj$pathway_genes) #Go through all pathway-genes and leave one out at a time.
 {# Create a new MORPH input object but EXCLUDE the tested gene.
@@ -247,7 +243,7 @@ for (V in morph_obj$pathway_genes) #Go through all pathway-genes and leave one o
 return(AUSR(SelfRanks,K))}
 
 ### [2.9] getMorphResultBestConfig {Input; MORPH-result object, Output; Ranks, c, GE, AUSR, Score}
-getMorphResultBestConfig = function(morph_res_obj){ # list of lists [like PERL hush table]
+getMorphResultBestConfig <- function(morph_res_obj){ # list of lists [like PERL hush table]
   #Initialize variables to contain - 
   best_ausr = -1 #Best AUSR score.
   best_ind = -1 #Index of best-AUSR configuration.
@@ -267,131 +263,18 @@ getMorphResultBestConfig = function(morph_res_obj){ # list of lists [like PERL h
   return (morph_best_res)}
 
 ### [2.10] get Morph Predictions {Input; Morph-result object, output;Ranking score}
-getMorphPredictions = function(morph_res_obj){
+getMorphPredictions <- function(morph_res_obj){
   return (getMorphResultBestConfig(morph_res_obj)$Ranking$Scored) #Acquire and return scores of best configuration.}
-  
-  ### [2.11] get Scores Distribution Plots  {Input:Scores,path for saving,  output;plot}
-  getScoresDistributionPlots = function(Scores, OutputFile="ScoresDistribution.pdf", Color="blue", Type = "b")
-  {pdf(OutputFile, onefile=TRUE) #Open the output file for writing in PDF format.
-    for (i in 1:length(Scores))	{ #Go through all MORPH Results object data blocks
-      Ranks = Scores[[i]] #Acquire current data block.
-      Y = as.numeric((Ranks$Ranking)$Scored) #Extract normalized correlation scores into a numeric vector.
-      X = 1:(length(Y)) #Create an X-axis in the appropriate length.
-      plot(X,Y,col=Color,type=Type, xlim=c(0,1), xlab="Self-rank threshold", ylab="Fraction of pathway genes with self rank below threshold",main=paste("Clustering:",Ranks$C,"; Gene expression:",Ranks$GE)) #Plot data.
-    }
-    dev.off() #Turn off console presentation in order to write into output file and not to screen.
-  }}
+}
 
-
-# Solutions
-#setwd("D:/UHasselt-Master of statistics and data science/Biostat/Second year/MORPH_OG/morph")
-setwd("C:/Users/elise/Documents/Schuul/Stage/Project/morph")
-## MORPH Input
-InputConfig = "Configs.txt"
-InputGOI = "Pathway2.txt"
-morph_input = prepareMorphObjectFromFiles(InputConfig,InputGOI)
-Scores = MORPH(morph_input, view = TRUE)
-## Removing Absent genes
-G = morph_input$pathway_genes #Get pathway genes
-C = (morph_input$clustering_solution)[[1]] #Get clustering solution
-GE = (morph_input$ge_datasets)[[1]] #Get gene expression dataset
-GENames = rownames(GE) #Get names of genes in dataset
-Intersection = removeAbscentGOIs(G,C,GENames)
-print(Intersection)
-## Validation
-InputConfig = "Configs.txt"
-InputGOI = "Pathway2.txt"
-morph_input = prepareMorphObjectFromFiles(InputConfig,InputGOI)
-LOOCVc = LOOCV_MORPH(morph_input)
-print(LOOCVc) #0.8283571
-## AUSR
-Scores2 = LOOCV_MORPH(morph_input) # --> gives 1 score?? 0.8283571
-BestConfig <- getMorphResultBestConfig(Scores) #Error in curr_res$AUSR : $ operator is invalid for atomic vectors
-print(names(BestConfig))
-print(BestConfig$AUSR) #0.8283571
-## MORPH gene scores
-Predictions <- getMorphPredictions(Scores)
-print(head(Predictions))
-## Threshold Plot 
-Scores <- MORPH(morph_input, view = TRUE)
-getScoresDistributionPlots(Scores) #RStudioGD  --> gives empty plots?
-                                   #        2 
-
-### Solutions for each dataset for a specific pathway
-Scores[[1]]$AUSR   ## Numbers are correspondings to where the clustering solution is in Configs.txt
-head(Scores[[1]]$Ranking$Scored, 5)
-
-# Sampling for Real pathway recognition
-uniform_sample <- function(vector) {
-  index <- sample(length(vector), 14)
-  return(vector[index])}
-Score<-c()
-B <-100
-for (i in 1:B) {
-  G <- uniform_sample(g) #Error: object 'g' not found
-  writeLines(G, "random.txt", sep = "\t")
-  InputConfig <- "Configs.txt"
-  InputGOI <- "random.txt"
-  morph_input <- prepareMorphObjectFromFiles(InputConfig, InputGOI)
-  print(names(morph_input)) 
-  G <- morph_input$pathway_genes
-  NameC <- names(morph_input$clustering_solutions)[1] 
-  C <- (morph_input$clustering_solutions)[[NameC]] #Get first clustering solution
-  NameGE <- names(morph_input$ge_datasets)[1] 
-  GE <- (morph_input$ge_datasets)[[NameGE]] #Get first gene expression dataset
-  InputConfig <- "Configs.txt"
-  InputGOI <- "random.txt"
-  morph_input <- prepareMorphObjectFromFiles(InputConfig,InputGOI)
-  Scores <- MORPH(morph_input, view = TRUE)
-  Score[i]<-Scores}
-
-# Assuming your list is named "my_list"
-scores_AUSR <- vector("numeric", length(Score))
-for (i in seq_along(Score)) {
-  scores_AUSR[i] <- Score[[i]]$AUSR}
-scores_AUSR <- sapply(Score, function(x) x$AUSR)
-Pathways2<-scores_AUSR
-
-## Boxplot for comparability
-## Data preparation
-dataset1<-data.frame(Pathways1, Pathways2, Pathways3, Pathways4, Pathways5) #Error: object 'Pathways1' not found
-x<-c("Pathways1","Pathways2", "Pathways3", "Pathways4", "Pathways5")
-y<-c(0.2448, 0.8481,0.6927, 0.5087,0.6713)
-dataset2<-data.frame(x,y)
-
-##### Boxplot
-boxplot(dataset1, ylim=c(0,1))
-points(x = match(dataset2$x, names(dataset1)), y = dataset2$y, col = "red", pch = 16)
-text(x = match(dataset2$x, names(dataset1)), y = dataset2$y, labels = dataset2$y, pos = 3)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+### [2.11] get Scores Distribution Plots  {Input:Scores,path for saving,  output;plot}
+getScoresDistributionPlots <- function(Scores, OutputFile="ScoresDistribution.pdf", Color="blue", Type = "b")
+{pdf(OutputFile, onefile=TRUE) #Open the output file for writing in PDF format.
+  for (i in 1:length(Scores))	{ #Go through all MORPH Results object data blocks
+    Ranks = Scores[[i]] #Acquire current data block.
+    Y = as.numeric((Ranks$Ranking)$Scored) #Extract normalized correlation scores into a numeric vector.
+    X = 1:(length(Y)) #Create an X-axis in the appropriate length.
+    plot(X,Y,col=Color,type=Type, xlim=c(0,1), xlab="Self-rank threshold", ylab="Fraction of pathway genes with self rank below threshold",main=paste("Clustering:",Ranks$C,"; Gene expression:",Ranks$GE)) #Plot data.
+  }
+  dev.off() #Turn off console presentation in order to write into output file and not to screen.
+}

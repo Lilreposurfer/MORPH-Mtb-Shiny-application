@@ -12,7 +12,7 @@ log <- function(data){
 }
 
 
-wsskmeans <- function(data){
+wsskmeans <- function(data, kmax){
 # Elbow Method
 ## K-means
 wssk <- sapply(2:kmax, function(k){
@@ -22,7 +22,7 @@ wssk
 
 
 
-wsssom <- function(data){
+wsssom <- function(data, kmax){
 # Elbow Method
 ## SOM
 som_grid <- somgrid(xdim = 376, ydim = 10, topo = "hexagonal")   # depend with the size of the dataset (3760)

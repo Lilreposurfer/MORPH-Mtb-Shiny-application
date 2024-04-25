@@ -22,6 +22,8 @@ library(kohonen)         # SOM package
 library(pheatmap)        # Heatmap
 library(caroline)
 
+# RV numbers!!
+
 # Source ----
 source("clustering.R")
 
@@ -37,6 +39,7 @@ ui <- fluidPage(
       checkboxInput(inputId = 'header', label = 'Header', value = TRUE), #checkbox to select if file has a header
       radioButtons(inputId = 'sep', label = 'Separator', choices = c(Comma=',',Semicolon=';',Tab='\t', Space=''), selected = ''), #radiobuttons to specify separator
       numericInput("kmax", "Maximum K-clusters:", 10, min = 1, max = 100),
+      numericInput("candidate", "Max of candidate genes to display:", 30, min = 1, max = 1000),
       uiOutput("selectfile")
     ),
     mainPanel(
@@ -116,21 +119,21 @@ server <- function(input, output) {
   logs <- reactive({
     log(file())
   })
-  output$kmax <- reactive({
+  kmax <- reactive({
     input$kmax
   })
   output$wssk <- reactive({
-    wsskmeans(logs())
+    wsskmeans(logs(),kmax())
   })
   output$wsss <- reactive({
-    wsssom(logs())
+    wsssom(logs(), kmax())
   })
   output$x <- reactive({
     2:kmax
   })
   
   output$kmeans = renderPlot({
-        plot(kmax, wssk(), 
+        plot(kmax(), wssk(), 
                    type="b", pch =10, frame = FALSE, 
                    xlab="Number of clusters",
                    ylab="Total Within sum of square",
@@ -159,7 +162,7 @@ server <- function(input, output) {
         tabPanel("Summary", verbatimTextOutput("summ")),
         tabPanel("Input File Object DF ", tableOutput("filedf"), tableOutput("filedf2")),
         tabPanel("Structure", verbatimTextOutput("fileob")),
-        tabPanel("Pre-processing", textOutput("wssk"), textOutput("wsss")),
+        #tabPanel("Pre-processing", textOutput("wssk"), textOutput("wsss")),
         tabPanel("Clustering", plotOutput("kmeans"))
       )
   })
