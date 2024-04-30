@@ -171,3 +171,72 @@ server <- function(input, output) {
 
 # Run the application 
 shinyApp(ui = ui, server = server)
+
+
+###############################################################################################
+output$contents <- eventReactive(input$button, {
+  output$contents <- reactive({
+    # input$file1 will be NULL initially. After the user selects
+    # and uploads a file, it will be a data frame with 'name',
+    # 'size', 'type', and 'datapath' columns. The 'datapath'
+    # column will contain the local filenames where the data can
+    # be found.
+    #if (input$input == "Upload file"){
+    ## Side bar select input widget coming through renderUI()
+    # Following code displays the select input widget with the list of file loaded by the user
+    output$selectfile <- renderUI({
+      if(is.null(input$file)) {return()}
+      list(hr(), 
+           helpText("Select the files for which you need to see data and summary stats"),
+           selectInput("Select", "Select", choices=input$file$name))
+    })
+    output$contents <- renderTable({
+      #inFile <- input$file
+      #gene <- unlist(read.csv(inFile$datapath, header=FALSE))
+      #return(data.frame(Genes=gene))})
+      read.table(file=input$file$datapath[input$file$name==input$Select], 
+                 sep='', 
+                 header = TRUE)},
+      striped=TRUE)
+    
+    
+    #} else {
+    output$pathway <- renderTable({
+      gene <- unlist(strsplit(input$genes, "\n"))
+      return(data.frame(Genes=gene))},
+      striped=TRUE)
+    #} 
+    
+    
+    ## Clustering code ##
+    # This reactive output contains the K-means and the SOM plot of clustering next to each other
+    #file <- reactive({
+    #  read.table(file=input$file$datapath[input$file$name==input$Select], 
+    #             sep='', 
+    #             header = TRUE)
+    #})
+    #logs <- reactive({
+    #  log(file())
+    #})
+    #kmax <- reactive({
+    #  kmax <- 10
+    #})
+    #wssk <- reactive({
+    #  wsskmeans(logs(),kmax())
+    #})
+    #wsss <- reactive({
+    #  wsssom(logs(), kmax())
+    #})
+    #x <- reactive({
+    #  2:kmax
+    #})
+    #output$Kmeans <- reactive({
+    #  renderPlot({
+    #    clusterK(x, wssk())
+    #  })
+    #})
+    #output$SOM <- reactive({
+    #  renderPlot({
+    #    clusterS(x, wsss())
+    #  })
+    #})

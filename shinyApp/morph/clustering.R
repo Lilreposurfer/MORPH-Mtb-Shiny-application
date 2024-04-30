@@ -1,5 +1,4 @@
 ## Normalization, Filtering and histograms after normalization
-
 log <- function(data){
   a <- DGEList(data, group = NULL) # create DGEList object
   b <- calcNormFactors(a, method = "TMM") # perform TMM normalization

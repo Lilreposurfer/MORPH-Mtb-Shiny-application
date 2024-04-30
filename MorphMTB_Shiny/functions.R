@@ -1,4 +1,69 @@
 # Functions
+
+## Normalization, Filtering and histograms after normalization
+log <- function(data){
+  a <- DGEList(data, group = NULL) # create DGEList object
+  b <- calcNormFactors(a, method = "TMM") # perform TMM normalization
+  norm_data <- cpm(b, log=FALSE) # retrieve normalized counts
+  sd_expr <- apply(norm_data, 1, sd)   # SD for each gene
+  threshold <- 1    # threshold
+  norm_data_filtered <- norm_data[sd_expr >= threshold, ] # remove gene with sd<1
+  log_data <- log2(norm_data_filtered + 1)
+  log_data
+}
+
+########################################################################################################################
+
+## Clustering
+wsskmeans <- function(data, x){
+  # Elbow Method
+  ## K-means
+  wssk <- sapply(x, function(k){
+    kmeans(data, k, nstart=50,iter.max = 40)$tot.withinss})
+  wssk
+}
+clusterK <- function(x, wssk){
+  plot(x, wssk, type="b", pch =10, frame = FALSE, 
+       xlab="Number of clusters",
+       ylab="Total Within sum of square",
+       main="K-means",
+       cex=2, cex.main=1.5, cex.lab=1.5, cex.axis=2)
+  abline(v = 3, col = "red", lwd = 2)
+}
+
+
+wsssom <- function(data, x){
+  # Elbow Method
+  ## SOM
+  som_grid <- somgrid(xdim = 376, ydim = 10, topo = "hexagonal")   # depend with the size of the dataset (3760)
+  gene_som <- som(data, grid = som_grid, rlen = 100, alpha = c(0.05, 0.01), keep.data = TRUE)
+  weight<- getCodes(gene_som)
+  #kmax <- 10
+  wsss <- sapply(x, function(k){
+    kmeans(weight, k, nstart=50,iter.max = 40)$tot.withinss})
+  wsss
+}
+clusterS <- function(x, wsss){
+  plot(x, wsss, type="b", pch =10, frame = FALSE, 
+       xlab="Number of clusters",
+       ylab="Total Within sum of square",
+       main="SOM",
+       cex=2, cex.main=1.5, cex.lab=1.5, cex.axis=2)
+  abline(v = 3, col = "red", lwd = 2) 
+}
+
+## Cluster Size 
+## k-means
+#kmc1 <- kmeans(log_drug, centers = 3, iter.max=40,nstart=50)
+#kmc1$size
+## SOM
+#SOM <- kmeans(weight1, centers = 3, iter.max=40,nstart=50)
+#SOM$size
+
+########################################################################################################################
+
+## MORPH ALGORITHM ##
+# Functions
 ## Reading data functions
 ### [1.1] getClusteringInformation
 getClusteringInformation <- function(ClusterFile)
@@ -9,12 +74,12 @@ getClusteringInformation <- function(ClusterFile)
 }
 
 ### [1.2] Get Pathways
-GetGOIs <- function(GOI_File)
+GetGOIs <- function(InputGOI)
 {
-  GOI = readLines(GOI_File, n=1) #Reads the first (and only) line from the pathway-genes file.
-  GOI = strsplit(GOI,"\t")[[1]] #Splits names into a vector by tabs.
+  GOI = as.character(strsplit(InputGOI, "\t")) #Splits names into a vector by tabs.
   return(GOI)
 }
+
 
 ### [1.3] getGeneExpression
 getGeneExpression <- function(InputGE)
@@ -22,10 +87,15 @@ getGeneExpression <- function(InputGE)
   GE = (read.delim(InputGE, sep="\t", header=TRUE,row.names=1)) #Reads the gene-expression data from the tab-delimited file.
 }
 
+
 ## MORPH Algorithm
 ### [2.1] prepare Morph Object From Files {Input;Configuration file (data and cluster solution), Output:MORPH object}
-prepareMorphObjectFromFiles <- function(InputConfig= NULL,InputGOI = NULL) {
-  Config = read.delim(InputConfig, sep = "\t", header=FALSE) #Reads the configs.txt file.
+prepareMorphObjectFromFiles <- function(InputGOI = NULL, ...) {
+  #Config = read.delim(InputConfig, sep = "\t", header=FALSE) #Reads the configs.txt file.
+  Config = data.frame(V1=c("clark.txt","clark.txt","drug.txt","drug.txt","ESX.txt","ESX.txt",
+                  "inaki.txt","inaki.txt","primary.txt","primary.txt","timecourse.txt","timecourse.txt"),
+             V2=c("kmeansclark.txt","somclark.txt","kmeansdrug.txt","somdrug.txt","kmeansESX.txt","somESX.txt",
+                  "kmeansinaki.txt","sominaki.txt","kmeansprimary.txt","somprimary.txt","kmeanstimecourse.txt","somtimecourse.txt"))
   List_GE = as.character(Config[,1]) #Reads the first column (containing paths to gene-expression data files)
   List_C = as.character(Config[,2]) #Reads the second column (containing paths to clustering solution files)
   G = c() #Initialize the vector to contain names of pathway-genes.
@@ -67,8 +137,9 @@ prepareMorphObjectFromFiles <- function(InputConfig= NULL,InputGOI = NULL) {
   }									                          
   #Create and return a MORPH object (see function description).
   morph_obj = list(config = Config, clustering_solutions = clustering_solutions, ge_datasets = ge_datasets, pathway_genes = G)
-  class(morph_obj)<-"morph_data" # equvallent to Java class
+  class(morph_obj)<-"morph_data" # equivalent to Java class
   return (morph_obj)}
+
 
 ### [2.2] rankGenes {Input;G-pathway, C-cluster solution, GE-dataset, Output; Scores}
 rankGenes <- function(G,C,GE,corrs_mat = NULL) #Ranks all candidates-vs-GOIs for a "data-couple" (GE data & Clustering solution)
@@ -79,7 +150,7 @@ rankGenes <- function(G,C,GE,corrs_mat = NULL) #Ranks all candidates-vs-GOIs for
   print(corrs_mat)
   G_Clusters = matrix(C[G,1], length(G),1) #Detect the parent cluster for all pathway-genes.
   rownames(G_Clusters) = G #Change the row names according to the pathway-genes.
-  RelevantClusters =na.omit(unique(G_Clusters[,1]))  #Keep only the clusters that contain pathway-genes.
+  RelevantClusters = na.omit(unique(G_Clusters[,1]))  #Keep only the clusters that contain pathway-genes.
   Scores = list() #Initialize list to contain results.
   Scores[["Scored"]] = c() #Initialize the "Scored" field that will contain all valid calculated scores.
   for (Cluster in RelevantClusters) #Go through each cluster within those who contain pathway-genes.
@@ -112,7 +183,6 @@ rankGenes <- function(G,C,GE,corrs_mat = NULL) #Ranks all candidates-vs-GOIs for
   Scores[["Scored"]] = scores_vector
   return(Scores)}
 
-
 ### [2.3] Normalized correlation {Input; correlation matrix, pathway, genes, Outputl;Ordered vector}
 #Acquire cluster-specific ("current") pathway-genes and candidates.
 getNormalizedCorrelations <- function(corrs_mat, CurrentG, Candidates)
@@ -129,7 +199,6 @@ Mean = mean(AverageCorrelations) #Calculate the mean of all average scores.
 SD = sd(AverageCorrelations) #Calculate the standard deviation of all average scores.
 NormalizedCorrelations = ((AverageCorrelations - Mean) / SD) #Normalize scores according to mean and standard deviation.
 return(NormalizedCorrelations)}
-
 
 ### [2.4] LOOCV (Leave-One-Out Cross Validation) {Input; G, C, GE, Output;Score}
 LOOCV <- function(G,C,GE,K,corrs_mat = NULL, NameGE = NULL, NameC = NULL)
@@ -168,10 +237,10 @@ if (PlotFlag == 1) { #Is the plotting flag "up"?
 #Calculate and return the AUSR score (i.e. AUC divided by threshold value).
 return((AUC / K))}
 
-
 ### [2.6] MORPH {Input; MORPH object, k, output;Ranks, Score, AUSR, C, GE, }
-MORPH <- function(morph_obj, K=1000, view = FALSE)
+MORPH <- function(morph_obj, view=FALSE)
 {#Acquire data from input MORPH object
+  K = 1000
   G = morph_obj$pathway_genes #Pathway-genes.
   List_C = as.character(morph_obj$config[,2]) #Paths to clustering solution files.
   List_GE = as.character(morph_obj$config[,1]) #Paths to gene-expression data files.
@@ -182,7 +251,8 @@ MORPH <- function(morph_obj, K=1000, view = FALSE)
   AUSR_Scores = numeric(0) #AUSR scores.
   Final_Scores = list() #MORPH Results object to contain all approriate information (see function description for more details).
   #Calculate the coexpression (covariance) matrices for all gene-expression matrices.
-  corr_matrices = list() #Initialize list to contain all covariance matrices.
+  #corr_matrices = list() #Initialize list to contain all covariance matrices.
+  corr_matrices = list()
   ges = unique(List_GE) #Eliminate duplicates from paths to gene-expression data files.
   for (ge in ges){ #Go through all gene-expression matrices
     GE = ge_datasets[[ge]] #Extract gene-expression matrix.
@@ -196,7 +266,8 @@ MORPH <- function(morph_obj, K=1000, view = FALSE)
     #Acquire necessary information
     C = cl_solutions[[(List_C[I])]] #Clustering solution.
     curr_corrs = corr_matrices[[List_GE[I]]] #Coexpression (covariance) matrix.
-    Pathway = removeAbscentGOIs(G,C,rownames(curr_corrs)) #Eliminate all pathway genes that do not appear in this configuration.
+    rnames = rownames(curr_corrs)
+    Pathway = removeAbscentGOIs(G,C,rnames) #Eliminate all pathway genes that do not appear in this configuration.
     
     Ranking = rankGenes(Pathway,C,GE=NULL,curr_corrs) #Rank candidates vs. pathway-genes.
     AUC = numeric(0) #Initialize variable to contain AUSR score.
@@ -215,10 +286,12 @@ MORPH <- function(morph_obj, K=1000, view = FALSE)
   }
   #Set final scores class as "morph_results", and return it.
   class(Final_Scores)<-"morph_results"
-  return(Final_Scores)}
+  return(Final_Scores)
+  #return (corr_matrices)
+  }
 
 ### [2.7] remove abscent GOIs {Input; G, C, Output; Pathway genes appeared in both}
-removeAbscentGOIs = function(G,C,GENames)
+removeAbscentGOIs <- function(G,C,GENames)
 {int = intersect(G,rownames(C)) #Keep only pathway-genes that appear in clustering solution.
 int = intersect(int,GENames) #Keep only pathway-genes that appear in gene-expression data.
 return (int)}
@@ -265,16 +338,22 @@ getMorphResultBestConfig <- function(morph_res_obj){ # list of lists [like PERL 
 ### [2.10] get Morph Predictions {Input; Morph-result object, output;Ranking score}
 getMorphPredictions <- function(morph_res_obj){
   return (getMorphResultBestConfig(morph_res_obj)$Ranking$Scored) #Acquire and return scores of best configuration.}
-}
+  
+  ### [2.11] get Scores Distribution Plots  {Input:Scores,path for saving,  output;plot}
+  getScoresDistributionPlots <- function(Scores, OutputFile="ScoresDistribution.pdf", Color="blue", Type = "b")
+  {pdf(OutputFile, onefile=TRUE) #Open the output file for writing in PDF format.
+    for (i in 1:length(Scores))	{ #Go through all MORPH Results object data blocks
+      Ranks = Scores[[i]] #Acquire current data block.
+      Y = as.numeric((Ranks$Ranking)$Scored) #Extract normalized correlation scores into a numeric vector.
+      X = 1:(length(Y)) #Create an X-axis in the appropriate length.
+      plot(X,Y,col=Color,type=Type, xlim=c(0,1), xlab="Self-rank threshold", ylab="Fraction of pathway genes with self rank below threshold",main=paste("Clustering:",Ranks$C,"; Gene expression:",Ranks$GE)) #Plot data.
+    }
+    dev.off() #Turn off console presentation in order to write into output file and not to screen.
+  }}
 
-### [2.11] get Scores Distribution Plots  {Input:Scores,path for saving,  output;plot}
-getScoresDistributionPlots <- function(Scores, OutputFile="ScoresDistribution.pdf", Color="blue", Type = "b")
-{pdf(OutputFile, onefile=TRUE) #Open the output file for writing in PDF format.
-  for (i in 1:length(Scores))	{ #Go through all MORPH Results object data blocks
-    Ranks = Scores[[i]] #Acquire current data block.
-    Y = as.numeric((Ranks$Ranking)$Scored) #Extract normalized correlation scores into a numeric vector.
-    X = 1:(length(Y)) #Create an X-axis in the appropriate length.
-    plot(X,Y,col=Color,type=Type, xlim=c(0,1), xlab="Self-rank threshold", ylab="Fraction of pathway genes with self rank below threshold",main=paste("Clustering:",Ranks$C,"; Gene expression:",Ranks$GE)) #Plot data.
-  }
-  dev.off() #Turn off console presentation in order to write into output file and not to screen.
-}
+###################################################################################################################################################################################################################"
+
+## Sampling for Real pathway recognition
+uniform_sample <- function(vector) {
+  index <- sample(length(vector), 14)
+  return(vector[index])}

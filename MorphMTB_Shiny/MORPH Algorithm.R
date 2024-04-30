@@ -244,7 +244,7 @@ for (V in morph_obj$pathway_genes) #Go through all pathway-genes and leave one o
   SelfRanks=c(SelfRanks,Rank) #Add self-rank to our vector.
 }
 #Calculate and return AUSR score for the MORPH process.
-return(AUSR(SelfRanks,K))}
+return(AUSR(SelfRanks,K))}}
 
 ### [2.9] getMorphResultBestConfig {Input; MORPH-result object, Output; Ranks, c, GE, AUSR, Score}
 getMorphResultBestConfig = function(morph_res_obj){ # list of lists [like PERL hush table]
@@ -270,7 +270,7 @@ getMorphResultBestConfig = function(morph_res_obj){ # list of lists [like PERL h
 getMorphPredictions = function(morph_res_obj){
   return (getMorphResultBestConfig(morph_res_obj)$Ranking$Scored) #Acquire and return scores of best configuration.}
   
-  ### [2.11] get Scores Distribution Plots  {Input:Scores,path for saving,  output;plot}
+### [2.11] get Scores Distribution Plots  {Input:Scores,path for saving,  output;plot}
   getScoresDistributionPlots = function(Scores, OutputFile="ScoresDistribution.pdf", Color="blue", Type = "b")
   {pdf(OutputFile, onefile=TRUE) #Open the output file for writing in PDF format.
     for (i in 1:length(Scores))	{ #Go through all MORPH Results object data blocks
@@ -284,8 +284,7 @@ getMorphPredictions = function(morph_res_obj){
 
 
 # Solutions
-#setwd("D:/UHasselt-Master of statistics and data science/Biostat/Second year/MORPH_OG/morph")
-setwd("C:/Users/elise/Documents/Schuul/Stage/Project/morph")
+setwd("D:/UHasselt-Master of statistics and data science/Biostat/Second year/MORPH_OG/morph")
 ## MORPH Input
 InputConfig = "Configs.txt"
 InputGOI = "Pathway2.txt"
@@ -303,19 +302,18 @@ InputConfig = "Configs.txt"
 InputGOI = "Pathway2.txt"
 morph_input = prepareMorphObjectFromFiles(InputConfig,InputGOI)
 LOOCVc = LOOCV_MORPH(morph_input)
-print(LOOCVc) #0.8283571
+print(LOOCVc)
 ## AUSR
-Scores2 = LOOCV_MORPH(morph_input) # --> gives 1 score?? 0.8283571
-BestConfig <- getMorphResultBestConfig(Scores) #Error in curr_res$AUSR : $ operator is invalid for atomic vectors
+Scores = LOOCV_MORPH(morph_input, view = TRUE)
+BestConfig = getMorphResultBestConfig(Scores)
 print(names(BestConfig))
-print(BestConfig$AUSR) #0.8283571
+print(BestConfig$AUSR)
 ## MORPH gene scores
-Predictions <- getMorphPredictions(Scores)
+Predictions = getMorphPredictions(Scores)
 print(head(Predictions))
 ## Threshold Plot 
-Scores <- MORPH(morph_input, view = TRUE)
-getScoresDistributionPlots(Scores) #RStudioGD  --> gives empty plots?
-                                   #        2 
+Scores = MORPH(morph_input, view = FALSE)
+getScoresDistributionPlots(Scores)
 
 ### Solutions for each dataset for a specific pathway
 Scores[[1]]$AUSR   ## Numbers are correspondings to where the clustering solution is in Configs.txt
@@ -325,39 +323,39 @@ head(Scores[[1]]$Ranking$Scored, 5)
 uniform_sample <- function(vector) {
   index <- sample(length(vector), 14)
   return(vector[index])}
-Score<-c()
+Score=c()
 B <-100
 for (i in 1:B) {
-  G <- uniform_sample(g) #Error: object 'g' not found
+  G <- uniform_sample(g)
   writeLines(G, "random.txt", sep = "\t")
-  InputConfig <- "Configs.txt"
-  InputGOI <- "random.txt"
-  morph_input <- prepareMorphObjectFromFiles(InputConfig, InputGOI)
+  InputConfig = "Configs.txt"
+  InputGOI = "random.txt"
+  morph_input = prepareMorphObjectFromFiles(InputConfig, InputGOI)
   print(names(morph_input)) 
-  G <- morph_input$pathway_genes
-  NameC <- names(morph_input$clustering_solutions)[1] 
-  C <- (morph_input$clustering_solutions)[[NameC]] #Get first clustering solution
-  NameGE <- names(morph_input$ge_datasets)[1] 
-  GE <- (morph_input$ge_datasets)[[NameGE]] #Get first gene expression dataset
-  InputConfig <- "Configs.txt"
-  InputGOI <- "random.txt"
-  morph_input <- prepareMorphObjectFromFiles(InputConfig,InputGOI)
-  Scores <- MORPH(morph_input, view = TRUE)
-  Score[i]<-Scores}
+  G = morph_input$pathway_genes
+  NameC = names(morph_input$clustering_solutions)[1] 
+  C = (morph_input$clustering_solutions)[[NameC]] #Get first clustering solution
+  NameGE = names(morph_input$ge_datasets)[1] 
+  GE = (morph_input$ge_datasets)[[NameGE]] #Get first gene expression dataset
+  InputConfig = "Configs.txt"
+  InputGOI = "random.txt"
+  morph_input = prepareMorphObjectFromFiles(InputConfig,InputGOI)
+  Scores = MORPH(morph_input, view = TRUE)
+  Score[i]=Scores}
 
 # Assuming your list is named "my_list"
 scores_AUSR <- vector("numeric", length(Score))
 for (i in seq_along(Score)) {
   scores_AUSR[i] <- Score[[i]]$AUSR}
 scores_AUSR <- sapply(Score, function(x) x$AUSR)
-Pathways2<-scores_AUSR
+Pathways2=scores_AUSR
 
 ## Boxplot for comparability
 ## Data preparation
-dataset1<-data.frame(Pathways1, Pathways2, Pathways3, Pathways4, Pathways5) #Error: object 'Pathways1' not found
-x<-c("Pathways1","Pathways2", "Pathways3", "Pathways4", "Pathways5")
-y<-c(0.2448, 0.8481,0.6927, 0.5087,0.6713)
-dataset2<-data.frame(x,y)
+dataset1=data.frame(Pathways1, Pathways2, Pathways3, Pathways4, Pathways5)
+x=c("Pathways1","Pathways2", "Pathways3", "Pathways4", "Pathways5")
+y=c(0.2448, 0.8481,0.6927, 0.5087,0.6713)
+dataset2=data.frame(x,y)
 
 ##### Boxplot
 boxplot(dataset1, ylim=c(0,1))
