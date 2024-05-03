@@ -332,7 +332,6 @@ write.delim(gene_clusters6, "somtimecourse.txt", sep="\t", col.names=FALSE, row.
 
 ## All genes for sampling
 g = drug$Gene_ID
-
 ###############################################################################################
 
 ## MORPH ALGORITHM ##
@@ -642,7 +641,7 @@ morph_input = prepareMorphObjectFromFiles(InputConfig,InputGOI)
 LOOCVc = LOOCV_MORPH(morph_input)
 print(LOOCVc) #0.8283571
 ## AUSR
-Scores2 = LOOCV_MORPH(morph_input) # --> gives 1 score?? 0.8283571
+Scores2 = LOOCV_MORPH(morph_input) # --> gives 1 score: 0.8283571
 BestConfig <- getMorphResultBestConfig(Scores) #Error in curr_res$AUSR : $ operator is invalid for atomic vectors
 print(names(BestConfig))
 print(BestConfig$AUSR) #0.8283571
@@ -655,7 +654,7 @@ getScoresDistributionPlots(Scores) #RStudioGD  --> gives empty plots?
 #        2 
 
 ### Solutions for each dataset for a specific pathway
-Scores[[1]]$AUSR   ## Numbers are correspondings to where the clustering solution is in Configs.txt
+Scores[[1]]$AUSR   ## Numbers are corresponding to where the clustering solution is in Configs.txt
 head(Scores[[1]]$Ranking$Scored, 5)
 
 # Sampling for Real pathway recognition
@@ -664,8 +663,8 @@ uniform_sample <- function(vector) {
   return(vector[index])}
 Score<-c()
 B <-100
-for (i in 1:B) {
-  G <- uniform_sample(g) #Error: object 'g' not found
+for (i in 1:10) {
+  G <- uniform_sample(g) 
   writeLines(G, "random.txt", sep = "\t")
   InputConfig <- "Configs.txt"
   InputGOI <- "random.txt"
@@ -679,7 +678,7 @@ for (i in 1:B) {
   InputConfig <- "Configs.txt"
   InputGOI <- "random.txt"
   morph_input <- prepareMorphObjectFromFiles(InputConfig,InputGOI)
-  Scores <- MORPH(morph_input, view = TRUE)
+  Scores <- MORPH(morph_input) #, view = TRUE
   Score[i]<-Scores}
 
 # Assuming your list is named "my_list"

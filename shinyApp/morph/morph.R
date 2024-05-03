@@ -240,3 +240,41 @@ output$contents <- eventReactive(input$button, {
     #    clusterS(x, wsss())
     #  })
     #})
+    
+    
+    
+    
+    #ScoreRandom <- c()
+    #B <- 100  
+    #for (i in 1:B) {
+    #  InputGOIRandom <- reactive({
+    #    uniform_sample(g())
+    #  })
+    #  morphinputRandom <- reactive({
+    #    prepareMorphObjectFromFiles(InputGOIRandom())
+    #  })
+    #  #output$morphinputNames <- reactive({
+    #  #  names(morphinputRandom())
+    #  #})
+    #  output$GRandom <- reactive({
+    #    morphinputRandom()$pathway_genes
+    #  }) 
+    #  NameC <- reactive({
+    #    names(morphinputRandom()$clustering_solutions)[1]
+    #  })
+    #  output$C <- reactive({
+    #    (morphinputRandom()$clustering_solutions)[[NameC()]] #Get first clustering solution
+    #  })
+    #  NameGE <- reactive({
+    #    names(morphinputRandom()$ge_datasets)[1]
+    #  })
+    #  output$GE <- reactive({
+    #    (morphinputRandom()$ge_datasets)[[NameGE()]] #Get first gene expression dataset
+    #  })
+    #  ScoresRandom <- reactive({
+    #    MORPH(morphinputRandom(), view = TRUE)
+    #  })
+    #  ScoreRandom()[i] <- reactive({
+    #    ScoresRandom()
+    #  })
+    #}

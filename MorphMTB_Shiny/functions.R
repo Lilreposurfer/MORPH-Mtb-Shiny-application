@@ -251,8 +251,7 @@ MORPH <- function(morph_obj, view=FALSE)
   AUSR_Scores = numeric(0) #AUSR scores.
   Final_Scores = list() #MORPH Results object to contain all approriate information (see function description for more details).
   #Calculate the coexpression (covariance) matrices for all gene-expression matrices.
-  #corr_matrices = list() #Initialize list to contain all covariance matrices.
-  corr_matrices = list()
+  corr_matrices = list() #Initialize list to contain all covariance matrices.
   ges = unique(List_GE) #Eliminate duplicates from paths to gene-expression data files.
   for (ge in ges){ #Go through all gene-expression matrices
     GE = ge_datasets[[ge]] #Extract gene-expression matrix.
@@ -355,5 +354,34 @@ getMorphPredictions <- function(morph_res_obj){
 
 ## Sampling for Real pathway recognition
 uniform_sample <- function(vector) {
-  index <- sample(length(vector), 14)
+  index <- sample(length(vector), 14) 
   return(vector[index])}
+
+getScoresRandomPathway <- function(g, random){
+  Score <- c()
+  B <- random
+  lapply(1:5, function(i){
+    InputGOI <- unlist(uniform_sample(g)) 
+    morph_input <- prepareMorphObjectFromFiles(InputGOI)
+    #print(names(morph_input)) 
+    G <- morph_input$pathway_genes
+    NameC <- names(morph_input$clustering_solutions)[1] 
+    C <- (morph_input$clustering_solutions)[[NameC]] #Get first clustering solution
+    NameGE <- names(morph_input$ge_datasets)[1] 
+    GE <- (morph_input$ge_datasets)[[NameGE]] #Get first gene expression dataset
+    #morph_input <- prepareMorphObjectFromFiles(InputGOI)
+    Scores <- MORPH(morph_input, view = TRUE)
+    #Score[i] <- Scores
+    Score[i] <- Scores$AUSR
+    return(Score)
+  })
+}
+
+AUSRscoreRandom <- function(ScoreRandom, scoresAUSR){
+  #for (i in seq_along(ScoreRandom)) {
+  #scoresAUSR[i] <- ScoreRandom[[i]]$AUSR}
+#}
+  lapply(1:seq_along(ScoreRandom), function(i){
+    scoresAUSR[i] <- ScoreRandom[[i]]$AUSR
+  })
+}
