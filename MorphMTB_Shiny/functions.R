@@ -286,7 +286,6 @@ MORPH <- function(morph_obj, view=FALSE)
   #Set final scores class as "morph_results", and return it.
   class(Final_Scores)<-"morph_results"
   return(Final_Scores)
-  #return (corr_matrices)
   }
 
 ### [2.7] remove abscent GOIs {Input; G, C, Output; Pathway genes appeared in both}
@@ -315,7 +314,7 @@ for (V in morph_obj$pathway_genes) #Go through all pathway-genes and leave one o
 return(AUSR(SelfRanks,K))}
 
 ### [2.9] getMorphResultBestConfig {Input; MORPH-result object, Output; Ranks, c, GE, AUSR, Score}
-getMorphResultBestConfig <- function(morph_res_obj){ # list of lists [like PERL hush table]
+getMorphResultBestConfig = function(morph_res_obj){ # list of lists [like PERL hush table]
   #Initialize variables to contain - 
   best_ausr = -1 #Best AUSR score.
   best_ind = -1 #Index of best-AUSR configuration.
@@ -335,20 +334,21 @@ getMorphResultBestConfig <- function(morph_res_obj){ # list of lists [like PERL 
   return (morph_best_res)}
 
 ### [2.10] get Morph Predictions {Input; Morph-result object, output;Ranking score}
-getMorphPredictions <- function(morph_res_obj){
+getMorphPredictions = function(morph_res_obj){
   return (getMorphResultBestConfig(morph_res_obj)$Ranking$Scored) #Acquire and return scores of best configuration.}
   
   ### [2.11] get Scores Distribution Plots  {Input:Scores,path for saving,  output;plot}
-  getScoresDistributionPlots <- function(Scores, OutputFile="ScoresDistribution.pdf", Color="blue", Type = "b")
-  {pdf(OutputFile, onefile=TRUE) #Open the output file for writing in PDF format.
-    for (i in 1:length(Scores))	{ #Go through all MORPH Results object data blocks
-      Ranks = Scores[[i]] #Acquire current data block.
-      Y = as.numeric((Ranks$Ranking)$Scored) #Extract normalized correlation scores into a numeric vector.
-      X = 1:(length(Y)) #Create an X-axis in the appropriate length.
-      plot(X,Y,col=Color,type=Type, xlim=c(0,1), xlab="Self-rank threshold", ylab="Fraction of pathway genes with self rank below threshold",main=paste("Clustering:",Ranks$C,"; Gene expression:",Ranks$GE)) #Plot data.
-    }
-    dev.off() #Turn off console presentation in order to write into output file and not to screen.
-  }}
+  #getScoresDistributionPlots = function(Scores, OutputFile="ScoresDistribution.pdf", Color="blue", Type = "b")
+  #{pdf(OutputFile, onefile=TRUE) #Open the output file for writing in PDF format.
+  #  for (i in 1:length(Scores))	{ #Go through all MORPH Results object data blocks
+  #    Ranks = Scores[[i]] #Acquire current data block.
+  #    Y = as.numeric((Ranks$Ranking)$Scored) #Extract normalized correlation scores into a numeric vector.
+  #    X = 1:(length(Y)) #Create an X-axis in the appropriate length.
+  #    plot(X,Y,col=Color,type=Type, xlim=c(0,1), xlab="Self-rank threshold", ylab="Fraction of pathway genes with self rank below threshold",main=paste("Clustering:",Ranks$C,"; Gene expression:",Ranks$GE)) #Plot data.
+  #  }
+  #  dev.off() #Turn off console presentation in order to write into output file and not to screen.
+  #}
+  }
 
 ###################################################################################################################################################################################################################"
 
@@ -360,28 +360,20 @@ uniform_sample <- function(vector) {
 getScoresRandomPathway <- function(g, random){
   Score <- c()
   B <- random
-  lapply(1:5, function(i){
+  lapply(1:B, function(i){
     InputGOI <- unlist(uniform_sample(g)) 
     morph_input <- prepareMorphObjectFromFiles(InputGOI)
-    #print(names(morph_input)) 
+    print(names(morph_input)) 
     G <- morph_input$pathway_genes
     NameC <- names(morph_input$clustering_solutions)[1] 
     C <- (morph_input$clustering_solutions)[[NameC]] #Get first clustering solution
     NameGE <- names(morph_input$ge_datasets)[1] 
     GE <- (morph_input$ge_datasets)[[NameGE]] #Get first gene expression dataset
-    #morph_input <- prepareMorphObjectFromFiles(InputGOI)
+    morph_input <- prepareMorphObjectFromFiles(InputGOI)
     Scores <- MORPH(morph_input, view = TRUE)
     #Score[i] <- Scores
-    Score[i] <- Scores$AUSR
+    Score <- c(Score, Scores)
     return(Score)
   })
 }
 
-AUSRscoreRandom <- function(ScoreRandom, scoresAUSR){
-  #for (i in seq_along(ScoreRandom)) {
-  #scoresAUSR[i] <- ScoreRandom[[i]]$AUSR}
-#}
-  lapply(1:seq_along(ScoreRandom), function(i){
-    scoresAUSR[i] <- ScoreRandom[[i]]$AUSR
-  })
-}

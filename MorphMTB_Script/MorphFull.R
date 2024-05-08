@@ -663,7 +663,7 @@ uniform_sample <- function(vector) {
   return(vector[index])}
 Score<-c()
 B <-100
-for (i in 1:10) {
+for (i in 1:B) {
   G <- uniform_sample(g) 
   writeLines(G, "random.txt", sep = "\t")
   InputConfig <- "Configs.txt"

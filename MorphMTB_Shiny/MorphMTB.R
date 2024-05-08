@@ -58,20 +58,30 @@ shinyApp(
     output$page1 <- renderUI({
       sidebarLayout(
         sidebarPanel(
+          # Put informative text on top of sidebarPanel
           helpText("Here you can submit your genes of interest and get the MORPH prediction results in a table format."),
           helpText("Species currently available in MorphMTB: Mycobacterium tuberculosis."),
+          # Draw horizontal line
           tags$hr(),
+          # Ask for numeric input
           numericInput("candidates", "Max of candidate genes to display:", 30, min = 1, max = 1000),
-          numericInput("random", "Max of random pathways generated:", 50, min = 1, max = 500),
+          numericInput("random", "Max of random pathways generated:", 2, min = 1, max = 500),
+          # Draw horizontal line
           tags$hr(),
+          # Create text area for input genes/pathways
           textAreaInput("genes", "Enter the gene IDs for your input pathway of interest (enter-separated)"),
+          # Possibility to upload file with genes/pathways
           fileInput("file","Or choose file", multiple = TRUE), # fileinput() function is used to get the file upload control option
-          uiOutput("selectfile"),
+          #uiOutput("selectfile"), #In case you upload multiple files --> you can select which one to use
+          # Draw horizontal line
           tags$hr(),
+          # Action buttons to re(start) analysis
           actionButton("button","Start"),
           actionButton("reset_inputs","Reset inputs"),
+          # Download link to download results
           downloadLink("downloadPathway", "Download")
         ),
+        # What happens in main panel
         mainPanel(
           uiOutput("tb")
           
@@ -86,87 +96,141 @@ shinyApp(
               verbatimTextOutput("summary")
             )})
     
-    
+    generaw1 <- reactive({
+      read.csv(file=input$file$datapath[], 
+                                sep='\t', 
+                                header = FALSE)
+    })
+    generaw2 <- reactive({
+      unlist(strsplit(input$genes, "\n"))
+    })
+      
     #collect input genes
     output$contents <- eventReactive(input$button, { #after clicking start button
       output$contents <- reactive({
+        # See what type of input is given and alter output to it 
+        if(!is.null(input$file)){
           #retrieve data/genes from uploaded file and put in table
           output$contents <- renderTable({
+            # If there is no file uploaded, don't return anything
             if(is.null(input$file)) {return()}
+            # Get individual genes 
             gene <- unlist(read.csv(file=input$file$datapath[], 
                                              sep='\t', 
                                              header = FALSE))
-            return(data.frame(Genes=gene))},
-            striped=TRUE)
+            number1 <- sapply(1:length(generaw1()), function(i){i})
+            # Make dataframe out of elements to put in table
+            return(data.frame(No=number1,Genes=gene))},
+            # Color table every other line
+            striped=TRUE)}
+        else {
           #retrieve genes from text input and put in table
           output$pathway <- renderTable({
+            # If there is no genes in the text area, don't return anything
             if(is.null(input$genes)) {return()}
+            # Get individual genes
             gene <- unlist(strsplit(input$genes, "\n"))
-            return(data.frame(Genes=gene))},
-            striped=TRUE)
+            number2 <- sapply(1:length(generaw2()), function(i){i})
+            # Make dataframe out of elements to put in table
+            return(data.frame(No=number2,Genes=gene))},
+            # Color table every other line
+            striped=TRUE)}
       })
     })
     
-    #if user wants to download gene list
-    pathwaygenes <- reactive({
+  ###########################################################################  
+    #if user wants to download top candidate genes
+    # !!!AANPASSEN!!!
+    predictgenes <- reactive({
       unlist(strsplit(input$genes, "\n"))
       })
     output$downloadPathway <- downloadHandler(
       filename = function(){
-        paste0("pathwaytest.txt")
+        paste0("predicttest.txt")
       },
        content = function(file){
-        writeLines(pathwaygenes(), file)
+        writeLines(predictgenes(), file)
       },
       contentType = "text/csv"
     )
+   ######################################################################### 
     
     
-    
-    ## MORPH Input
-    #retrieve genes from text input
+    ## MORPH Input ##
+    # Retrieve genes from input
     InputGOI <- reactive({
-      unlist(strsplit(input$genes, "\n"))
+      if (is.null(input$file)) {
+        # Get individual genes if text input
+        unlist(strsplit(input$genes, "\n"))
+      } else {
+        # Get individual genes if file uploaded
+        unlist(read.csv(file=input$file$datapath[], 
+                        sep='\t', 
+                        header = FALSE))}
     }) 
+    
+    # Create morph input using function
     morphinput <- reactive({
       input <- prepareMorphObjectFromFiles(InputGOI())
       input
       })
+    
+    # Get scores calculated with the MORPH function
     scores <- reactive({
       MORPH(morphinput())
     })
-    ## Removing Absent genes
+    
+    
+    ## Removing Absent genes ##
+    # Get pathway genes
     G <- reactive({
-      morphinput()$pathway_genes #Get pathway genes
+      morphinput()$pathway_genes 
     })
+    
+    # Get clustering solution
     C <- reactive({
-      (morphinput()$clustering_solution)[[1]] #Get clustering solution
+      (morphinput()$clustering_solution)[[1]] 
     }) 
+    
+    # Get gene expression dataset
     GE <- reactive({
-      (morphinput()$ge_datasets)[[1]] #Get gene expression dataset
+      (morphinput()$ge_datasets)[[1]] 
     }) 
+    
+    # Get names of genes in dataset
     GENames <- reactive({
-      rownames(GE()) #Get names of genes in dataset
+      rownames(GE()) 
     }) 
+    
+    # Get names of genes from intersection
     output$Intersection <- reactive({
       intersect <- removeAbscentGOIs(G(),C(),GENames())
       intersect
     }) 
-    ## Validation
+    
+    
+    ## Validation ##
+    # Gives AUSR score as output
     output$LOOCVc <- reactive({
       LOOCV_MORPH(morphinput())
     }) 
-    ##AUSR
+    
+    
+    ##AUSR ##
     BestConfig <- reactive({
       getMorphResultBestConfig(scores())
     })
+    
     output$NamesBestConfig <- reactive({
       names(BestConfig())
     })
+    
     output$AUSRBestConfig <- reactive({
       BestConfig()$AUSR
     })
-    ## MORPH gene scores
+    
+    
+    ## MORPH gene scores ##
     Predictions <- reactive({
       getMorphPredictions(scores())
     })
@@ -176,16 +240,17 @@ shinyApp(
     }) 
     
     
-    ### Solutions for each dataset for a specific pathway
+    ## Solutions for each dataset for a specific pathway ##
     output$AUSR <- reactive({
-      scores()[[1]]$AUSR   ## Numbers are correspondings to where the clustering solution is in Configs.txt
+      scores()[[1]]$AUSR   ## Numbers are corresponding to where the clustering solution is in Configs
     })
     output$headAUSR <- renderDataTable({
       as.matrix(head(scores()[[1]]$Ranking$Scored, 5))
     })
     
     
-    # Sampling for Real pathway recognition
+    ### Sampling for Real pathway recognition
+    # Hard coding of all the 3978 genes in M. tuberclosis in g
     g <- reactive({
       c("Rv0001","Rv0002","Rv0003","Rv0004","Rv0005","Rv0006","Rv0007","Rv0008c","Rv0009","Rv0010c","Rv0011c","Rv0012","Rv0013","Rv0014c","Rv0015c","Rv0016c","Rv0017c","Rv0018c","Rv0019c","Rv0020c","Rv0021c","Rv0022c","Rv0023","Rv0024","Rv0025","Rv0026","Rv0027","Rv0028","Rv0029","Rv0030","Rv0032","Rv0033","Rv0034","Rv0035","Rv0036c","Rv0037c","Rv0038","Rv0039c","Rv0040c","Rv0041","Rv0042c","Rv0043c","Rv0044c","Rv0045c","Rv0046c","Rv0047c","Rv0048c","Rv0049","Rv0050","Rv0051","Rv0052","Rv0053","Rv0054","Rv0055","Rv0056","Rv0057","Rv0058","Rv0059","Rv0060","Rv0061c","Rv0062","Rv0063","Rv0063a","Rv0064","Rv0064A","Rv0065","Rv0066c","Rv0067c","Rv0068","Rv0069c","Rv0070c","Rv0071","Rv0072","Rv0073","Rv0074","Rv0075","Rv0076c","Rv0077c","Rv0078","Rv0078A","Rv0078B","Rv0079","Rv0080","Rv0081","Rv0082","Rv0083","Rv0084","Rv0085","Rv0086","Rv0087","Rv0088","Rv0089","Rv0090","Rv0091","Rv0092","Rv0093c","Rv0094c","Rv0095c","Rv0096","Rv0097","Rv0098","Rv0099","Rv0100","Rv0101","Rv0102","Rv0103c","Rv0104","Rv0105c","Rv0106","Rv0107c","Rv0108c","Rv0109","Rv0110","Rv0111","Rv0112","Rv0113","Rv0114","Rv0115","Rv0115a","Rv0116c","Rv0117","Rv0118c","Rv0119","Rv0120c","Rv0121c","Rv0122","Rv0123","Rv0124","Rv0125","Rv0126","Rv0127","Rv0128","Rv0129c","Rv0130","Rv0131c","Rv0132c","Rv0133","Rv0134","Rv0135c","Rv0136","Rv0137c","Rv0138","Rv0139","Rv0140","Rv0141c","Rv0142","Rv0143c","Rv0144","Rv0145","Rv0146","Rv0147","Rv0148","Rv0149","Rv0150c","Rv0151c","Rv0152c","Rv0153c","Rv0154c","Rv0155","Rv0156","Rv0157","Rv0157A","Rv0158","Rv0159c","Rv0160c","Rv0161","Rv0162c","Rv0163","Rv0164","Rv0165c","Rv0166","Rv0167","Rv0168","Rv0169","Rv0170","Rv0171","Rv0172","Rv0173","Rv0174","Rv0175","Rv0176","Rv0177","Rv0178","Rv0179c","Rv0180c","Rv0181c","Rv0182c","Rv0183","Rv0184","Rv0185","Rv0186","Rv0186A","Rv0187","Rv0188","Rv0189c","Rv0190","Rv0191","Rv0192","Rv0193c","Rv0194","Rv0195","Rv0196","Rv0197","Rv0198c","Rv0199","Rv0200",
              "Rv0201c","Rv0202c","Rv0203","Rv0204c","Rv0205","Rv0206c","Rv0207c","Rv0208c","Rv0209","Rv0210","Rv0211","Rv0212c","Rv0213c","Rv0214","Rv0216","Rv0217c","Rv0218","Rv0219","Rv0220","Rv0221","Rv0222","Rv0223c","Rv0224c","Rv0225","Rv0226c","Rv0227c","Rv0228","Rv0229c","Rv0230c","Rv0231","Rv0232","Rv0233","Rv0234c","Rv0235c","Rv0236A","Rv0236c","Rv0237","Rv0238","Rv0239","Rv0240","Rv0241c","Rv0242c","Rv0243","Rv0244c","Rv0245","Rv0246","Rv0247c","Rv0248c","Rv0249c","Rv0250c","Rv0251c","Rv0252","Rv0253","Rv0254c","Rv0255c","Rv0256c","Rv0257","Rv0258c","Rv0259c","Rv0260c","Rv0261c","Rv0262c","Rv0263c","Rv0264c","Rv0265c","Rv0266c","Rv0267","Rv0268c","Rv0269c","Rv0270","Rv0271c","Rv0272c","Rv0273c","Rv0274","Rv0275c","Rv0276","Rv0277c","Rv0278c","Rv0279c","Rv0280","Rv0281","Rv0282","Rv0283","Rv0284","Rv0285","Rv0286","Rv0287","Rv0288","Rv0289","Rv0290","Rv0291","Rv0292","Rv0293c","Rv0294","Rv0295c","Rv0296c","Rv0297","Rv0298","Rv0299","Rv0300","Rv0301","Rv0302","Rv0303","Rv0304c","Rv0305c","Rv0306","Rv0307c","Rv0308","Rv0309","Rv0310c","Rv0311","Rv0312","Rv0313","Rv0314c","Rv0315","Rv0316","Rv0317c","Rv0318c","Rv0319","Rv0320","Rv0321","Rv0322","Rv0323c","Rv0324","Rv0325","Rv0326","Rv0327c","Rv0328","Rv0329c","Rv0330c","Rv0331","Rv0332","Rv0333","Rv0334","Rv0335c","Rv0336","Rv0337c","Rv0338c","Rv0339c","Rv0340","Rv0341","Rv0342","Rv0343","Rv0344c","Rv0345","Rv0346c","Rv0347","Rv0348","Rv0349","Rv0350","Rv0351","Rv0352","Rv0353","Rv0354c","Rv0355c","Rv0356c","Rv0357c","Rv0358","Rv0359","Rv0360c","Rv0361","Rv0362","Rv0363c","Rv0364","Rv0365c","Rv0366c","Rv0367c","Rv0368c","Rv0369c","Rv0370c","Rv0371c","Rv0372c","Rv0373c","Rv0374c","Rv0375c","Rv0376c","Rv0377","Rv0378","Rv0379","Rv0380c","Rv0381c","Rv0382c","Rv0383c","Rv0384c","Rv0385","Rv0386","Rv0389","Rv0390","Rv0391","Rv0392c","Rv0393","Rv0394c","Rv0395","Rv0396","Rv0397","Rv0397A","Rv0398c","Rv0399c","Rv0400c",
@@ -209,62 +274,20 @@ shinyApp(
              "Rv3801c","Rv3802c","Rv3803c","Rv3804c","Rv3805c","Rv3806c","Rv3807c","Rv3808c","Rv3809c","Rv3810","Rv3811","Rv3812","Rv3813c","Rv3814c","Rv3815c","Rv3816c","Rv3817","Rv3818","Rv3819","Rv3820c","Rv3821","Rv3822","Rv3823c","Rv3824c","Rv3825c","Rv3826","Rv3827c","Rv3828c","Rv3829c","Rv3830c","Rv3831","Rv3832c","Rv3833","Rv3834c","Rv3835","Rv3836","Rv3837c","Rv3838c","Rv3839","Rv3840","Rv3841","Rv3842c","Rv3843c","Rv3844","Rv3845","Rv3846","Rv3847","Rv3848","Rv3849","Rv3850","Rv3851","Rv3852","Rv3853","Rv3854c","Rv3855","Rv3856c","Rv3857c","Rv3858c","Rv3859c","Rv3860","Rv3861","Rv3862c","Rv3863","Rv3864","Rv3865","Rv3866","Rv3867","Rv3868","Rv3869","Rv3870","Rv3871","Rv3872","Rv3873","Rv3874","Rv3875","Rv3876","Rv3877","Rv3878","Rv3879c","Rv3880c","Rv3881c","Rv3882c","Rv3883c","Rv3884c","Rv3885c","Rv3886c","Rv3887c","Rv3888c","Rv3889c","Rv3890c","Rv3891c","Rv3892c","Rv3893c","Rv3894c","Rv3895c","Rv3896c","Rv3897c","Rv3898c","Rv3899c","Rv3900c","Rv3901c","Rv3902c","Rv3903c","Rv3904c","Rv3905c","Rv3906c","Rv3907c","Rv3908","Rv3909","Rv3910","Rv3911","Rv3912","Rv3913","Rv3914","Rv3915","Rv3916c","Rv3917c","Rv3918c","Rv3919c","Rv3920c","Rv3921c","Rv3922c","Rv3923c","Rv3924c","RVnc0001","RVnc0002","RVnc0003","RVnc0004","RVnc0005","RVnc0006","RVnc0008","RVnc0010","RVnc0012","RVnc0013","RVnc0015","RVnc0018","RVnc0021","RVnc0024","RVnc0034","RVnc0035","RVnc0036","RVnc0036a","RVnc0040","RVnc0046","RVnc0047","Rvnr01","Rvnr02","Rvnr03","Rvns01","Rvnt01","Rvnt02","Rvnt03","Rvnt04","Rvnt05","Rvnt06","Rvnt07","Rvnt08","Rvnt09","Rvnt10","Rvnt11","Rvnt12","Rvnt13","Rvnt14","Rvnt15","Rvnt16","Rvnt17","Rvnt18","Rvnt19","Rvnt20","Rvnt21","Rvnt22","Rvnt23","Rvnt24","Rvnt25","Rvnt26","Rvnt27","Rvnt28","Rvnt29","Rvnt30","Rvnt31","Rvnt32","Rvnt33","Rvnt34","Rvnt35","Rvnt36","Rvnt37","Rvnt38","Rvnt39","Rvnt40","Rvnt41","Rvnt42","Rvnt43","Rvnt44","Rvnt45")
     })
     
-    output$ScoreRandom <- reactive({
+    # Generate amount of random pathways depicted by user and get scores 
+    ScoreRandom <- reactive({
       getScoresRandomPathway(g(), input$random)
     })
     
-    output$check <- reactive({
-      sapply(ScoreRandom(), function(x){x$AUSR})
-    })
-    
-    #ScoreRandom <- reactiveVal(NULL)
-    #B <- 5  
-    #for (i in 1:B) {
-    #  InputGOIRandom <- reactive({
-    #    uniform_sample(g())
-    #  })
-    #  morphinputRandom <- reactive({
-    #    prepareMorphObjectFromFiles(InputGOIRandom())
-    #  })
-    #  #output$morphinputNames <- reactive({
-    #  #  names(morphinputRandom())
-    #  #})
-    #  GRandom <- reactive({
-    #    morphinputRandom()$pathway_genes
-    #  }) 
-    #  NameC <- reactive({
-    #    names(morphinputRandom()$clustering_solutions)[1]
-    #  })
-    #  output$C <- reactive({
-    #    (morphinputRandom()$clustering_solutions)[[NameC()]] #Get first clustering solution
-    #  })
-    #  NameGE <- reactive({
-    #    names(morphinputRandom()$ge_datasets)[1]
-    #  })
-    #  output$GE <- reactive({
-    #    (morphinputRandom()$ge_datasets)[[NameGE()]] #Get first gene expression dataset
-    #  })
-    #  output$ScoresRandom <- reactive({
-    #    MORPH(morphinputRandom(), view = TRUE)
-    #  })
-    #  ScoreRandom(c(ScoreRandom(), ScoresRandom)) 
-    #}
-    
-        
-    
-    scoresAUSR <- reactive({
-      length(ScoreRandom())
-      #vector("numeric", )
+    # Get the AUSR score of each of the random pathways
+    output$scoresAUSR <- renderTable({
+      vector("numeric", length(ScoreRandom()))
+      randomPath <- unlist(sapply(1:length(ScoreRandom()), function(i)
+                    {ScoreRandom()[[i]][[1]][["AUSR"]]}))
+      number <- sapply(1:length(ScoreRandom()), function(i){i})
+      return(data.frame(No=number, Scores=format(round(randomPath,6))))
     }) 
     
-    #ScoresAUSR <- reactive({
-    #  AUSRscoreRandom(ScoreRandom(), scoresAUSR())
-    #})
-
-    output$scoresAUSR2 <- reactive({
-      sapply(ScoreRandom(), function(x){x$AUSR})
-      #getAUSRscores(ScoreRandom())
-    }) 
       
     
     
@@ -272,12 +295,12 @@ shinyApp(
     #  return(NULL)
     #})
     
-      
+    # What is shown in output different tabs 
     output$tb <- renderUI({
       tabsetPanel(
         tabPanel("Input pathway", tableOutput("pathway"), tableOutput("contents")),
         tabPanel("Result input pathway", tags$h4("AUSR:"), textOutput("AUSRBestConfig"), br(), tags$h4("Top candidate genes:"), dataTableOutput("TopPredictions"), br(), tags$h4("Head AUSR:"), dataTableOutput("headAUSR")),
-        tabPanel("Result random pathway", textOutput("ScoreRandom")))
+        tabPanel("Result random pathway", tableOutput("scoresAUSR")))
     })
       
 
