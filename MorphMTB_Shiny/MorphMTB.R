@@ -226,8 +226,12 @@ shinyApp(
     })
     
     output$AUSRBestConfig <- reactive({
-      BestConfig()$AUSR
+      format(round(BestConfig()$AUSR,7))
     })
+    #0.8283571
+    
+    #test:
+    #0.6796129
     
     
     ## MORPH gene scores ##
@@ -236,9 +240,14 @@ shinyApp(
     })
       
     output$TopPredictions <- renderDataTable({ ###KOMT NIET OVEREEN??!!
-      as.matrix(head(Predictions(), input$candidates))
+      as.matrix(head(format(round(Predictions(),6)), input$candidates))
     }) 
+    #   Rv2459  Rv2457c   Rv0017c   Rv0175    Rv2374c   Rv2409c
+    # 1.667578  1.626418  1.584958  1.567205  1.551403  1.527462
     
+    #test:
+    # Rv3572    Rv1880c   Rv3756c   Rv1057    Rv3061c   Rv2325c
+    # 1.966574  1.958577  1.933944  1.932776  1.929202  1.909758
     
     ## Solutions for each dataset for a specific pathway ##
     output$AUSR <- reactive({

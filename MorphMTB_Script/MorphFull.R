@@ -624,7 +624,7 @@ getMorphPredictions = function(morph_res_obj){
 setwd("C:/Users/elise/Documents/Schuul/Stage/Project/MorphMTB_Script/data")
 ## MORPH Input
 InputConfig = "Configs.txt"
-InputGOI = "Pathway2.txt"
+InputGOI = "testGenesPathway.txt"
 morph_input = prepareMorphObjectFromFiles(InputConfig,InputGOI)
 Scores = MORPH(morph_input, view=TRUE)
 ## Removing Absent genes
@@ -636,18 +636,25 @@ Intersection = removeAbscentGOIs(G,C,GENames)
 print(Intersection)
 ## Validation
 InputConfig = "Configs.txt"
-InputGOI = "Pathway2.txt"
+InputGOI = "testGenesPathway.txt"
 morph_input = prepareMorphObjectFromFiles(InputConfig,InputGOI)
 LOOCVc = LOOCV_MORPH(morph_input)
-print(LOOCVc) #0.8283571
+print(LOOCVc) #0.8283571 #test: 0.5913871
 ## AUSR
 Scores2 = LOOCV_MORPH(morph_input) # --> gives 1 score: 0.8283571
 BestConfig <- getMorphResultBestConfig(Scores) #Error in curr_res$AUSR : $ operator is invalid for atomic vectors
 print(names(BestConfig))
-print(BestConfig$AUSR) #0.8283571
+print(BestConfig$AUSR) #0.8283571 #test: 0.6823548
 ## MORPH gene scores
 Predictions <- getMorphPredictions(Scores)
 print(head(Predictions))
+#Rv0078A  Rv0135c   Rv0232   Rv1997   Rv0233  Rv2307D 
+#2.309260 2.004723 1.986235 1.975549 1.934177 1.902599 
+
+#test:
+#Rv3572  Rv1880c  Rv0679c  Rv0424c  Rv2444c   Rv3822 
+#2.008781 2.000706 1.958723 1.930626 1.928749 1.897407 
+
 ## Threshold Plot 
 Scores <- MORPH(morph_input, view = TRUE)
 getScoresDistributionPlots(Scores) #RStudioGD  --> gives empty plots?
@@ -656,6 +663,8 @@ getScoresDistributionPlots(Scores) #RStudioGD  --> gives empty plots?
 ### Solutions for each dataset for a specific pathway
 Scores[[1]]$AUSR   ## Numbers are corresponding to where the clustering solution is in Configs.txt
 head(Scores[[1]]$Ranking$Scored, 5)
+#Rv2002   Rv0233  Rv3842c   Rv2245  Rv3801c 
+#2.168508 2.127423 2.078187 2.057147 2.056957 
 
 # Sampling for Real pathway recognition
 uniform_sample <- function(vector) {
