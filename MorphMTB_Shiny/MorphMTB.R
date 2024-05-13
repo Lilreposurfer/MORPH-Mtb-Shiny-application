@@ -137,23 +137,7 @@ shinyApp(
             striped=TRUE)}
       })
     })
-    
-  ###########################################################################  
-    #if user wants to download top candidate genes
-    # !!!AANPASSEN!!!
-    predictgenes <- reactive({
-      unlist(strsplit(input$genes, "\n"))
-      })
-    output$downloadPathway <- downloadHandler(
-      filename = function(){
-        paste0("predicttest.txt")
-      },
-       content = function(file){
-        writeLines(predictgenes(), file)
-      },
-      contentType = "text/csv"
-    )
-   ######################################################################### 
+  
     
     
     ## MORPH Input ##
@@ -248,6 +232,24 @@ shinyApp(
     #test:
     # Rv3572    Rv1880c   Rv3756c   Rv1057    Rv3061c   Rv2325c
     # 1.966574  1.958577  1.933944  1.932776  1.929202  1.909758
+    
+    
+    ###########################################################################  
+    #if user wants to download top candidate genes
+    predictgenes <- reactive({
+      rownames(as.matrix(head(format(round(Predictions(),6)), input$candidates)))
+    })
+    output$downloadPathway <- downloadHandler(
+      filename = function(){
+        paste0("predicttest.txt")
+      },
+      content = function(file){
+        writeLines(predictgenes(), file)
+      },
+      contentType = "text/csv"
+    )
+    #########################################################################
+    
     
     ## Solutions for each dataset for a specific pathway ##
     output$AUSR <- reactive({

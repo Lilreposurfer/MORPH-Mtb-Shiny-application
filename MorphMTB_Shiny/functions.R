@@ -330,8 +330,8 @@ getMorphResultBestConfig = function(morph_res_obj){ # list of lists [like PERL h
     }
   }
   #lapply(1:length(morph_res_obj), function(i){
-  #  curr_res = morph_res_obj[[i]]
-  #  ausr = curr_res[["AUSR"]]
+  #  #curr_res = morph_res_obj[[i]]
+  #  ausr = morph_res_obj[[i]]$AUSR
   #  if (ausr>best_ausr){
   #    best_ind = i; best_ausr = ausr
   #    clustering_solution = morph_res_obj[[i]]$C
