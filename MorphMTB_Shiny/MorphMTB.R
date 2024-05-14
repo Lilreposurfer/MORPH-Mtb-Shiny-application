@@ -38,7 +38,7 @@ shinyApp(
   # Define UI for application
   shinyUI(
     #Make page with multiple panels
-    navbarPage(theme=shinytheme("cerulean"),
+    navbarPage(theme = shinytheme("cerulean"),
                "MorphMtb", #title
                tabPanel("Gene centric query", uiOutput('page1')),
                tabPanel("About", uiOutput('page2')),
