@@ -25,16 +25,19 @@ library(caroline)
 
 # Source ----
 source("functions.R")
+source("rentrez.R")
 
 #Define the js method that resets the page
 jsResetCode <- "shinyjs.reset = function() {history.go(0)}"
 
+
 # Shiny web application ----
+## User interface ##
 shinyApp(
   # Define UI for application
   shinyUI(
     #Make page with multiple panels
-    navbarPage("MorphMTB", #title
+    navbarPage("MorphMtb", #title
                tabPanel("Gene centric query", uiOutput('page1')),
                tabPanel("About", uiOutput('page2')),
    
@@ -59,8 +62,8 @@ shinyApp(
       sidebarLayout(
         sidebarPanel(
           # Put informative text on top of sidebarPanel
-          helpText("Here you can submit your genes of interest and get the MORPH prediction results in a table format."),
-          helpText("Species currently available in MorphMTB: Mycobacterium tuberculosis."),
+          helpText("Here you can submit your genes of interest and get the MorphMtb prediction results in a table format."),
+          helpText("Species currently available in MorphMtb: Mycobacterium tuberculosis."),
           # Draw horizontal line
           tags$hr(),
           # Ask for numeric input
@@ -96,7 +99,8 @@ shinyApp(
         verbatimTextOutput("summary")
       )})
     
-  #############################################################################################    
+###############################################################################################    
+    
     # Get length of input pathway uploaded by file
     generaw1 <- reactive({
       length(read.csv(file=input$file$datapath[], 
@@ -203,7 +207,7 @@ shinyApp(
     }) 
     
     
-    ##AUSR ##
+    ## AUSR ##
     BestConfig <- reactive({
       getMorphResultBestConfig(scores())
     })
@@ -231,7 +235,14 @@ shinyApp(
       ids <- rownames(as.matrix(head(format(round(Predictions(),6)), input$numbercandidates)))
       number <- sapply(1:input$numbercandidates, function(i){i})
       return(data.frame(No=number, ID=ids, Scored=head(format(round(Predictions(),6)), input$numbercandidates), Annotation=""))
-    }) 
+    }, striped=TRUE) 
+    
+    #https://stackoverflow.com/questions/70317932/obtaining-data-from-ncbi-gene-database-with-r
+    #https://cran.r-project.org/web/packages/rentrez/vignettes/rentrez_tutorial.html
+    #https://statsandr.com/blog/web-scraping-in-r/
+    #https://bioconnector.github.io/workshops/r-ncbi.html
+    #chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://journal.r-project.org/archive/2017/RJ-2017-058/RJ-2017-058.pdf
+    
     #   Rv2459  Rv2457c   Rv0017c   Rv0175    Rv2374c   Rv2409c
     # 1.667578  1.626418  1.584958  1.567205  1.551403  1.527462
     
@@ -314,7 +325,7 @@ shinyApp(
                     {ScoreRandom()[[i]][[1]][["AUSR"]]}))
       number <- sapply(1:length(ScoreRandom()), function(i){i})
       return(data.frame(No=number, Scores=format(round(randomPath,6))))
-    }) 
+    }, striped=TRUE) 
     
       
     
