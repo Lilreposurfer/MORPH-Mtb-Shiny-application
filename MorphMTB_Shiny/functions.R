@@ -329,6 +329,7 @@ getMorphResultBestConfig = function(morph_res_obj){ # list of lists [like PERL h
       gene_expression = morph_res_obj[[i]]$GE #Acquire the gene-expression data file name.
     }
   }
+  
   #lapply(1:length(morph_res_obj), function(i){
   #  #curr_res = morph_res_obj[[i]]
   #  ausr = morph_res_obj[[i]]$AUSR
@@ -338,6 +339,7 @@ getMorphResultBestConfig = function(morph_res_obj){ # list of lists [like PERL h
   #    gene_expression = morph_res_obj[[i]]$GE
   #  }
   #})
+  
   # Create and return a list containing information regarding best configuration (for more information see function description).
   morph_best_res = list(AUSR = best_ausr, Ranking = morph_res_obj[[best_ind]]$Ranking, C = clustering_solution, GE = gene_expression)
   return (morph_best_res)}
@@ -362,12 +364,15 @@ getMorphPredictions = function(morph_res_obj){
 ###################################################################################################################################################################################################################"
 
 ## Sampling for Real pathway recognition
+# Get random genes as random pathway with length same as input pathway
 uniform_sample <- function(vector, lengthPatway) {
   index <- sample(length(vector), lengthPatway) 
   return(vector[index])}
 
 getScoresRandomPathway <- function(g, random, lengthPathway){
+  # Make empty vector to store Scores in
   Score <- c()
+  # Variable B which stores the amount of random pathways needed to be calculated
   B <- random
   lapply(1:B, function(i){
     InputGOI <- unlist(uniform_sample(g, lengthPathway))
@@ -380,7 +385,7 @@ getScoresRandomPathway <- function(g, random, lengthPathway){
     GE <- (morph_input$ge_datasets)[[NameGE]] #Get first gene expression dataset
     morph_input <- prepareMorphObjectFromFiles(InputGOI)
     Scores <- MORPH(morph_input, view = TRUE)
-    #Score[i] <- Scores
+    # Append Scores to vector Score
     Score <- c(Score, Scores)
     return(Score)
   })
