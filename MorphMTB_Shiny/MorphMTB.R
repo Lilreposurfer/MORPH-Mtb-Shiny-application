@@ -34,25 +34,25 @@ jsResetCode <- "shinyjs.reset = function() {history.go(0)}"
 
 # Shiny web application ----
 ## User interface ##
-shinyApp(
+  
   # Define UI for application
-  shinyUI(
+  ui <- fluidPage(
+    
     #Make page with multiple panels
     navbarPage(theme = shinytheme("cerulean"),
                "MorphMtb", #title
                tabPanel("Gene centric query", uiOutput('page1')),
                tabPanel("About", uiOutput('page2')),
-   
+               
     
    #   useShinyjs(),                                           # Include shinyjs in the UI
     #  extendShinyjs(text = jsResetCode, functions = "reset"), # Add the js code to the page
     #  actionButton("reset_button", "Reset Page")
     )
-  ),
+  )
   
   # Define server logic
-  shinyServer(function(input, output, session) {
-    
+  server <-  function(input, output) {
     ## set seed for reproducibility
     #global_seed = reactive(input$chosen_seed)
     #set.seed(2023)
@@ -354,6 +354,7 @@ shinyApp(
     })
       
 
-  })
+  }
 
-)
+  # Run the application 
+  shinyApp(ui = ui, server = server)
