@@ -1,7 +1,0 @@
-https://shiny.posit.co/r/getstarted/shiny-basics/lesson1/index.html
-
-https://bookdown.org/yihui/rmarkdown/shiny-documents.html
-
-https://shiny.posit.co/r/gallery/
-
-https://mastering-shiny.org/

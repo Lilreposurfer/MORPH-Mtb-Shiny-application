@@ -1,6 +1,7 @@
 # Load packages ----
 library(shiny)
 library(shinyjs)
+library(shinythemes)
 library(readr)           # Read package for txt file
 library(writexl)         # Write excel file .xlsx
 library(WriteXLS)        # Write excel file .xlsx
@@ -37,7 +38,8 @@ shinyApp(
   # Define UI for application
   shinyUI(
     #Make page with multiple panels
-    navbarPage("MorphMtb", #title
+    navbarPage(theme=shinytheme("cerulean"),
+               "MorphMtb", #title
                tabPanel("Gene centric query", uiOutput('page1')),
                tabPanel("About", uiOutput('page2')),
    
