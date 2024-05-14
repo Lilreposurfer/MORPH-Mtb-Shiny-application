@@ -64,7 +64,7 @@ shinyApp(
           # Draw horizontal line
           tags$hr(),
           # Ask for numeric input
-          numericInput("candidates", "Max of candidate genes to display:", 30, min = 1, max = 1000),
+          numericInput("numbercandidates", "Max of candidate genes to display:", 30, min = 1, max = 1000),
           numericInput("random", "Max of random pathways generated:", 30, min = 1, max = 500),
           # Draw horizontal line
           tags$hr(),
@@ -96,11 +96,14 @@ shinyApp(
         verbatimTextOutput("summary")
       )})
     
+  #############################################################################################    
+    # Get length of input pathway uploaded by file
     generaw1 <- reactive({
       length(read.csv(file=input$file$datapath[], 
                                 sep='\t', 
                                 header = FALSE))
     })
+    # Get length of input pathway submitted by text
     generaw2 <- reactive({
       length(unlist(strsplit(input$genes, "\n")))
     })
@@ -223,8 +226,11 @@ shinyApp(
       getMorphPredictions(scores())
     })
       
-    output$TopPredictions <- renderDataTable({ ###KOMT NIET OVEREEN??!!
-      as.matrix(head(format(round(Predictions(),6)), input$candidates))
+    output$TopPredictions <- renderTable({ ###KOMT NIET OVEREEN??!!
+      #as.matrix(head(format(round(Predictions(),6)), input$numbercandidates))
+      ids <- rownames(as.matrix(head(format(round(Predictions(),6)), input$numbercandidates)))
+      number <- sapply(1:input$numbercandidates, function(i){i})
+      return(data.frame(No=number, ID=ids, Scored=head(format(round(Predictions(),6)), input$numbercandidates), Annotation=""))
     }) 
     #   Rv2459  Rv2457c   Rv0017c   Rv0175    Rv2374c   Rv2409c
     # 1.667578  1.626418  1.584958  1.567205  1.551403  1.527462
@@ -238,7 +244,7 @@ shinyApp(
     ## If user wants to download top candidate genes ##
     # Depict what content to download
     predictgenes <- reactive({
-      rownames(as.matrix(head(format(round(Predictions(),6)), input$candidates)))
+      rownames(as.matrix(head(format(round(Predictions(),6)), input$numbercandidates)))
     })
     # Depict what downloaded document will be named and what content(type) is
     output$downloadPathway <- downloadHandler(
@@ -321,7 +327,7 @@ shinyApp(
     output$tb <- renderUI({
       tabsetPanel(
         tabPanel("Input pathway", tableOutput("pathway"), tableOutput("contents")),
-        tabPanel("Result input pathway", tags$h4("AUSR:"), textOutput("AUSRBestConfig"), br(), tags$h4("Top candidate genes:"), dataTableOutput("TopPredictions"), br(), tags$h5("Click the download link to download list candidate genes.")),
+        tabPanel("Result input pathway", tags$h4("AUSR:"), textOutput("AUSRBestConfig"), br(), tags$h4("Top candidate genes:"), tableOutput("TopPredictions"), br(), tags$h5("Click the download link to download list candidate genes.")),
         tabPanel("Result random pathway", tableOutput("scoresAUSR")))
     })
       
