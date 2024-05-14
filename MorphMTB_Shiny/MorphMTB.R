@@ -229,12 +229,21 @@ shinyApp(
     Predictions <- reactive({
       getMorphPredictions(scores())
     })
+    
+    idrentrez <- reactive({
+      rownames(as.matrix(head(format(round(Predictions(),6)), input$numbercandidates)))
+    })
+    desc <- reactive({
+      Description(idrentrez())
+    })
+      
       
     output$TopPredictions <- renderTable({ ###KOMT NIET OVEREEN??!!
       #as.matrix(head(format(round(Predictions(),6)), input$numbercandidates))
       ids <- rownames(as.matrix(head(format(round(Predictions(),6)), input$numbercandidates)))
       number <- sapply(1:input$numbercandidates, function(i){i})
-      return(data.frame(No=number, ID=ids, Scored=head(format(round(Predictions(),6)), input$numbercandidates), Annotation=""))
+      annotation <- desc()
+      return(data.frame(No=number, ID=ids, Scored=head(format(round(Predictions(),6)), input$numbercandidates), Annotation=annotation))
     }, striped=TRUE) 
     
     #https://stackoverflow.com/questions/70317932/obtaining-data-from-ncbi-gene-database-with-r

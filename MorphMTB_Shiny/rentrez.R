@@ -16,8 +16,8 @@ library("rentrez")
 #chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://journal.r-project.org/archive/2017/RJ-2017-058/RJ-2017-058.pdf
 
 
-entrez_dbs()
-entrez_db_searchable(db="gene")
+#entrez_dbs()
+#entrez_db_searchable(db="gene")
 #ALL 	 All terms from all searchable fields 
 #UID 	 Unique number assigned to a gene record 
 #FILT 	 Limits the records 
@@ -54,8 +54,18 @@ entrez_db_searchable(db="gene")
 #AACC 	 Assembly accession 
 #ASM 	 Assembly name 
 #EXPR 	 Gene expression 
-res <- entrez_search(db="gene", term="(Rv2459[GENE] AND Mycobacterium tuberculosis[ORGN])")
-res$count
-res$ids
-esums <- entrez_summary(db="gene", id=res$ids)
-extract_from_esummary(esums, "description")
+
+Description <- function(id){
+  id = id
+  desc = c()
+    for (i in id){
+      res <- entrez_search(db="gene", term=paste("(", i, "[GENE] AND Mycobacterium tuberculosis[ORGN])"))
+      res$count
+      res$ids
+      esums <- entrez_summary(db="gene", id=res$ids)
+      extracteddesc <- extract_from_esummary(esums, "description")
+      desc <- c(desc, extracteddesc)
+    }
+  return(desc)
+}
+
