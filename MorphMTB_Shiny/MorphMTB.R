@@ -35,8 +35,7 @@ shinyApp(
     #Make page with multiple panels
     navbarPage("MorphMTB", #title
                tabPanel("Gene centric query", uiOutput('page1')),
-               tabPanel("Functional category query",  uiOutput('page2')),
-               tabPanel("About", uiOutput('page3')),
+               tabPanel("About", uiOutput('page2')),
    
     
    #   useShinyjs(),                                           # Include shinyjs in the UI
@@ -65,7 +64,7 @@ shinyApp(
           tags$hr(),
           # Ask for numeric input
           numericInput("candidates", "Max of candidate genes to display:", 30, min = 1, max = 1000),
-          numericInput("random", "Max of random pathways generated:", 2, min = 1, max = 500),
+          numericInput("random", "Max of random pathways generated:", 30, min = 1, max = 500),
           # Draw horizontal line
           tags$hr(),
           # Create text area for input genes/pathways
@@ -90,19 +89,19 @@ shinyApp(
     })
     
     #what happens on page3 (about)
-    output$page3 <- renderUI({
+    output$page2 <- renderUI({
             mainPanel(
               h4("Summary"),
               verbatimTextOutput("summary")
             )})
     
     generaw1 <- reactive({
-      read.csv(file=input$file$datapath[], 
+      length(read.csv(file=input$file$datapath[], 
                                 sep='\t', 
-                                header = FALSE)
+                                header = FALSE))
     })
     generaw2 <- reactive({
-      unlist(strsplit(input$genes, "\n"))
+      length(unlist(strsplit(input$genes, "\n")))
     })
       
     #collect input genes
@@ -118,7 +117,7 @@ shinyApp(
             gene <- unlist(read.csv(file=input$file$datapath[], 
                                              sep='\t', 
                                              header = FALSE))
-            number1 <- sapply(1:length(generaw1()), function(i){i})
+            number1 <- sapply(1:generaw1(), function(i){i})
             # Make dataframe out of elements to put in table
             return(data.frame(No=number1,Genes=gene))},
             # Color table every other line
@@ -130,7 +129,7 @@ shinyApp(
             if(is.null(input$genes)) {return()}
             # Get individual genes
             gene <- unlist(strsplit(input$genes, "\n"))
-            number2 <- sapply(1:length(generaw2()), function(i){i})
+            number2 <- sapply(1:generaw2(), function(i){i})
             # Make dataframe out of elements to put in table
             return(data.frame(No=number2,Genes=gene))},
             # Color table every other line
@@ -241,7 +240,7 @@ shinyApp(
     })
     output$downloadPathway <- downloadHandler(
       filename = function(){
-        paste0("predicttest.txt")
+        paste0("PredictedGenes.txt")
       },
       content = function(file){
         writeLines(predictgenes(), file)
@@ -285,9 +284,18 @@ shinyApp(
              "Rv3801c","Rv3802c","Rv3803c","Rv3804c","Rv3805c","Rv3806c","Rv3807c","Rv3808c","Rv3809c","Rv3810","Rv3811","Rv3812","Rv3813c","Rv3814c","Rv3815c","Rv3816c","Rv3817","Rv3818","Rv3819","Rv3820c","Rv3821","Rv3822","Rv3823c","Rv3824c","Rv3825c","Rv3826","Rv3827c","Rv3828c","Rv3829c","Rv3830c","Rv3831","Rv3832c","Rv3833","Rv3834c","Rv3835","Rv3836","Rv3837c","Rv3838c","Rv3839","Rv3840","Rv3841","Rv3842c","Rv3843c","Rv3844","Rv3845","Rv3846","Rv3847","Rv3848","Rv3849","Rv3850","Rv3851","Rv3852","Rv3853","Rv3854c","Rv3855","Rv3856c","Rv3857c","Rv3858c","Rv3859c","Rv3860","Rv3861","Rv3862c","Rv3863","Rv3864","Rv3865","Rv3866","Rv3867","Rv3868","Rv3869","Rv3870","Rv3871","Rv3872","Rv3873","Rv3874","Rv3875","Rv3876","Rv3877","Rv3878","Rv3879c","Rv3880c","Rv3881c","Rv3882c","Rv3883c","Rv3884c","Rv3885c","Rv3886c","Rv3887c","Rv3888c","Rv3889c","Rv3890c","Rv3891c","Rv3892c","Rv3893c","Rv3894c","Rv3895c","Rv3896c","Rv3897c","Rv3898c","Rv3899c","Rv3900c","Rv3901c","Rv3902c","Rv3903c","Rv3904c","Rv3905c","Rv3906c","Rv3907c","Rv3908","Rv3909","Rv3910","Rv3911","Rv3912","Rv3913","Rv3914","Rv3915","Rv3916c","Rv3917c","Rv3918c","Rv3919c","Rv3920c","Rv3921c","Rv3922c","Rv3923c","Rv3924c","RVnc0001","RVnc0002","RVnc0003","RVnc0004","RVnc0005","RVnc0006","RVnc0008","RVnc0010","RVnc0012","RVnc0013","RVnc0015","RVnc0018","RVnc0021","RVnc0024","RVnc0034","RVnc0035","RVnc0036","RVnc0036a","RVnc0040","RVnc0046","RVnc0047","Rvnr01","Rvnr02","Rvnr03","Rvns01","Rvnt01","Rvnt02","Rvnt03","Rvnt04","Rvnt05","Rvnt06","Rvnt07","Rvnt08","Rvnt09","Rvnt10","Rvnt11","Rvnt12","Rvnt13","Rvnt14","Rvnt15","Rvnt16","Rvnt17","Rvnt18","Rvnt19","Rvnt20","Rvnt21","Rvnt22","Rvnt23","Rvnt24","Rvnt25","Rvnt26","Rvnt27","Rvnt28","Rvnt29","Rvnt30","Rvnt31","Rvnt32","Rvnt33","Rvnt34","Rvnt35","Rvnt36","Rvnt37","Rvnt38","Rvnt39","Rvnt40","Rvnt41","Rvnt42","Rvnt43","Rvnt44","Rvnt45")
     })
     
+    
+    lengthPathway <- reactive({
+      if (!is.null(generaw2())){
+        return(generaw2())
+      } else {
+        return(generaw1())
+      }
+    })
+    
     # Generate amount of random pathways depicted by user and get scores 
     ScoreRandom <- reactive({
-      getScoresRandomPathway(g(), input$random)
+      getScoresRandomPathway(g(), input$random, lengthPathway())
     })
     
     # Get the AUSR score of each of the random pathways
@@ -310,7 +318,7 @@ shinyApp(
     output$tb <- renderUI({
       tabsetPanel(
         tabPanel("Input pathway", tableOutput("pathway"), tableOutput("contents")),
-        tabPanel("Result input pathway", tags$h4("AUSR:"), textOutput("AUSRBestConfig"), br(), tags$h4("Top candidate genes:"), dataTableOutput("TopPredictions"), br(), tags$h4("Head AUSR:"), dataTableOutput("headAUSR")),
+        tabPanel("Result input pathway", tags$h4("AUSR:"), textOutput("AUSRBestConfig"), br(), tags$h4("Top candidate genes:"), dataTableOutput("TopPredictions"), br(), tags$h5("Click the download link to download list candidate genes.")),
         tabPanel("Result random pathway", tableOutput("scoresAUSR")))
     })
       

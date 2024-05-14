@@ -362,15 +362,15 @@ getMorphPredictions = function(morph_res_obj){
 ###################################################################################################################################################################################################################"
 
 ## Sampling for Real pathway recognition
-uniform_sample <- function(vector) {
-  index <- sample(length(vector), 14) 
+uniform_sample <- function(vector, lengthPatway) {
+  index <- sample(length(vector), lengthPatway) 
   return(vector[index])}
 
-getScoresRandomPathway <- function(g, random){
+getScoresRandomPathway <- function(g, random, lengthPathway){
   Score <- c()
   B <- random
   lapply(1:B, function(i){
-    InputGOI <- unlist(uniform_sample(g)) 
+    InputGOI <- unlist(uniform_sample(g, lengthPathway))
     morph_input <- prepareMorphObjectFromFiles(InputGOI)
     print(names(morph_input)) 
     G <- morph_input$pathway_genes
