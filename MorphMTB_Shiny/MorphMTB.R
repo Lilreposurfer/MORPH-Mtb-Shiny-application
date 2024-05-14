@@ -37,7 +37,7 @@ jsResetCode <- "shinyjs.reset = function() {history.go(0)}"
   
   # Define UI for application
   ui <- fluidPage(
-    
+    tags$head(includeCSS("styles.css")),
     #Make page with multiple panels
     navbarPage(theme = shinytheme("cerulean"),
                "MorphMtb", #title

@@ -1,3 +1,10 @@
-#button {
-  color: blue;
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5em;
+}
+
+button#button {
+  background:#2fa4e7;
+  font-weight: bold;
+  color: white;
 }
