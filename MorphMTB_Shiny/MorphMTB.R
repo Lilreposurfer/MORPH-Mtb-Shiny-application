@@ -29,15 +29,16 @@ source("functions.R")
 source("rentrez.R")
 
 #Define the js method that resets the page
-jsResetCode <- "shinyjs.reset = function() {history.go(0)}"
+#jsResetCode <- "shinyjs.reset = function() {history.go(0)}"
 
 
 # Shiny web application ----
-## User interface ##
   
+## User interface ##
   # Define UI for application
   ui <- fluidPage(
     tags$head(includeCSS("styles.css")),
+    useShinyjs(),
     #Make page with multiple panels
     navbarPage(theme = shinytheme("cerulean"),
                "MorphMtb", #title
@@ -63,31 +64,36 @@ jsResetCode <- "shinyjs.reset = function() {history.go(0)}"
     output$page1 <- renderUI({
       sidebarLayout(
         sidebarPanel(
-          # Put informative text on top of sidebarPanel
-          helpText("Here you can submit your genes of interest and get the MorphMtb prediction results in a table format."),
-          helpText("Species currently available in MorphMtb: Mycobacterium tuberculosis."),
-          # Draw horizontal line
-          tags$hr(),
-          # Ask for numeric input
-          numericInput("numbercandidates", "Max of candidate genes to display:", 30, min = 1, max = 1000),
-          numericInput("random", "Max of random pathways generated:", 30, min = 1, max = 500),
-          # Draw horizontal line
-          tags$hr(),
-          # Create text area for input genes/pathways
-          textAreaInput("genes", "Enter the gene IDs for your input pathway of interest (enter-separated)"),
-          # Possibility to upload file with genes/pathways
-          fileInput("file","Or choose file", multiple = TRUE), # fileinput() function is used to get the file upload control option
-          #uiOutput("selectfile"), #In case you upload multiple files --> you can select which one to use
-          # Draw horizontal line
-          tags$hr(),
-          # Action buttons to re(start) analysis
-          actionButton("button","Start"),
-          actionButton("reset_inputs","Reset inputs"),
-          # Download link to download results
-          downloadLink("downloadPathway", "Download")
+            shinyjs::useShinyjs(),
+            id = "side-panel",
+            # Put informative text on top of sidebarPanel
+            helpText("Here you can submit your genes of interest and get the MorphMtb prediction results in a table format."),
+            helpText("Species currently available in MorphMtb: Mycobacterium tuberculosis."),
+            # Draw horizontal line
+            tags$hr(),
+            # Ask for numeric input
+            numericInput("numbercandidates", "Max of candidate genes to display:", 30, min = 1, max = 1000),
+            numericInput("random", "Max of random pathways generated:", 30, min = 1, max = 500),
+            # Draw horizontal line
+            tags$hr(),
+            # Create text area for input genes/pathways
+            textAreaInput("genes", "Enter the gene IDs for your input pathway of interest (enter-separated)", ""),
+            # Possibility to upload file with genes/pathways
+            fileInput("file","Or choose file", multiple = TRUE, ""), # fileinput() function is used to get the file upload control option
+            #uiOutput("selectfile"), #In case you upload multiple files --> you can select which one to use
+            # Draw horizontal line
+            tags$hr(),
+            # Action buttons to (re)start analysis
+            actionButton("startbutton","Start"),
+            actionButton("reset_inputs","Reset inputs",
+                         onclick = "Shiny.setInputValue('startbutton', NULL);"),
+            # Download link to download results
+            downloadLink("downloadPathway", "Download")
         ),
         # What happens in main panel
         mainPanel(
+          shinyjs::useShinyjs(),
+          id="main-panel",
           uiOutput("tb")
           
         )
@@ -103,6 +109,15 @@ jsResetCode <- "shinyjs.reset = function() {history.go(0)}"
     
 ###############################################################################################    
     
+    # Logic after pressing reset inputs button
+    observeEvent(input$reset_inputs, {
+      shinyjs::reset("side-panel")
+      shinyjs::reset("main-panel")
+      output$contents <- eventReactive(input$reset_inputs, {
+        return(NULL)
+      })
+    })
+    
     # Get length of input pathway uploaded by file
     generaw1 <- reactive({
       length(read.csv(file=input$file$datapath[], 
@@ -115,7 +130,8 @@ jsResetCode <- "shinyjs.reset = function() {history.go(0)}"
     })
       
     #collect input genes
-    output$contents <- eventReactive(input$button, { #after clicking start button
+    #output$contents <- eventReactive(input$startbutton, { #after clicking start button
+    observeEvent(input$startbutton, {
       output$contents <- reactive({
         # See what type of input is given and alter output to it 
         if(!is.null(input$file)){
@@ -145,9 +161,8 @@ jsResetCode <- "shinyjs.reset = function() {history.go(0)}"
             # Color table every other line
             striped=TRUE)}
       })
-    })
   
-    
+   
     
     ## MORPH Input ##
     # Retrieve genes from input
@@ -341,9 +356,8 @@ jsResetCode <- "shinyjs.reset = function() {history.go(0)}"
       
     
     
-    #output$contents <- eventReactive(input$restart, {
-    #  return(NULL)
-    #})
+    
+    
     
     # What is shown in output different tabs 
     output$tb <- renderUI({
@@ -352,7 +366,7 @@ jsResetCode <- "shinyjs.reset = function() {history.go(0)}"
         tabPanel("Result input pathway", tags$h4("AUSR:"), textOutput("AUSRBestConfig"), br(), tags$h4("Top candidate genes:"), tableOutput("TopPredictions"), br(), tags$h5("Click the download link to download list candidate genes.")),
         tabPanel("Result random pathway", tableOutput("scoresAUSR")))
     })
-      
+    })  
 
   }
 
