@@ -37,7 +37,13 @@ source("rentrez.R")
 ## User interface ##
   # Define UI for application
   ui <- fluidPage(
+    # Include CSS script in Shiny web application
     tags$head(includeCSS("styles.css")),
+    # Don't show error messages on Shiny web application
+    tags$style(type="text/css",
+               ".shiny-output-error { visibility: hidden; }",
+               ".shiny-output-error:before { visibility: hidden; }"
+    ),
     useShinyjs(),
     #Make page with multiple panels
     navbarPage(theme = shinytheme("cerulean"),
@@ -45,10 +51,6 @@ source("rentrez.R")
                tabPanel("Gene centric query", uiOutput('page1')),
                tabPanel("About", uiOutput('page2')),
                
-    
-   #   useShinyjs(),                                           # Include shinyjs in the UI
-    #  extendShinyjs(text = jsResetCode, functions = "reset"), # Add the js code to the page
-    #  actionButton("reset_button", "Reset Page")
     )
   )
   
@@ -113,10 +115,10 @@ source("rentrez.R")
     observeEvent(input$reset_inputs, {
       shinyjs::reset("side-panel")
       shinyjs::reset("main-panel")
-      output$contents <- eventReactive(input$reset_inputs, {
+    })
+    output$contents <- eventReactive(input$reset_inputs, {
         return(NULL)
       })
-    })
     
     # Get length of input pathway uploaded by file
     generaw1 <- reactive({
