@@ -40,9 +40,9 @@ source("rentrez.R")
   ui <- fluidPage(
     # Loader
     #https://waiter.john-coene.com/#/waiter/examples
-    autoWaiter(color="grey",
-               html = tagList(spin_flowers(), color="gray",
-                              br(),
+    autoWaiter(color="white",
+               html = tagList(spin_flowers(), 
+                              br(), br(),
                               tagAppendAttributes(style="color:gray;",
                                                   p("Loading...")))),
     # Include CSS script in Shiny web application
@@ -407,15 +407,15 @@ source("rentrez.R")
     
 #########################################################################################################
 ### PAGE3 ###   
-    
+    # Get data uploaded expression data file for output
     output$expressiondata <- reactive({
-      # See what type of input is given and alter output to it 
+      # See if input is given  
       if(!is.null(input$file_expressiondata)){
-        #retrieve data/genes from uploaded file and put in table
+        #retrieve expression data from uploaded file and put in table
         output$expressiondata <- renderTable({
           # If there is no file uploaded, don't return anything
           if(is.null(input$file_expressiondata)) {return()}
-          # Get individual genes 
+          # Get expression data 
           read.csv(file=input$file_expressiondata$datapath[], 
                                   sep='\t', 
                                   header = FALSE)},
@@ -424,14 +424,24 @@ source("rentrez.R")
           striped=TRUE)}
     })
     
+    # Get expression data to work further with
     dataexp <- reactive({
       read.csv(file=input$file_expressiondata$datapath[], 
                sep='\t', 
                header = FALSE)
     })
     
-    output$datalog <- reactive({
+    # Normalize and filter expression data
+    datalog <- reactive({
       log(dataexp())
+    })
+    
+    # Cluster expression data
+    wssk <- reactive ({
+      wsskmeans(datalog())
+    })
+    output$kmeansplot <- renderPlot({
+      clusterK(wssk())
     })
       
       
@@ -439,7 +449,7 @@ source("rentrez.R")
     output$tb2 <- renderUI({
       tabsetPanel(
         tabPanel("Expression data", tableOutput("expressiondata")),
-        tabPanel("Log", textOutput("datalog"))
+        tabPanel("Log", plotOutput("kmeansplot"))
       )
     })
 
