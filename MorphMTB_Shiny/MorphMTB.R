@@ -41,9 +41,9 @@ source("rentrez.R")
     # Loader
     #https://waiter.john-coene.com/#/waiter/examples
     autoWaiter(color="grey",
-               html = tagList(spin_puzzle(), color="gray",
+               html = tagList(spin_flowers(), color="gray",
                               br(),
-                              tagAppendAttributes(style="color:black;",
+                              tagAppendAttributes(style="color:gray;",
                                                   p("Loading...")))),
     # Include CSS script in Shiny web application
     tags$head(includeCSS("styles.css")),
@@ -423,12 +423,23 @@ source("rentrez.R")
           # Color table every other line
           striped=TRUE)}
     })
+    
+    dataexp <- reactive({
+      read.csv(file=input$file_expressiondata$datapath[], 
+               sep='\t', 
+               header = FALSE)
+    })
+    
+    output$datalog <- reactive({
+      log(dataexp())
+    })
       
       
     # What is shown in output page2
     output$tb2 <- renderUI({
       tabsetPanel(
-        tabPanel("Expression data", tableOutput("expressiondata"))
+        tabPanel("Expression data", tableOutput("expressiondata")),
+        tabPanel("Log", textOutput("datalog"))
       )
     })
 

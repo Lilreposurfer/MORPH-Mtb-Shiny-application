@@ -15,15 +15,17 @@ log <- function(data){
 ########################################################################################################################
 
 ## Clustering
-wsskmeans <- function(data, x){
+wsskmeans <- function(logdata){
   # Elbow Method
   ## K-means
-  wssk <- sapply(x, function(k){
-    kmeans(data, k, nstart=50,iter.max = 40)$tot.withinss})
+  kmax <- 10
+  wssk <- sapply(2:kmax, function(k){
+    kmeans(logdata, k, nstart=50,iter.max = 40)$tot.withinss})
   wssk
 }
-clusterK <- function(x, wssk){
-  plot(x, wssk, type="b", pch =10, frame = FALSE, 
+clusterK <- function(wssk){
+  kmax <- 10
+  plot(2:kmax, wssk, type="b", pch =10, frame = FALSE, 
        xlab="Number of clusters",
        ylab="Total Within sum of square",
        main="K-means",
