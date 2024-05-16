@@ -23,14 +23,14 @@ wsskmeans <- function(logdata){
     kmeans(logdata, k, nstart=50,iter.max = 40)$tot.withinss})
   wssk
 }
-clusterK <- function(wssk){
+clusterK <- function(wssk, elbowK){
   kmax <- 10
   plot(2:kmax, wssk, type="b", pch =10, frame = FALSE, 
        xlab="Number of clusters",
        ylab="Total Within sum of square",
        main="K-means",
        cex=2, cex.main=1.5, cex.lab=1.5, cex.axis=2)
-  abline(v = 3, col = "red", lwd = 2)
+  abline(v = elbowK, col = "red", lwd = 2)
 }
 
 
@@ -45,14 +45,14 @@ wsssom <- function(data){
     kmeans(weight, k, nstart=50,iter.max = 40)$tot.withinss})
   wsss
 }
-clusterS <- function(wsss){
+clusterS <- function(wsss, elbowS){
   kmax <- 10
   plot(2:kmax, wsss, type="b", pch =10, frame = FALSE, 
        xlab="Number of clusters",
        ylab="Total Within sum of square",
        main="SOM",
        cex=2, cex.main=1.5, cex.lab=1.5, cex.axis=2)
-  abline(v = 3, col = "red", lwd = 2) 
+  abline(v = elbowS, col = "red", lwd = 2) 
 }
 
 ## Cluster Size 

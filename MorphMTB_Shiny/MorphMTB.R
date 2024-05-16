@@ -120,7 +120,11 @@ source("rentrez.R")
         sidebarPanel(
           # Upload file with own gene expression data
           fileInput("file_expressiondata", "Upload your own expression data"),
-          
+          # Sliders to determine elbow in clustering plots
+          sliderInput("elbowkmeans", "Elbow k-means:",
+                      min = 2, max = 10, value = 3),
+          sliderInput("elbowsom", "Elbow SOM:",
+                      min = 2, max = 10, value = 3)
         ),
       mainPanel(
         uiOutput("tb2")
@@ -421,7 +425,7 @@ source("rentrez.R")
           # Get expression data 
           read.csv(file=input$file_expressiondata$datapath[], 
                                   sep='\t', 
-                                  header = FALSE)},
+                                  header = TRUE)},
           
           # Color table every other line
           striped=TRUE)}
@@ -431,7 +435,7 @@ source("rentrez.R")
     dataexp <- reactive({
       read.csv(file=input$file_expressiondata$datapath[], 
                sep='\t', 
-               header = FALSE)
+               header = TRUE)
     })
     
     # Normalize and filter expression data
@@ -445,7 +449,7 @@ source("rentrez.R")
     })
     # Give plot K-means
     output$kmeansplot <- renderPlot({
-      clusterK(wssk())
+      clusterK(wssk(), input$elbowkmeans)
     })
     
     # Cluster expression data with SOM
@@ -454,7 +458,7 @@ source("rentrez.R")
     })
     # Give plot SOM
     output$SOMplot <- renderPlot({
-      clusterS(wsss())
+      clusterS(wsss(), input$elbowsom)
     })
       
       
