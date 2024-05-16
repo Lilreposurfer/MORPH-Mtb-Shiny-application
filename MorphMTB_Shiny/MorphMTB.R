@@ -118,7 +118,8 @@ source("rentrez.R")
     output$page2 <- renderUI({
       mainPanel(
         # Upload file with own gene expression data
-        fileInput("file_expressiondata", "Upload your own expression data")
+        fileInput("file_expressiondata", "Upload your own expression data"),
+        uiOutput("tb2")
       )
     })
     
@@ -129,7 +130,7 @@ source("rentrez.R")
       )})
     
 ###############################################################################################    
-    
+### PAGE1 ###    
    # shiny_busy <- function() {
   #    # use &nbsp; for some alignment, if needed
   #    HTML("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", paste0(
@@ -395,14 +396,41 @@ source("rentrez.R")
     
     
     
-    # What is shown in output different tabs 
+    # What is shown in output different tabs page1 
     output$tb <- renderUI({
       tabsetPanel(
         tabPanel("Input pathway", tableOutput("pathway"), tableOutput("contents")),
         tabPanel("Result input pathway", tags$h4("AUSR:"), textOutput("AUSRBestConfig"), br(), tags$h4("Top candidate genes:"), tableOutput("TopPredictions"), br(), tags$h5("Click the download link to download list candidate genes.")),
         tabPanel("Result random pathway", tableOutput("scoresAUSR")))
     })
-    })  
+    })
+    
+#########################################################################################################
+### PAGE3 ###   
+    
+    output$expressiondata <- reactive({
+      # See what type of input is given and alter output to it 
+      if(!is.null(input$file_expressiondata)){
+        #retrieve data/genes from uploaded file and put in table
+        output$expressiondata <- renderTable({
+          # If there is no file uploaded, don't return anything
+          if(is.null(input$file_expressiondata)) {return()}
+          # Get individual genes 
+          read.csv(file=input$file_expressiondata$datapath[], 
+                                  sep='\t', 
+                                  header = FALSE)},
+          
+          # Color table every other line
+          striped=TRUE)}
+    })
+      
+      
+    # What is shown in output page2
+    output$tb2 <- renderUI({
+      tabsetPanel(
+        tabPanel("Expression data", tableOutput("expressiondata"))
+      )
+    })
 
   }
 
