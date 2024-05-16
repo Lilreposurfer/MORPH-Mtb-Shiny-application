@@ -66,7 +66,7 @@ kmc <- function(data, elbowK){
   kmeans(data, centers = elbowK, iter.max=40,nstart=50)
 }
 ## SOM
-SOM <- function(weight, elbowS){
+SOMc <- function(weight, elbowS){
   kmeans(weight, centers = elbowS, iter.max=40,nstart=50)
 } 
 

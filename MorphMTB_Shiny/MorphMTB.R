@@ -454,7 +454,7 @@ source("rentrez.R")
     
     # Cluster expression data with SOM
     # First define weight
-    output$weightsom <- reactive({
+    weightsom <- reactive({
       weightSOM(datalog())
     })
     # Define wss
@@ -465,7 +465,16 @@ source("rentrez.R")
     output$SOMplot <- renderPlot({
       clusterS(wsss(), input$elbowsom)
     })
-      
+    
+    # Define clusters
+    # Clusters K-means
+    kmclusters <- reactive({
+      kmc(datalog(), input$elbowkmeans)
+    })
+    # Clusters SOM
+    somclusters <- reactive({
+      SOMc(weightsom(), input$elbowsom)
+    })
       
     # What is shown in output page2
     output$tb2 <- renderUI({
