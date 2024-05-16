@@ -34,19 +34,20 @@ clusterK <- function(wssk){
 }
 
 
-wsssom <- function(data, x){
+wsssom <- function(data){
   # Elbow Method
   ## SOM
   som_grid <- somgrid(xdim = 376, ydim = 10, topo = "hexagonal")   # depend with the size of the dataset (3760)
   gene_som <- som(data, grid = som_grid, rlen = 100, alpha = c(0.05, 0.01), keep.data = TRUE)
   weight<- getCodes(gene_som)
-  #kmax <- 10
-  wsss <- sapply(x, function(k){
+  kmax <- 10
+  wsss <- sapply(2:kmax, function(k){
     kmeans(weight, k, nstart=50,iter.max = 40)$tot.withinss})
   wsss
 }
-clusterS <- function(x, wsss){
-  plot(x, wsss, type="b", pch =10, frame = FALSE, 
+clusterS <- function(wsss){
+  kmax <- 10
+  plot(2:kmax, wsss, type="b", pch =10, frame = FALSE, 
        xlab="Number of clusters",
        ylab="Total Within sum of square",
        main="SOM",

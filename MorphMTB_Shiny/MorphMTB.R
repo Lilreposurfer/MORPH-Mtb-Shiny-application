@@ -436,12 +436,22 @@ source("rentrez.R")
       log(dataexp())
     })
     
-    # Cluster expression data
+    # Cluster expression data with K-means
     wssk <- reactive ({
       wsskmeans(datalog())
     })
+    # Give plot K-means
     output$kmeansplot <- renderPlot({
       clusterK(wssk())
+    })
+    
+    # Cluster expression data with SOM
+    wsss <- reactive({
+      wsssom(datalog())
+    })
+    # Give plot SOM
+    output$SOMplot <- renderPlot({
+      clusterS(wsss())
     })
       
       
@@ -449,7 +459,7 @@ source("rentrez.R")
     output$tb2 <- renderUI({
       tabsetPanel(
         tabPanel("Expression data", tableOutput("expressiondata")),
-        tabPanel("Log", plotOutput("kmeansplot"))
+        tabPanel("Log", plotOutput("kmeansplot"), plotOutput("SOMplot"))
       )
     })
 
