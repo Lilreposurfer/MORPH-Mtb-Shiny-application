@@ -424,7 +424,7 @@ source("rentrez.R")
           if(is.null(input$file_expressiondata)) {return()}
           # Get expression data 
           read.csv(file=input$file_expressiondata$datapath[], 
-                                  sep='\t', 
+                                  sep='', 
                                   header = TRUE)},
           
           # Color table every other line
@@ -453,6 +453,11 @@ source("rentrez.R")
     })
     
     # Cluster expression data with SOM
+    # First define weight
+    output$weightsom <- reactive({
+      weightSOM(datalog())
+    })
+    # Define wss
     wsss <- reactive({
       wsssom(datalog())
     })
@@ -467,6 +472,7 @@ source("rentrez.R")
       tabsetPanel(
         tabPanel("Expression data", tableOutput("expressiondata")),
         tabPanel("Clustering", plotOutput("kmeansplot"), plotOutput("SOMplot"))
+                 
       )
     })
 

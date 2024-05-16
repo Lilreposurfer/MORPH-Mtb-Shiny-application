@@ -34,9 +34,14 @@ clusterK <- function(wssk, elbowK){
 }
 
 
-wsssom <- function(data){
+weightSOM <- function(data){
   # Elbow Method
   ## SOM
+  som_grid <- somgrid(xdim = 376, ydim = 10, topo = "hexagonal")   # depend with the size of the dataset (3760)
+  gene_som <- som(data, grid = som_grid, rlen = 100, alpha = c(0.05, 0.01), keep.data = TRUE)
+  weight<- getCodes(gene_som)
+  weight
+wsssom <- function(data)
   som_grid <- somgrid(xdim = 376, ydim = 10, topo = "hexagonal")   # depend with the size of the dataset (3760)
   gene_som <- som(data, grid = som_grid, rlen = 100, alpha = c(0.05, 0.01), keep.data = TRUE)
   weight<- getCodes(gene_som)
