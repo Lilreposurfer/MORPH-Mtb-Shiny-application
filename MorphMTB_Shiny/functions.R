@@ -55,13 +55,16 @@ clusterS <- function(wsss, elbowS){
   abline(v = elbowS, col = "red", lwd = 2) 
 }
 
-## Cluster Size 
+## Define clusters 
 ## k-means
-#kmc1 <- kmeans(log_drug, centers = 3, iter.max=40,nstart=50)
-#kmc1$size
+kmc <- function(data, elbowK){
+  kmeans(data, centers = elbowK, iter.max=40,nstart=50)
+}
 ## SOM
-#SOM <- kmeans(weight1, centers = 3, iter.max=40,nstart=50)
-#SOM$size
+SOM <- function(weight, elbowS){
+  kmeans(weight, centers = elbowS, iter.max=40,nstart=50)
+} 
+
 
 ########################################################################################################################
 

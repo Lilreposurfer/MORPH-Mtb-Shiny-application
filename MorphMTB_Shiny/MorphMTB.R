@@ -466,7 +466,7 @@ source("rentrez.R")
     output$tb2 <- renderUI({
       tabsetPanel(
         tabPanel("Expression data", tableOutput("expressiondata")),
-        tabPanel("Log", plotOutput("kmeansplot"), plotOutput("SOMplot"))
+        tabPanel("Clustering", plotOutput("kmeansplot"), plotOutput("SOMplot"))
       )
     })
 
