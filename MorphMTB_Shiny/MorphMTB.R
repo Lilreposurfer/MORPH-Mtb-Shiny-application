@@ -1,6 +1,7 @@
 # Load packages ----
 library(shiny)
 library(shinyjs)
+library(waiter)
 library(shinythemes)
 library(readr)           # Read package for txt file
 library(writexl)         # Write excel file .xlsx
@@ -37,6 +38,13 @@ source("rentrez.R")
 ## User interface ##
   # Define UI for application
   ui <- fluidPage(
+    # Loader
+    #https://waiter.john-coene.com/#/waiter/examples
+    autoWaiter(color="grey",
+               html = tagList(spin_puzzle(), color="gray",
+                              br(),
+                              tagAppendAttributes(style="color:black;",
+                                                  p("Loading...")))),
     # Include CSS script in Shiny web application
     tags$head(includeCSS("styles.css")),
     # Don't show error messages on Shiny web application
@@ -47,12 +55,16 @@ source("rentrez.R")
     useShinyjs(),
     #Make page with multiple panels
     navbarPage(theme = shinytheme("cerulean"),
-               "MorphMtb", #title
+               "MORPH-Mtb", #title
                tabPanel("Gene centric query", uiOutput('page1')),
-               tabPanel("About", uiOutput('page2')),
+               tabPanel("Implement own expression data", uiOutput('page2')),
+               tabPanel("About", uiOutput('page3')),
                
     )
   )
+
+  
+
   
   # Define server logic
   server <-  function(input, output) {
@@ -102,14 +114,35 @@ source("rentrez.R")
       )
     })
     
-    #what happens on page2 (about)
+    # What happens on page2 (Implement own expression data)
     output$page2 <- renderUI({
       mainPanel(
-        h4("Summary"),
-        verbatimTextOutput("summary")
+        
+      )
+    })
+    
+    #what happens on page3 (About)
+    output$page3 <- renderUI({
+      mainPanel(
+        h4("About MORPH-Mtb")
       )})
     
 ###############################################################################################    
+    
+   # shiny_busy <- function() {
+  #    # use &nbsp; for some alignment, if needed
+  #    HTML("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", paste0(
+  #      '<span data-display-if="',
+  #      '$(&#39;html&#39;).attr(&#39;class&#39;)==&#39;shiny-busy&#39;',
+  #      '">',
+  #      '<i class="fa fa-spinner fa-pulse fa-fw" style="color:orange"></i>',
+  #      '</span>'
+  #    ))
+  #  }
+    
+    # call from shiny ui with
+   # shiny_busy(),
+    
     
     # Logic after pressing reset inputs button
     observeEvent(input$reset_inputs, {
