@@ -93,7 +93,7 @@ source("rentrez.R")
             # Create text area for input genes/pathways
             textAreaInput("genes", "Enter the gene IDs for your input pathway of interest (enter-separated)", ""),
             # Possibility to upload file with genes/pathways
-            fileInput("file","Or choose file", multiple = TRUE, ""), # fileinput() function is used to get the file upload control option
+            fileInput("file","Or choose file", multiple = TRUE), # fileinput() function is used to get the file upload control option
             #uiOutput("selectfile"), #In case you upload multiple files --> you can select which one to use
             # Draw horizontal line
             tags$hr(),
@@ -117,7 +117,8 @@ source("rentrez.R")
     # What happens on page2 (Implement own expression data)
     output$page2 <- renderUI({
       mainPanel(
-        
+        # Upload file with own gene expression data
+        fileInput("file_expressiondata", "Upload your own expression data")
       )
     })
     
