@@ -116,11 +116,17 @@ source("rentrez.R")
     
     # What happens on page2 (Implement own expression data)
     output$page2 <- renderUI({
+      sidebarLayout(
+        sidebarPanel(
+          # Upload file with own gene expression data
+          fileInput("file_expressiondata", "Upload your own expression data"),
+          
+        ),
       mainPanel(
-        # Upload file with own gene expression data
-        fileInput("file_expressiondata", "Upload your own expression data"),
         uiOutput("tb2")
       )
+      )
+      
     })
     
     #what happens on page3 (About)
@@ -391,10 +397,7 @@ source("rentrez.R")
     }, striped=TRUE) 
     
       
-    
-    
-    
-    
+
     
     # What is shown in output different tabs page1 
     output$tb <- renderUI({
