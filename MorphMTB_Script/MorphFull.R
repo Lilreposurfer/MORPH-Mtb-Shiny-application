@@ -624,7 +624,7 @@ getMorphPredictions = function(morph_res_obj){
 setwd("C:/Users/elise/Documents/Schuul/Stage/Project/MorphMTB_Script/data")
 ## MORPH Input
 InputConfig = "Configs.txt"
-InputGOI = "testGenesPathway.txt"
+InputGOI = "Pathway2.txt"
 morph_input = prepareMorphObjectFromFiles(InputConfig,InputGOI)
 Scores = MORPH(morph_input, view=TRUE)
 ## Removing Absent genes
@@ -636,7 +636,7 @@ Intersection = removeAbscentGOIs(G,C,GENames)
 print(Intersection)
 ## Validation
 InputConfig = "Configs.txt"
-InputGOI = "testGenesPathway.txt"
+InputGOI = "Pathway2.txt"
 morph_input = prepareMorphObjectFromFiles(InputConfig,InputGOI)
 LOOCVc = LOOCV_MORPH(morph_input)
 print(LOOCVc) #0.8283571 #test: 0.5913871

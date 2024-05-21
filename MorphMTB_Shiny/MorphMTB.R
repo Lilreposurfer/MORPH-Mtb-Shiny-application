@@ -289,6 +289,15 @@ source("rentrez.R")
     #test:
     #0.6796129
     
+    # Get dataset of best score
+    output$BestConfigDataset <- reactive({
+      BestConfig()$GE
+    })
+    # Get cluster solution of best score
+    output$BestConfigCluster <- reactive({
+      BestConfig()$C
+    })
+    
     
     ## MORPH gene scores ##
     Predictions <- reactive({
@@ -415,7 +424,9 @@ source("rentrez.R")
       tabsetPanel(
         tabPanel("Input pathway", tableOutput("pathway"), tableOutput("contents")),
         tabPanel("Result random pathway", tags$h4("Average AUSR score:"), textOutput("averageRandomPathways"), br(), tags$h4("Scores random pathways:"), br(), tableOutput("scoresAUSR")),
-        tabPanel("Result input pathway", tags$h4("AUSR:"), textOutput("AUSRBestConfig"), br(), tags$h4("Top candidate genes:"), tableOutput("TopPredictions"), br(), tags$h5("Click the download link to download list candidate genes.")))
+        tabPanel("Result input pathway", tags$h4("AUSR:"), textOutput("AUSRBestConfig"), br(), 
+                 tags$h4("Best configuration:"), textOutput("BestConfigDataset"), textOutput("BestConfigCluster"), br(),
+                 tags$h4("Top candidate genes:"), tableOutput("TopPredictions"), br(), tags$h5("Click the download link to download list candidate genes.")))
         
     })
     })
