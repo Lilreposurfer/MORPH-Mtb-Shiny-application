@@ -402,8 +402,8 @@ source("rentrez.R")
     
     # Calculate the average of the AUSR scores of the random pathways
     output$averageRandomPathways <- reactive({
-      mean(unlist(sapply(1:length(ScoreRandom()), function(i)
-      {ScoreRandom()[[i]][[1]][["AUSR"]]})))
+      round(mean(unlist(sapply(1:length(ScoreRandom()), function(i)
+      {ScoreRandom()[[i]][[1]][["AUSR"]]}))), 6)
     })
     
       
@@ -413,7 +413,7 @@ source("rentrez.R")
     output$tb <- renderUI({
       tabsetPanel(
         tabPanel("Input pathway", tableOutput("pathway"), tableOutput("contents")),
-        tabPanel("Result random pathway", tags$h4("Average:"), textOutput("averageRandomPathways"), br(), tags$h4("Scores random pathways:"), br(), tableOutput("scoresAUSR")),
+        tabPanel("Result random pathway", tags$h4("Average AUSR score:"), textOutput("averageRandomPathways"), br(), tags$h4("Scores random pathways:"), br(), tableOutput("scoresAUSR")),
         tabPanel("Result input pathway", tags$h4("AUSR:"), textOutput("AUSRBestConfig"), br(), tags$h4("Top candidate genes:"), tableOutput("TopPredictions"), br(), tags$h5("Click the download link to download list candidate genes.")))
         
     })
