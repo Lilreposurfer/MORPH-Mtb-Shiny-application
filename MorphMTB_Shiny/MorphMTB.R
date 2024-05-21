@@ -102,7 +102,7 @@ source("rentrez.R")
             actionButton("reset_inputs","Reset inputs",
                          onclick = "Shiny.setInputValue('startbutton', NULL);"),
             # Download link to download results
-            downloadLink("downloadPathway", "Download")
+            downloadLink("downloadPathway", "Download candidate genes")
         ),
         # What happens in main panel
         mainPanel(
@@ -124,7 +124,8 @@ source("rentrez.R")
           sliderInput("elbowkmeans", "Elbow k-means:",
                       min = 2, max = 10, value = 3),
           sliderInput("elbowsom", "Elbow SOM:",
-                      min = 2, max = 10, value = 3)
+                      min = 2, max = 10, value = 3),
+          downloadLink("downloadExprData", "Download processed Expression data")
         ),
       mainPanel(
         uiOutput("tb2")
@@ -444,6 +445,29 @@ source("rentrez.R")
                sep='\t', 
                header = TRUE)
     })
+    
+    ###########################################################################  
+    ## Download processed expression data ##
+    # Depict what content to download
+    #dataexpDownload <- reactive({
+    #  read.csv(file=input$file_expressiondata$datapath[], 
+    #           sep='\t',
+    #           header = TRUE)
+    #})
+    #dataexpDownload2 <- reactive({
+    #  dataexpDownload()[-1,-1]
+    #})
+    # Depict what downloaded document will be named and what content(type) is
+    #output$downloadExprData <- downloadHandler(
+    #  filename = function(){
+    #    paste0("ExpressionData-", Sys.Date(),".txt", sep="")
+    #  },
+    #  content = function(file){
+    #    writeLines(dataexpDownload(), file)
+    #  },
+    #  contentType = "text/csv"
+    #)
+    #########################################################################
     
     # Normalize and filter expression data
     datalog <- reactive({
