@@ -86,8 +86,8 @@ source("rentrez.R")
             # Draw horizontal line
             tags$hr(),
             # Ask for numeric input
-            numericInput("numbercandidates", "Max of candidate genes to display:", 30, min = 1, max = 1000),
             numericInput("random", "Max of random pathways generated:", 30, min = 1, max = 500),
+            numericInput("numbercandidates", "Max of candidate genes to display:", 30, min = 1, max = 1000),
             # Draw horizontal line
             tags$hr(),
             # Create text area for input genes/pathways
