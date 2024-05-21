@@ -13,7 +13,6 @@ log <- function(data){
 }
 
 ########################################################################################################################
-
 ## Clustering
 wsskmeans <- function(logdata){
   # Elbow Method
@@ -33,15 +32,14 @@ clusterK <- function(wssk, elbowK){
   abline(v = elbowK, col = "red", lwd = 2)
 }
 
-
 weightSOM <- function(data){
   # Elbow Method
   ## SOM
   som_grid <- somgrid(xdim = 376, ydim = 10, topo = "hexagonal")   # depend with the size of the dataset (3760)
   gene_som <- som(data, grid = som_grid, rlen = 100, alpha = c(0.05, 0.01), keep.data = TRUE)
   weight<- getCodes(gene_som)
-  weight
-wsssom <- function(data)
+  weight}
+wsssom <- function(data){
   som_grid <- somgrid(xdim = 376, ydim = 10, topo = "hexagonal")   # depend with the size of the dataset (3760)
   gene_som <- som(data, grid = som_grid, rlen = 100, alpha = c(0.05, 0.01), keep.data = TRUE)
   weight<- getCodes(gene_som)
@@ -70,9 +68,32 @@ SOMc <- function(weight, elbowS){
   kmeans(weight, centers = elbowS, iter.max=40,nstart=50)
 } 
 
+##########################################################################################################
+## Data Preparation for MORPH ##
+# Preparing 
+## Gene Expression
+#write.delim(drug, "drug.txt", sep="\t", col.names=FALSE, row.names=FALSE)
+## K-means clusters
+#genes1 <- rownames(log_drug)
+#cluster1 <- kmc1$cluster
+#kmeans_cluster1 <- data.frame(genes1, cluster1)
+#write.delim(kmeans_cluster1, "kmeansdrug.txt", sep="\t", col.names=FALSE, row.names=FALSE)
+## SOM clusters
+#gene_names1 <- rownames(log_drug)
+#cluster_assignments1 <- SOM$cluster
+#gene_clusters1 <- data.frame(gene = gene_names1, cluster = cluster_assignments1)
+#write.delim(gene_clusters1, "somdrug.txt", sep="\t", col.names=FALSE, row.names=FALSE)
+## Config
+#A=c("clark.txt","clark.txt", "drug.txt", "drug.txt", "ESX.txt", "ESX.txt", "inaki.txt", 
+#    "inaki.txt", "primary.txt", "primary.txt", "timecourse.txt", "timecourse.txt")
+#B=c("kmeansclark.txt", "somclark.txt", "kmeansdrug.txt", "somdrug.txt", 
+#    "kmeansESX.txt", "somESX.txt", "kmeansinaki.txt", "sominaki.txt",
+#    "kmeansprimary.txt", "somprimary.txt", "kmeanstimecourse.txt", "somtimecourse.txt")
+#Configs=data.frame(A,B)
+#write.delim(Configs, "Configs.txt", sep="\t", col.names=FALSE, row.names=FALSE)
+
 
 ########################################################################################################################
-
 ## MORPH ALGORITHM ##
 # Functions
 ## Reading data functions
