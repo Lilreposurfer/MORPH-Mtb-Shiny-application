@@ -390,7 +390,7 @@ source("rentrez.R")
     
     # Make variable that contains the length of the input pathway (genes/file)
     lengthPathway <- reactive({
-      if (is.null(generaw2())){
+      if (!is.null(input$file)){
         return(generaw1())
       } else {
         return(generaw2())
