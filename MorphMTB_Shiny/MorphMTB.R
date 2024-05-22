@@ -197,6 +197,8 @@ source("rentrez.R")
             return(data.frame(No=number1,Genes=gene))},
             # Color table every other line
             striped=TRUE)}
+            
+            
         else {
           #retrieve genes from text input and put in table
           output$pathway <- renderTable({
@@ -204,9 +206,14 @@ source("rentrez.R")
             if(is.null(input$genes)) {return()}
             # Get individual genes
             gene <- unlist(strsplit(input$genes, "\n"))
+            MtbGene <- grepl("^Rv|^rv|^RV", gene)
             number2 <- sapply(1:generaw2(), function(i){i})
-            # Make dataframe out of elements to put in table
-            return(data.frame(No=number2,Genes=gene))},
+            # Make dataframe out of elements to put in table if genes of Mtb (start with Rv)
+            if("FALSE" %in% MtbGene){
+              return("This list contains at least 1 gene that is not from Mycobacterium tuberculosis.")
+            } else{
+              return(data.frame(No=number2,Genes=gene))
+            }},
             # Color table every other line
             striped=TRUE)}
       })
