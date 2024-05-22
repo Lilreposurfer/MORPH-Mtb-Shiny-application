@@ -192,9 +192,14 @@ source("rentrez.R")
             gene <- unlist(read.csv(file=input$file$datapath[], 
                                              sep='\t', 
                                              header = FALSE))
+            MtbGeneFile <- grepl("^Rv|^rv|^RV", gene)
             number1 <- sapply(1:generaw1(), function(i){i})
             # Make dataframe out of elements to put in table
-            return(data.frame(No=number1,Genes=gene))},
+            if("FALSE" %in% MtbGeneFile){
+              return("This list contains at least 1 gene not from Mtb.")
+            } else{
+              return(data.frame(No=number1,Genes=gene))
+            }},
             # Color table every other line
             striped=TRUE)}
             
@@ -210,7 +215,7 @@ source("rentrez.R")
             number2 <- sapply(1:generaw2(), function(i){i})
             # Make dataframe out of elements to put in table if genes of Mtb (start with Rv)
             if("FALSE" %in% MtbGene){
-              return("This list contains at least 1 gene that is not from Mycobacterium tuberculosis.")
+              return("This list contains at least 1 gene not from Mtb.")
             } else{
               return(data.frame(No=number2,Genes=gene))
             }},
