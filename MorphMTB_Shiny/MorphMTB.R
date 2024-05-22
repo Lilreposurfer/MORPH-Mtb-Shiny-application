@@ -94,6 +94,7 @@ source("rentrez.R")
             textAreaInput("genes", "Enter the gene IDs for your input pathway of interest (enter-separated)", ""),
             # Possibility to upload file with genes/pathways
             fileInput("file","Or choose file", multiple = TRUE), # fileinput() function is used to get the file upload control option
+            helpText("Make sure there are no spaces/tabs after last gene."),
             #uiOutput("selectfile"), #In case you upload multiple files --> you can select which one to use
             # Draw horizontal line
             tags$hr(),
@@ -389,10 +390,10 @@ source("rentrez.R")
     
     # Make variable that contains the length of the input pathway (genes/file)
     lengthPathway <- reactive({
-      if (!is.null(generaw2())){
-        return(generaw2())
-      } else {
+      if (is.null(generaw2())){
         return(generaw1())
+      } else {
+        return(generaw2())
       }
     })
     
