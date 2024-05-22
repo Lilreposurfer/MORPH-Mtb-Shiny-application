@@ -458,6 +458,16 @@ source("rentrez.R")
                header = TRUE)
     })
     
+    output$dataexpLength <- reactive({
+      nrow(dataexp())
+    })
+    dataexpFiltered <- reactive({
+      Filtering(dataexp())
+    })
+    output$dataexpLengthFiltered <- reactive({
+      nrow(dataexpFiltered())
+    })
+    
     ###########################################################################  
     ## Download processed expression data ##
     # Depict what content to download
@@ -483,8 +493,9 @@ source("rentrez.R")
     
     # Normalize and filter expression data
     datalog <- reactive({
-      log(dataexp())
+      log(dataexpFiltered())
     })
+    
     
     # Cluster expression data with K-means
     wssk <- reactive ({
@@ -523,6 +534,7 @@ source("rentrez.R")
     output$tb2 <- renderUI({
       tabsetPanel(
         tabPanel("Expression data", tableOutput("expressiondata")),
+        tabPanel("Filtered expression data", tags$h4("Genes before filtering: "), textOutput("dataexpLength"), tags$h4("Genes after filtering:"), textOutput("dataexpLengthFiltered")),
         tabPanel("Clustering", plotOutput("kmeansplot"), plotOutput("SOMplot"))
                  
       )

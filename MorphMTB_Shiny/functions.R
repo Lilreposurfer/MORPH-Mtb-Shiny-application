@@ -1,13 +1,22 @@
 # Functions
 
-## Normalization, Filtering and histograms after normalization
-log <- function(data){
+## Normalization and Filtering after normalization
+Filtering <- function(data){
   a <- DGEList(data, group = NULL) # create DGEList object
   b <- calcNormFactors(a, method = "TMM") # perform TMM normalization
   norm_data <- cpm(b, log=FALSE) # retrieve normalized counts
   sd_expr <- apply(norm_data, 1, sd)   # SD for each gene
   threshold <- 1    # threshold
   norm_data_filtered <- norm_data[sd_expr >= threshold, ] # remove gene with sd<1
+}
+
+log <- function(norm_data_filtered){
+  #a <- DGEList(data, group = NULL) # create DGEList object
+  #b <- calcNormFactors(a, method = "TMM") # perform TMM normalization
+  #norm_data <- cpm(b, log=FALSE) # retrieve normalized counts
+  #sd_expr <- apply(norm_data, 1, sd)   # SD for each gene
+  #threshold <- 1    # threshold
+  #norm_data_filtered <- norm_data[sd_expr >= threshold, ] # remove gene with sd<1
   log_data <- log2(norm_data_filtered + 1)
   log_data
 }
