@@ -169,9 +169,12 @@ source("rentrez.R")
     
     # Get length of input pathway uploaded by file
     generaw1 <- reactive({
-      length(read.csv(file=input$file$datapath[], 
+      generaw <- reactive({unlist(read.csv(file=input$file$datapath[], 
                                 sep='\t', 
-                                header = FALSE))
+                                header = FALSE))})
+      generawNoNA <- reactive({na.omit(generaw())})
+      length(generawNoNA())
+      
     })
     # Get length of input pathway submitted by text
     generaw2 <- reactive({
@@ -189,16 +192,19 @@ source("rentrez.R")
             # If there is no file uploaded, don't return anything
             if(is.null(input$file)) {return()}
             # Get individual genes 
-            gene <- unlist(read.csv(file=input$file$datapath[], 
+            gene <- reactive({unlist(read.csv(file=input$file$datapath[], 
                                              sep='\t', 
-                                             header = FALSE))
-            MtbGeneFile <- grepl("^Rv|^rv|^RV", gene)
+                                             header = FALSE))})
+            geneNoNA <- na.omit(gene())
+            # Check if genes start with Rv
+            MtbGeneFile <- grepl("^Rv|^rv|^RV", geneNoNA)
             number1 <- sapply(1:generaw1(), function(i){i})
-            # Make dataframe out of elements to put in table
+            # Check if all input genes are from Mtb
             if("FALSE" %in% MtbGeneFile){
               return("This list contains at least 1 gene not from Mtb.")
             } else{
-              return(data.frame(No=number1,Genes=gene))
+              # Make dataframe out of elements to put in table
+              return(data.frame(No=number1,Genes=geneNoNA))
             }},
             # Color table every other line
             striped=TRUE)}
@@ -211,12 +217,14 @@ source("rentrez.R")
             if(is.null(input$genes)) {return()}
             # Get individual genes
             gene <- unlist(strsplit(input$genes, "\n"))
+            # Check if genes start with Rv
             MtbGene <- grepl("^Rv|^rv|^RV", gene)
             number2 <- sapply(1:generaw2(), function(i){i})
-            # Make dataframe out of elements to put in table if genes of Mtb (start with Rv)
+            # Check if all input genes are from Mtb
             if("FALSE" %in% MtbGene){
               return("This list contains at least 1 gene not from Mtb.")
             } else{
+              # Make dataframe out of elements to put in table if genes of Mtb (start with Rv)
               return(data.frame(No=number2,Genes=gene))
             }},
             # Color table every other line
