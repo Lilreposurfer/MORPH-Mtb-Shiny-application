@@ -457,15 +457,25 @@ source("rentrez.R")
                sep='\t', 
                header = TRUE)
     })
-    
-    output$dataexpLength <- reactive({
-      nrow(dataexp())
-    })
+   
+    # Filtering 
     dataexpFiltered <- reactive({
       Filtering(dataexp())
     })
-    output$dataexpLengthFiltered <- reactive({
+    
+     # Amount of genes uploaded in expression data
+    dataexpLength <- reactive({
+      nrow(dataexp())
+    })
+    
+    # Amount of genes after filtering
+    dataexpLengthFiltered <- reactive({
       nrow(dataexpFiltered())
+    })
+    
+    # Percentage of genes kept after filtering
+    output$PercentageAfterFiltering <- reactive({
+      (dataexpLengthFiltered()/dataexpLength())*100
     })
     
     ###########################################################################  
@@ -534,7 +544,7 @@ source("rentrez.R")
     output$tb2 <- renderUI({
       tabsetPanel(
         tabPanel("Expression data", tableOutput("expressiondata")),
-        tabPanel("Filtered expression data", tags$h4("Genes before filtering: "), textOutput("dataexpLength"), tags$h4("Genes after filtering:"), textOutput("dataexpLengthFiltered")),
+        tabPanel("Filtered expression data", tags$h4("Percentage of genes kept after filtering: "), textOutput("PercentageAfterFiltering")),
         tabPanel("Clustering", plotOutput("kmeansplot"), plotOutput("SOMplot"))
                  
       )
