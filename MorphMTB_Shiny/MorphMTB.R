@@ -475,7 +475,7 @@ source("rentrez.R")
     
     # Percentage of genes kept after filtering
     output$PercentageAfterFiltering <- reactive({
-      (dataexpLengthFiltered()/dataexpLength())*100
+      round((dataexpLengthFiltered()/dataexpLength())*100,2)
     })
     
     ###########################################################################  
