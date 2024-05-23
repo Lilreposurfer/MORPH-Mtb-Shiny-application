@@ -11,16 +11,8 @@ Filtering <- function(data){
   return(norm_data_filtered)
 }
 
-log <- function(data){
-  gene_ids <- data$Gene_ID # Extract gene identifiers
-  a <- DGEList(data, group = NULL) # create DGEList object
-  b <- calcNormFactors(a, method = "TMM") # perform TMM normalization
-  norm_data <- cpm(b, log=FALSE) # retrieve normalized counts
-  sd_expr <- apply(norm_data, 1, sd)   # SD for each gene
-  threshold <- 1    # threshold
-  norm_data_filtered <- round(norm_data[sd_expr >= threshold, ],2) # remove gene with sd<1
+log <- function(norm_data_filtered){
   log_data <- round(log2(norm_data_filtered + 1),2)
-  log_data <- cbind(GeneID = gene_ids[sd_expr >= threshold], log_data)
   return(log_data)
 }
 
