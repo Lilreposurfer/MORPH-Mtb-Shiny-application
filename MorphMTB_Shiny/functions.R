@@ -94,16 +94,15 @@ kmeansclusters <- function(gene_ids, kmc){
   kmeans_cluster <- data.frame(genes, cluster)
   return(kmeans_cluster)
 }
-
 #write.delim(kmeans_cluster1, "kmeansdrug.txt", sep="\t", col.names=FALSE, row.names=FALSE)
 
 ## SOM clusters
-somclusters <- function(){
-  
+somclustersss <- function(gene_ids, somc){
+  gene_names <- gene_ids
+  cluster_assignments <- somc$cluster
+  gene_clusters <- data.frame(genes = gene_names, cluster = cluster_assignments)
+  return(gene_clusters)
 }
-#gene_names1 <- rownames(log_drug)
-#cluster_assignments1 <- SOM$cluster
-#gene_clusters1 <- data.frame(gene = gene_names1, cluster = cluster_assignments1)
 #write.delim(gene_clusters1, "somdrug.txt", sep="\t", col.names=FALSE, row.names=FALSE)
 
 ## Config

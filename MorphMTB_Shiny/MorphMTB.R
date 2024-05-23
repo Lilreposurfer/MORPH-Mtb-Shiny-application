@@ -524,7 +524,7 @@ source("rentrez.R")
     # Define clusters
     # Clusters K-means
     kmclusters <- reactive({
-      kmc(datalog(), input$elbowkmeans)
+      kmc(datalog(), input$elbowkmeans)$cluster
     })
     # Clusters SOM
     somclusters <- reactive({
@@ -554,16 +554,20 @@ source("rentrez.R")
       }
     )
     #########################################################################
-    
+    # Getting the gene IDs of the genes kept in analysis after filtering
     geneIds <- reactive({
       geneids(dataexp())
     })
     
+    # K-means clusters per gene
     output$kmeanscluster <- renderTable({ ## 2 en 1 zijn omgewisseld!!
       kmeansclusters(geneIds(), kmclusters())
     })
     
-    
+    #SOM clusters per gene
+    output$SOMcluster <- renderTable({
+      somclustersss(geneIds(), somclusters())
+    })
       
     # What is shown in output page2
     output$tb2 <- renderUI({
@@ -571,7 +575,7 @@ source("rentrez.R")
         tabPanel("Expression data", tableOutput("expressiondata")),
         tabPanel("Filtered expression data", tags$h4("Percentage of genes kept after filtering: "), textOutput("PercentageAfterFiltering")),
         tabPanel("Clustering", plotOutput("kmeansplot"), plotOutput("SOMplot")), 
-        tabPanel("clusterTest", tableOutput("kmeanscluster"))
+        tabPanel("clusterTest", tableOutput("kmeanscluster"), tableOutput("SOMcluster"))
       )
     })
 
