@@ -2,28 +2,26 @@
 
 ## Normalization and Filtering after normalization
 Filtering <- function(data){
+  a <- DGEList(data, group = NULL) # create DGEList object
+  b <- calcNormFactors(a, method = "TMM") # perform TMM normalization
+  norm_data <- cpm(b, log=FALSE) # retrieve normalized counts
+  sd_expr <- apply(norm_data, 1, sd)   # SD for each gene
+  threshold <- 1    # threshold
+  norm_data_filtered <- norm_data[sd_expr >= threshold, ] # remove gene with sd<1
+  return(norm_data_filtered)
+}
+
+log <- function(data){
   gene_ids <- data$Gene_ID # Extract gene identifiers
   a <- DGEList(data, group = NULL) # create DGEList object
   b <- calcNormFactors(a, method = "TMM") # perform TMM normalization
   norm_data <- cpm(b, log=FALSE) # retrieve normalized counts
-  #norm_data
   sd_expr <- apply(norm_data, 1, sd)   # SD for each gene
-  #sd_expr
   threshold <- 1    # threshold
   norm_data_filtered <- round(norm_data[sd_expr >= threshold, ],2) # remove gene with sd<1
-  norm_data_filtered <- cbind(GeneID = gene_ids[sd_expr >= threshold], norm_data_filtered)
-  return(norm_data_filtered)
-}
-
-log <- function(norm_data_filtered){
-  #a <- DGEList(data, group = NULL) # create DGEList object
-  #b <- calcNormFactors(a, method = "TMM") # perform TMM normalization
-  #norm_data <- cpm(b, log=FALSE) # retrieve normalized counts
-  #sd_expr <- apply(norm_data, 1, sd)   # SD for each gene
-  #threshold <- 1    # threshold
-  #norm_data_filtered <- norm_data[sd_expr >= threshold, ] # remove gene with sd<1
-  log_data <- log2(norm_data_filtered + 1)
-  log_data
+  log_data <- round(log2(norm_data_filtered + 1),2)
+  log_data <- cbind(GeneID = gene_ids[sd_expr >= threshold], log_data)
+  return(log_data)
 }
 
 ########################################################################################################################
