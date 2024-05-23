@@ -333,7 +333,7 @@ source("rentrez.R")
     })
       
       
-    output$TopPredictions <- renderTable({ ###KOMT NIET OVEREEN??!!
+    output$TopPredictions <- renderTable({ 
       #as.matrix(head(format(round(Predictions(),6)), input$numbercandidates))
       ids <- rownames(as.matrix(head(format(round(Predictions(),6)), input$numbercandidates)))
       number <- sapply(1:input$numbercandidates, function(i){i})
@@ -346,14 +346,6 @@ source("rentrez.R")
     #https://statsandr.com/blog/web-scraping-in-r/
     #https://bioconnector.github.io/workshops/r-ncbi.html
     #chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://journal.r-project.org/archive/2017/RJ-2017-058/RJ-2017-058.pdf
-    
-    #   Rv2459  Rv2457c   Rv0017c   Rv0175    Rv2374c   Rv2409c
-    # 1.667578  1.626418  1.584958  1.567205  1.551403  1.527462
-    
-    #test:
-    # Rv3572    Rv1880c   Rv3756c   Rv1057    Rv3061c   Rv2325c
-    # 1.966574  1.958577  1.933944  1.932776  1.929202  1.909758
-    
     
     ###########################################################################  
     ## If user wants to download top candidate genes ##
@@ -473,9 +465,9 @@ source("rentrez.R")
     
     # Get expression data to work further with
     dataexp <- reactive({
-      read.csv(file=input$file_expressiondata$datapath[], 
+      data.frame(read.csv(file=input$file_expressiondata$datapath[], 
                sep='\t', 
-               header = TRUE)
+               header = TRUE))
     })
    
     # Filtering 
@@ -498,28 +490,7 @@ source("rentrez.R")
       round((dataexpLengthFiltered()/dataexpLength())*100,2)
     })
     
-    ###########################################################################  
-    ## Download processed expression data ##
-    # Depict what content to download
-    #dataexpDownload <- reactive({
-    #  read.csv(file=input$file_expressiondata$datapath[], 
-    #           sep='\t',
-    #           header = TRUE)
-    #})
-    #dataexpDownload2 <- reactive({
-    #  dataexpDownload()[-1,-1]
-    #})
-    # Depict what downloaded document will be named and what content(type) is
-    #output$downloadExprData <- downloadHandler(
-    #  filename = function(){
-    #    paste0("ExpressionData-", Sys.Date(),".txt", sep="")
-    #  },
-    #  content = function(file){
-    #    writeLines(dataexpDownload(), file)
-    #  },
-    #  contentType = "text/csv"
-    #)
-    #########################################################################
+
     
     # Normalize and filter expression data
     datalog <- reactive({
@@ -559,14 +530,38 @@ source("rentrez.R")
     somclusters <- reactive({
       SOMc(weightsom(), input$elbowsom)
     })
+    
+    #Process expression data
+    #dataexpProcessed <- renderTable({
+    #  as.data.frame(dataexp())
+    #}, colnames=FALSE)
+    
+    ###########################################################################  
+    ## Download processed expression data ##
+    # Depict what content to download
+    dataexpDownload <- reactive({
+      data.frame(read.csv(file=input$file_expressiondata$datapath[], 
+                          sep='\t', 
+                          header = TRUE))
+    })
+    # Depict what downloaded document will be named and what content(type) is
+    output$downloadExprData <- downloadHandler(
+      filename = function(){
+        paste0("ExpressionData.txt", sep="")
+      },
+      content = function(file){
+        write.table(dataexpDownload(), file, sep="\t", row.names= FALSE, col.names=FALSE, quote=FALSE)
+      }
+    )
+    #########################################################################
+    
       
     # What is shown in output page2
     output$tb2 <- renderUI({
       tabsetPanel(
         tabPanel("Expression data", tableOutput("expressiondata")),
         tabPanel("Filtered expression data", tags$h4("Percentage of genes kept after filtering: "), textOutput("PercentageAfterFiltering")),
-        tabPanel("Clustering", plotOutput("kmeansplot"), plotOutput("SOMplot"))
-                 
+        tabPanel("Clustering", plotOutput("kmeansplot"), plotOutput("SOMplot"))        
       )
     })
 
