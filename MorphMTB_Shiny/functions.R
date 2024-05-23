@@ -2,12 +2,17 @@
 
 ## Normalization and Filtering after normalization
 Filtering <- function(data){
+  gene_ids <- data$Gene_ID # Extract gene identifiers
   a <- DGEList(data, group = NULL) # create DGEList object
   b <- calcNormFactors(a, method = "TMM") # perform TMM normalization
   norm_data <- cpm(b, log=FALSE) # retrieve normalized counts
+  #norm_data
   sd_expr <- apply(norm_data, 1, sd)   # SD for each gene
+  #sd_expr
   threshold <- 1    # threshold
-  norm_data_filtered <- norm_data[sd_expr >= threshold, ] # remove gene with sd<1
+  norm_data_filtered <- round(norm_data[sd_expr >= threshold, ],2) # remove gene with sd<1
+  norm_data_filtered <- cbind(GeneID = gene_ids[sd_expr >= threshold], norm_data_filtered)
+  return(norm_data_filtered)
 }
 
 log <- function(norm_data_filtered){
@@ -80,18 +85,27 @@ SOMc <- function(weight, elbowS){
 ##########################################################################################################
 ## Data Preparation for MORPH ##
 # Preparing 
-## Gene Expression
-#write.delim(drug, "drug.txt", sep="\t", col.names=FALSE, row.names=FALSE)
+
 ## K-means clusters
-#genes1 <- rownames(log_drug)
-#cluster1 <- kmc1$cluster
-#kmeans_cluster1 <- data.frame(genes1, cluster1)
+kmeansclusters <- function(exp_data, kmc){
+  genes <- colnames(exp_data)
+  genes
+  #cluster <- kmc$cluster
+  #kmeans_cluster <- data.frame(genes, cluster)
+  #kmeans_cluster
+}
+
 #write.delim(kmeans_cluster1, "kmeansdrug.txt", sep="\t", col.names=FALSE, row.names=FALSE)
+
 ## SOM clusters
+somclusters <- function(){
+  
+}
 #gene_names1 <- rownames(log_drug)
 #cluster_assignments1 <- SOM$cluster
 #gene_clusters1 <- data.frame(gene = gene_names1, cluster = cluster_assignments1)
 #write.delim(gene_clusters1, "somdrug.txt", sep="\t", col.names=FALSE, row.names=FALSE)
+
 ## Config
 #A=c("clark.txt","clark.txt", "drug.txt", "drug.txt", "ESX.txt", "ESX.txt", "inaki.txt", 
 #    "inaki.txt", "primary.txt", "primary.txt", "timecourse.txt", "timecourse.txt")
