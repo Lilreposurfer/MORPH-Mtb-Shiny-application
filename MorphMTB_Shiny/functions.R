@@ -24,6 +24,17 @@ log <- function(data){
   return(log_data)
 }
 
+geneids <- function(data){
+  gene_ids <- data$Gene_ID # Extract gene identifiers
+  a <- DGEList(data, group = NULL) # create DGEList object
+  b <- calcNormFactors(a, method = "TMM") # perform TMM normalization
+  norm_data <- cpm(b, log=FALSE) # retrieve normalized counts
+  sd_expr <- apply(norm_data, 1, sd)   # SD for each gene
+  threshold <- 1    # threshold
+  geneids <- gene_ids[sd_expr >= threshold]
+  return(geneids) 
+}
+
 ########################################################################################################################
 ## Clustering
 wsskmeans <- function(logdata){
@@ -85,12 +96,11 @@ SOMc <- function(weight, elbowS){
 # Preparing 
 
 ## K-means clusters
-kmeansclusters <- function(exp_data, kmc){
-  genes <- colnames(exp_data)
-  genes
-  #cluster <- kmc$cluster
-  #kmeans_cluster <- data.frame(genes, cluster)
-  #kmeans_cluster
+kmeansclusters <- function(gene_ids, kmc){
+  genes <- gene_ids
+  cluster <- kmc$cluster
+  kmeans_cluster <- data.frame(genes, cluster)
+  return(kmeans_cluster)
 }
 
 #write.delim(kmeans_cluster1, "kmeansdrug.txt", sep="\t", col.names=FALSE, row.names=FALSE)

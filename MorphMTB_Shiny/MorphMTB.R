@@ -555,8 +555,12 @@ source("rentrez.R")
     )
     #########################################################################
     
+    geneIds <- reactive({
+      geneids(dataexp())
+    })
+    
     output$kmeanscluster <- renderTable({
-      kmeansclusters(datalog(), kmclusters())
+      kmeansclusters(geneIds(), kmclusters())
     })
     
     
@@ -567,7 +571,7 @@ source("rentrez.R")
         tabPanel("Expression data", tableOutput("expressiondata")),
         tabPanel("Filtered expression data", tags$h4("Percentage of genes kept after filtering: "), textOutput("PercentageAfterFiltering")),
         tabPanel("Clustering", plotOutput("kmeansplot"), plotOutput("SOMplot")), 
-        tabPanel("clusterTest", tableOutput("datalog"))
+        tabPanel("clusterTest", textOutput("gene_ids"))
                  #tableOutput("kmeanscluster"))
       )
     })
