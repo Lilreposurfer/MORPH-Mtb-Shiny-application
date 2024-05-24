@@ -532,28 +532,7 @@ source("rentrez.R")
       SOMc(weightsom(), input$elbowsom)
     })
     
-    #Process expression data
-    #dataexpProcessed <- renderTable({
-    #  as.data.frame(dataexp())
-    #}, colnames=FALSE)
-    
-    ###########################################################################  
-    ## Download processed expression data ##
-    # Depict what content to download
-    #dataexpDownload <- reactive({
-    #  data.frame(read.csv(file=input$file_expressiondata$datapath[], 
-    #                      sep='\t', 
-    #                      header = TRUE))
-    #})
-    # Depict what downloaded document will be named and what content(type) is
-    #output$downloadExprData <- downloadHandler(
-    #  filename = function(){
-    #    paste0("ExpressionData.txt", sep="")
-    #  },
-    #  content = function(file){
-    #    write.table(dataexpDownload(), file, sep="\t", row.names= FALSE, col.names=FALSE, quote=FALSE)
-    #  }
-    #)
+
     #########################################################################
     # Getting the gene IDs of the genes kept in analysis after filtering
     geneIds <- reactive({
@@ -592,7 +571,7 @@ source("rentrez.R")
       
       # Notify the user
       output$file_status <- renderText({
-        paste("Processed expression data file written to:", file_path1)
+        paste("Processed expression data file written to:", file_path1)})
         
       
       ########################
@@ -609,22 +588,17 @@ source("rentrez.R")
       # Notify the user
       output$file_status2 <- renderText({
         paste("K-means clustering file written to:", file_path2)
-      })
+      
     }) 
       
       ######################
-      
-      })
-    })
-    
-    
-    
     # Download SOM clustering of the expression data automatically after defining elbow
     #observeEvent(input$elbowsom, {
       
     #})
-  
-    
+        
+      })
+    })
     ###########################################################################
     
     
@@ -644,7 +618,7 @@ source("rentrez.R")
         tabPanel("Expression data", textOutput("file_status"), textOutput("file_status2"), tableOutput("expressiondata")),
         tabPanel("Filtered expression data", tags$h4("Percentage of genes kept after filtering: "), textOutput("PercentageAfterFiltering")),
         tabPanel("Clustering", plotOutput("kmeansplot"), plotOutput("SOMplot")), 
-        tabPanel("clusterTest", tags$h4("K-means clusters"), tableOutput("kmeanscluster"), tags$h4("SOM clusters"), tableOutput("SOMcluster"))
+        tabPanel("clusterTest", tags$h4("SOM clusters"), tableOutput("SOMcluster"))
                  
       )
     })
