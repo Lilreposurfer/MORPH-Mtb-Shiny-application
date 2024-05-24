@@ -581,18 +581,18 @@ source("rentrez.R")
       
       # Define files path
       file_path1 <- file.path(getwd(), "ExpressionData.txt")
-      #file_path2 <- file.path(getwd(), "kmeansexpdata.txt")
+      file_path2 <- file.path(getwd(), "kmeansexpdata.txt")
       #file_path3 <- file.path(getwd(), "somexpdata.txt")
       
       # Write the files
       write.table(dataexpDownload(), file_path1, sep = "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
-      #write.table(dataexpKmeansDownload(), file_path2, sep= "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
+      write.table(dataexpKmeansDownload(), file_path2, sep= "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
       #write.table(dataexpSOMDownload(), file_path3, sep= "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
       
       # Notify the user
       output$file_status <- renderText({
-        paste("Files written to:", file_path1)
-              #, file_path2, file_path3)
+        paste("Files written to:", file_path1, file_path2)
+        #, file_path3)
       })
     })
   
