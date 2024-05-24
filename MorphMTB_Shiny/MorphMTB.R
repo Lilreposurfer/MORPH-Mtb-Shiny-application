@@ -72,8 +72,6 @@ source("rentrez.R")
     #global_seed = reactive(input$chosen_seed)
     #set.seed(2023)
     
-    #values <- reactiveValues()
-    
     #what happens on page1 (gene centric query)
     output$page1 <- renderUI({
       sidebarLayout(
@@ -161,7 +159,8 @@ source("rentrez.R")
       mainPanel(
         h4("About MORPH-Mtb")
       )})
-    
+
+###############################################################################################   
 ###############################################################################################    
 ### PAGE1 ###    
    # shiny_busy <- function() {
@@ -472,7 +471,8 @@ source("rentrez.R")
         
     })
     })
-    
+
+#########################################################################################################  
 #########################################################################################################
 ### PAGE2 ###   
     # Get data uploaded expression data file for output
@@ -641,15 +641,8 @@ source("rentrez.R")
     ###########################################################################
     
     
-    # K-means clusters per gene
-    #output$kmeanscluster <- renderTable({ 
-    #  kmeansclusters(geneIds(), kmclusters())
-    #})
     
-    #SOM clusters per gene
-    #output$SOMcluster <- renderTable({
-    #  somclustersss(geneIds(), somclusters())
-    #})
+    
     
     configurationexpdata <- reactive({
       data.frame(V1=c("clark.txt","clark.txt","drug.txt","drug.txt","ESX.txt","ESX.txt",
@@ -667,9 +660,13 @@ source("rentrez.R")
         tabPanel("Expression data", textOutput("file_status"), tableOutput("expressiondata")),
         tabPanel("Filtered expression data", tags$h4("Percentage of genes kept after filtering: "), textOutput("PercentageAfterFiltering")),
         tabPanel("Clustering", textOutput("file_status2"), textOutput("file_status3"), tags$h4("Elbow plots:"), plotOutput("kmeansplot"), plotOutput("SOMplot")), 
-        tabPanel("Test")
-                 
-      )
+        tabPanel("Input pathway", tableOutput("pathway2"), tableOutput("contents2")),
+        tabPanel("Result random pathway", tags$h4("Average AUSR score:"), textOutput("averageRandomPathways2"), br(), tags$h4("Scores random pathways:"), br(), tableOutput("scoresAUSR2")),
+        tabPanel("Result input pathway", tags$h4("AUSR:"), textOutput("AUSRBestConfig2"), br(), 
+                 tags$h4("Best configuration:"), textOutput("BestConfigDataset2"), textOutput("BestConfigCluster2"), br(),
+                 tags$h4("Top candidate genes:"), tableOutput("TopPredictions2"), br(), tags$h5("Click the download link to download list candidate genes."))
+        )
+
     })
 
   }
