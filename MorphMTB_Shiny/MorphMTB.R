@@ -576,25 +576,53 @@ source("rentrez.R")
       return(data3)
     })
     
+    # Download processed expression data file automatically after uploading file
     observeEvent(input$file_expressiondata, {
       req(input$file_expressiondata)
       
       # Define files path
       file_path1 <- file.path(getwd(), "ExpressionData.txt")
-      file_path2 <- file.path(getwd(), "kmeansexpdata.txt")
+      
       #file_path3 <- file.path(getwd(), "somexpdata.txt")
       
-      # Write the files
+      # Write the file
       write.table(dataexpDownload(), file_path1, sep = "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
-      write.table(dataexpKmeansDownload(), file_path2, sep= "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
+
       #write.table(dataexpSOMDownload(), file_path3, sep= "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
       
       # Notify the user
       output$file_status <- renderText({
-        paste("Files written to:", file_path1, file_path2)
-        #, file_path3)
+        paste("Processed expression data file written to:", file_path1)
+        
+      
+      ########################
+    # Download K-means clustering of the expression data automatically after defining elbow
+    observeEvent(input$elbowkmeans, {
+      req(input$elbowkmeans)
+      
+      # Define file path
+      file_path2 <- file.path(getwd(), "kmeansexpdata.txt")
+      
+      # Write the file
+      write.table(dataexpKmeansDownload(), file_path2, sep= "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
+      
+      # Notify the user
+      output$file_status2 <- renderText({
+        paste("K-means clustering file written to:", file_path2)
+      })
+    }) 
+      
+      ######################
+      
       })
     })
+    
+    
+    
+    # Download SOM clustering of the expression data automatically after defining elbow
+    #observeEvent(input$elbowsom, {
+      
+    #})
   
     
     ###########################################################################
@@ -613,7 +641,7 @@ source("rentrez.R")
     # What is shown in output page2
     output$tb2 <- renderUI({
       tabsetPanel(
-        tabPanel("Expression data", textOutput("file_status"), tableOutput("expressiondata")),
+        tabPanel("Expression data", textOutput("file_status"), textOutput("file_status2"), tableOutput("expressiondata")),
         tabPanel("Filtered expression data", tags$h4("Percentage of genes kept after filtering: "), textOutput("PercentageAfterFiltering")),
         tabPanel("Clustering", plotOutput("kmeansplot"), plotOutput("SOMplot")), 
         tabPanel("clusterTest", tags$h4("K-means clusters"), tableOutput("kmeanscluster"), tags$h4("SOM clusters"), tableOutput("SOMcluster"))
