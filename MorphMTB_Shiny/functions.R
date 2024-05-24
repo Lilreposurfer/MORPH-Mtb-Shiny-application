@@ -137,9 +137,62 @@ getGeneExpression <- function(InputGE)
 
 ## MORPH Algorithm
 ### [2.1] prepare Morph Object From Files {Input;Configuration file (data and cluster solution), Output:MORPH object}
-prepareMorphObjectFromFiles <- function(InputGOI = NULL, configuration, ...) {
+prepareMorphObjectFromFiles <- function(InputGOI = NULL, ...) {
   #Config = read.delim(InputConfig, sep = "\t", header=FALSE) #Reads the configs.txt file.
-  Config = configuration
+  Config = data.frame(V1=c("clark.txt","clark.txt","drug.txt","drug.txt","ESX.txt","ESX.txt",
+                           "inaki.txt","inaki.txt","primary.txt","primary.txt","timecourse.txt","timecourse.txt"),
+                      V2=c("kmeansclark.txt","somclark.txt","kmeansdrug.txt","somdrug.txt","kmeansESX.txt","somESX.txt",
+                           "kmeansinaki.txt","sominaki.txt","kmeansprimary.txt","somprimary.txt","kmeanstimecourse.txt","somtimecourse.txt"))
+  List_GE = as.character(Config[,1]) #Reads the first column (containing paths to gene-expression data files)
+  List_C = as.character(Config[,2]) #Reads the second column (containing paths to clustering solution files)
+  G = c() #Initialize the vector to contain names of pathway-genes.
+  if (! is.null(InputGOI)){ #Is the path to the pathway-genes file defined?
+    G = GetGOIs(InputGOI) #Reads file into variable.
+  }
+  ge_datasets = list() #Initialize list to contain all gene-expression matrices.
+  clustering_solutions = list() #Initialize list to contain all clustering solutions.
+  #Go over all the datasets and solutions pairs, and insert them to the data structures.
+  for (I in (1:length(List_C))) {
+    cl = List_C[[I]]
+    ge = List_GE[[I]]
+    #Read the dataset only if it still doesn't exists in ge_datasets.
+    #As each dataset can appear many time in the config file, we insert it only once to the data
+    #structure (preformance reasons)
+    if (is.null(ge_datasets[[ge]])) {
+      ge_data = getGeneExpression(ge) #Read data into variable.
+      ge_datasets[[ge]] = ge_data #Add gene-expression dataset to the list.
+    }
+    #Insert the current solution to the clustering solutions data stucture.
+    #The processing of the solution is against the current dataset.
+    #Clustering solution should be unique to each dataset (recommended).
+    raw_cl =  getClusteringInformation(cl) #Read data into variable.
+    genes_to_keep = intersect(rownames(raw_cl),rownames(ge_data)) #Keep only the genes that appear both in the gene-expression data AND the clustering solution.
+    raw_cl = as.matrix(raw_cl[genes_to_keep,],ncol=1) #Extract the kept-genes' lines as a matrix.
+    rownames(raw_cl) = genes_to_keep #Rename matrix's rows accordingly.
+    raw_cl_genes = rownames(raw_cl) #Extract names genes in clustering solution.
+    raw_cl_clusters = raw_cl[,1] #Extract parent clusters of genes in clustering solution.
+    unclustered = setdiff(rownames(ge_data),raw_cl_genes) #Detect unclustered genes (those who appear in gene-expression but NOT in clustering solution).
+    if (length(unclustered) == 0){ #Have we met NO unclustered genes?
+      clustering_solutions[[cl]] = raw_cl #Add clustering solution data to the list.
+      next #Move to next clustering solution.
+    }
+    #Have we met unclustered genes?
+    uncl = rep ("unclustered",length(unclustered)) #Set their parent clusters as "unclustered".
+    clustering = matrix(c(raw_cl_clusters,uncl),ncol=1) #Create a matrix with the unclustered genes at the bottom.
+    rownames(clustering) = c(raw_cl_genes,unclustered) #Rename the rows according to gene names.
+    clustering_solutions[[cl]] = clustering #Add clustering solution data to the list.
+  }									                          
+  #Create and return a MORPH object (see function description).
+  morph_obj = list(config = Config, clustering_solutions = clustering_solutions, ge_datasets = ge_datasets, pathway_genes = G)
+  class(morph_obj)<-"morph_data" # equivalent to Java class
+  return (morph_obj)}
+
+prepareMorphObjectFromFiles2 <- function(InputGOI = NULL, ...) {
+  #Config = read.delim(InputConfig, sep = "\t", header=FALSE) #Reads the configs.txt file.
+  Config = data.frame(V1=c("clark.txt","clark.txt","drug.txt","drug.txt","ESX.txt","ESX.txt",
+                           "inaki.txt","inaki.txt","primary.txt","primary.txt","timecourse.txt","timecourse.txt", "ExpressionData.txt", "ExpressionData.txt"),
+                      V2=c("kmeansclark.txt","somclark.txt","kmeansdrug.txt","somdrug.txt","kmeansESX.txt","somESX.txt",
+                           "kmeansinaki.txt","sominaki.txt","kmeansprimary.txt","somprimary.txt","kmeanstimecourse.txt","somtimecourse.txt", "kmeansexpdata.txt", "somexpdata.txt"))
   List_GE = as.character(Config[,1]) #Reads the first column (containing paths to gene-expression data files)
   List_C = as.character(Config[,2]) #Reads the second column (containing paths to clustering solution files)
   G = c() #Initialize the vector to contain names of pathway-genes.
