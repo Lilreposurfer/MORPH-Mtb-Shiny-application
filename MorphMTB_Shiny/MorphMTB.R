@@ -247,9 +247,17 @@ source("rentrez.R")
                         header = FALSE))}
     }) 
     
+    # Configuration
+    configuration <- reactive({
+      data.frame(V1=c("clark.txt","clark.txt","drug.txt","drug.txt","ESX.txt","ESX.txt",
+                      "inaki.txt","inaki.txt","primary.txt","primary.txt","timecourse.txt","timecourse.txt"),
+                 V2=c("kmeansclark.txt","somclark.txt","kmeansdrug.txt","somdrug.txt","kmeansESX.txt","somESX.txt",
+                      "kmeansinaki.txt","sominaki.txt","kmeansprimary.txt","somprimary.txt","kmeanstimecourse.txt","somtimecourse.txt"))
+    })
+    
     # Create morph input using function
     morphinput <- reactive({
-      input <- prepareMorphObjectFromFiles(InputGOI())
+      input <- prepareMorphObjectFromFiles(InputGOI(), configuration())
       input
       })
     
@@ -534,6 +542,8 @@ source("rentrez.R")
     
 
     #########################################################################
+    ## Automatically downloading files
+    
     # Getting the gene IDs of the genes kept in analysis after filtering
     geneIds <- reactive({
       geneids(dataexp())
@@ -612,14 +622,24 @@ source("rentrez.R")
     
     
     # K-means clusters per gene
-    output$kmeanscluster <- renderTable({ 
-      kmeansclusters(geneIds(), kmclusters())
-    })
+    #output$kmeanscluster <- renderTable({ 
+    #  kmeansclusters(geneIds(), kmclusters())
+    #})
     
     #SOM clusters per gene
-    output$SOMcluster <- renderTable({
-      somclustersss(geneIds(), somclusters())
+    #output$SOMcluster <- renderTable({
+    #  somclustersss(geneIds(), somclusters())
+    #})
+    
+    configurationexpdata <- reactive({
+      data.frame(V1=c("clark.txt","clark.txt","drug.txt","drug.txt","ESX.txt","ESX.txt",
+                      "inaki.txt","inaki.txt","primary.txt","primary.txt","timecourse.txt","timecourse.txt", "ExpressionData.txt"),
+                 V2=c("kmeansclark.txt","somclark.txt","kmeansdrug.txt","somdrug.txt","kmeansESX.txt","somESX.txt",
+                      "kmeansinaki.txt","sominaki.txt","kmeansprimary.txt","somprimary.txt","kmeanstimecourse.txt","somtimecourse.txt", "kmeansexpdata.txt", "somexpdata.txt"))
     })
+    
+    
+    
       
     # What is shown in output page2
     output$tb2 <- renderUI({
@@ -627,7 +647,7 @@ source("rentrez.R")
         tabPanel("Expression data", textOutput("file_status"), tableOutput("expressiondata")),
         tabPanel("Filtered expression data", tags$h4("Percentage of genes kept after filtering: "), textOutput("PercentageAfterFiltering")),
         tabPanel("Clustering", textOutput("file_status2"), textOutput("file_status3"), tags$h4("Elbow plots:"), plotOutput("kmeansplot"), plotOutput("SOMplot")), 
-        tabPanel("clusterTest", tags$h4("SOM clusters"), tableOutput("SOMcluster"))
+        tabPanel("Test")
                  
       )
     })

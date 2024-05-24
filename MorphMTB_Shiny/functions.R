@@ -94,7 +94,7 @@ kmeansclusters <- function(gene_ids, kmc){
   kmeans_cluster <- data.frame(genes, cluster)
   return(kmeans_cluster)
 }
-#write.delim(kmeans_cluster1, "kmeansdrug.txt", sep="\t", col.names=FALSE, row.names=FALSE)
+
 
 ## SOM clusters
 somclustersss <- function(gene_ids, somc){
@@ -103,16 +103,9 @@ somclustersss <- function(gene_ids, somc){
   gene_clusters <- data.frame(genes = gene_names, cluster = cluster_assignments)
   return(gene_clusters)
 }
-#write.delim(gene_clusters1, "somdrug.txt", sep="\t", col.names=FALSE, row.names=FALSE)
 
-## Config
-#A=c("clark.txt","clark.txt", "drug.txt", "drug.txt", "ESX.txt", "ESX.txt", "inaki.txt", 
-#    "inaki.txt", "primary.txt", "primary.txt", "timecourse.txt", "timecourse.txt")
-#B=c("kmeansclark.txt", "somclark.txt", "kmeansdrug.txt", "somdrug.txt", 
-#    "kmeansESX.txt", "somESX.txt", "kmeansinaki.txt", "sominaki.txt",
-#    "kmeansprimary.txt", "somprimary.txt", "kmeanstimecourse.txt", "somtimecourse.txt")
-#Configs=data.frame(A,B)
-#write.delim(Configs, "Configs.txt", sep="\t", col.names=FALSE, row.names=FALSE)
+
+
 
 
 ########################################################################################################################
@@ -144,12 +137,9 @@ getGeneExpression <- function(InputGE)
 
 ## MORPH Algorithm
 ### [2.1] prepare Morph Object From Files {Input;Configuration file (data and cluster solution), Output:MORPH object}
-prepareMorphObjectFromFiles <- function(InputGOI = NULL, ...) {
+prepareMorphObjectFromFiles <- function(InputGOI = NULL, configuration, ...) {
   #Config = read.delim(InputConfig, sep = "\t", header=FALSE) #Reads the configs.txt file.
-  Config = data.frame(V1=c("clark.txt","clark.txt","drug.txt","drug.txt","ESX.txt","ESX.txt",
-                  "inaki.txt","inaki.txt","primary.txt","primary.txt","timecourse.txt","timecourse.txt"),
-             V2=c("kmeansclark.txt","somclark.txt","kmeansdrug.txt","somdrug.txt","kmeansESX.txt","somESX.txt",
-                  "kmeansinaki.txt","sominaki.txt","kmeansprimary.txt","somprimary.txt","kmeanstimecourse.txt","somtimecourse.txt"))
+  Config = configuration
   List_GE = as.character(Config[,1]) #Reads the first column (containing paths to gene-expression data files)
   List_C = as.character(Config[,2]) #Reads the second column (containing paths to clustering solution files)
   G = c() #Initialize the vector to contain names of pathway-genes.
