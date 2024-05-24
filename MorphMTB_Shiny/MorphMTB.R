@@ -587,15 +587,24 @@ source("rentrez.R")
       
       # Notify the user
       output$file_status2 <- renderText({
-        paste("K-means clustering file written to:", file_path2)
+        paste("K-means clustering file written to:", file_path2)})
       
     }) 
       
       ######################
     # Download SOM clustering of the expression data automatically after defining elbow
-    #observeEvent(input$elbowsom, {
+    observeEvent(input$elbowsom, {
+      req(input$elbowsom)
       
-    #})
+      # Define file path
+      file_path3 <- file.path(getwd(), "somexpdata.txt")
+      
+      # Write the file
+      write.table(dataexpSOMDownload(), file_path3, sep= "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
+      
+      # Notify the user
+      output$file_status3 <- renderText({
+        paste("SOM clustering file written to:", file_path3)})
         
       })
     })
@@ -615,9 +624,9 @@ source("rentrez.R")
     # What is shown in output page2
     output$tb2 <- renderUI({
       tabsetPanel(
-        tabPanel("Expression data", textOutput("file_status"), textOutput("file_status2"), tableOutput("expressiondata")),
+        tabPanel("Expression data", textOutput("file_status"), tableOutput("expressiondata")),
         tabPanel("Filtered expression data", tags$h4("Percentage of genes kept after filtering: "), textOutput("PercentageAfterFiltering")),
-        tabPanel("Clustering", plotOutput("kmeansplot"), plotOutput("SOMplot")), 
+        tabPanel("Clustering", textOutput("file_status2"), textOutput("file_status3"), tags$h4("Elbow plots:"), plotOutput("kmeansplot"), plotOutput("SOMplot")), 
         tabPanel("clusterTest", tags$h4("SOM clusters"), tableOutput("SOMcluster"))
                  
       )
