@@ -125,8 +125,9 @@ source("rentrez.R")
           sliderInput("elbowkmeans", "Elbow k-means:",
                       min = 2, max = 10, value = 3),
           sliderInput("elbowsom", "Elbow SOM:",
-                      min = 2, max = 10, value = 3),
-          downloadLink("downloadExprData", "Download processed Expression data")
+                      min = 2, max = 10, value = 3)
+          #downloadLink("downloadExprData", "Download processed Expression data"),
+          #actionButton("write_file", "Write Files")
         ),
       mainPanel(
         uiOutput("tb2")
@@ -445,7 +446,7 @@ source("rentrez.R")
     })
     
 #########################################################################################################
-### PAGE3 ###   
+### PAGE2 ###   
     # Get data uploaded expression data file for output
     output$expressiondata <- reactive({
       # See if input is given  
@@ -524,7 +525,7 @@ source("rentrez.R")
     # Define clusters
     # Clusters K-means
     kmclusters <- reactive({
-      kmc(datalog(), input$elbowkmeans)$cluster
+      kmc(datalog(), input$elbowkmeans)
     })
     # Clusters SOM
     somclusters <- reactive({
@@ -539,28 +540,68 @@ source("rentrez.R")
     ###########################################################################  
     ## Download processed expression data ##
     # Depict what content to download
-    dataexpDownload <- reactive({
-      data.frame(read.csv(file=input$file_expressiondata$datapath[], 
-                          sep='\t', 
-                          header = TRUE))
-    })
+    #dataexpDownload <- reactive({
+    #  data.frame(read.csv(file=input$file_expressiondata$datapath[], 
+    #                      sep='\t', 
+    #                      header = TRUE))
+    #})
     # Depict what downloaded document will be named and what content(type) is
-    output$downloadExprData <- downloadHandler(
-      filename = function(){
-        paste0("ExpressionData.txt", sep="")
-      },
-      content = function(file){
-        write.table(dataexpDownload(), file, sep="\t", row.names= FALSE, col.names=FALSE, quote=FALSE)
-      }
-    )
+    #output$downloadExprData <- downloadHandler(
+    #  filename = function(){
+    #    paste0("ExpressionData.txt", sep="")
+    #  },
+    #  content = function(file){
+    #    write.table(dataexpDownload(), file, sep="\t", row.names= FALSE, col.names=FALSE, quote=FALSE)
+    #  }
+    #)
     #########################################################################
     # Getting the gene IDs of the genes kept in analysis after filtering
     geneIds <- reactive({
       geneids(dataexp())
     })
+    # Getting the data from the uploaded file
+    dataexpDownload <- reactive({
+      req(input$file_expressiondata)
+      data <- read.csv(file = input$file_expressiondata$datapath, sep = '\t', header = TRUE)
+      return(data)
+    })
+    # Getting K-means clusters per gene
+    dataexpKmeansDownload <- reactive({
+      data2 <- kmeansclusters(geneIds(), kmclusters())
+      return(data2)
+    })
+    # Getting SOM clusters per gene
+    dataexpSOMDownload <- reactive({
+      data3 <- somclustersss(geneIds(), somclusters())
+      return(data3)
+    })
+    
+    observeEvent(input$file_expressiondata, {
+      req(input$file_expressiondata)
+      
+      # Define files path
+      file_path1 <- file.path(getwd(), "ExpressionData.txt")
+      #file_path2 <- file.path(getwd(), "kmeansexpdata.txt")
+      #file_path3 <- file.path(getwd(), "somexpdata.txt")
+      
+      # Write the files
+      write.table(dataexpDownload(), file_path1, sep = "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
+      #write.table(dataexpKmeansDownload(), file_path2, sep= "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
+      #write.table(dataexpSOMDownload(), file_path3, sep= "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
+      
+      # Notify the user
+      output$file_status <- renderText({
+        paste("Files written to:", file_path1)
+              #, file_path2, file_path3)
+      })
+    })
+  
+    
+    ###########################################################################
+    
     
     # K-means clusters per gene
-    output$kmeanscluster <- renderTable({ ## 2 en 1 zijn omgewisseld!!
+    output$kmeanscluster <- renderTable({ 
       kmeansclusters(geneIds(), kmclusters())
     })
     
@@ -572,10 +613,11 @@ source("rentrez.R")
     # What is shown in output page2
     output$tb2 <- renderUI({
       tabsetPanel(
-        tabPanel("Expression data", tableOutput("expressiondata")),
+        tabPanel("Expression data", textOutput("file_status"), tableOutput("expressiondata")),
         tabPanel("Filtered expression data", tags$h4("Percentage of genes kept after filtering: "), textOutput("PercentageAfterFiltering")),
         tabPanel("Clustering", plotOutput("kmeansplot"), plotOutput("SOMplot")), 
-        tabPanel("clusterTest", tableOutput("kmeanscluster"), tableOutput("SOMcluster"))
+        tabPanel("clusterTest", tags$h4("K-means clusters"), tableOutput("kmeanscluster"), tags$h4("SOM clusters"), tableOutput("SOMcluster"))
+                 
       )
     })
 
