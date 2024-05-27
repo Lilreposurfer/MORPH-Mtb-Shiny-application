@@ -26,6 +26,7 @@ In this folder, the 4 scripts needed for the Shiny web application are stored:
     In this R script, a connection with NCBI is made to retrieve information about the candidate genes.
 4. **styles.css**  
     In this css script, the GUI of the Shiny app is changed to make it more pretty.
+      
 
 ## Using the Shiny web application
 
@@ -50,3 +51,15 @@ Click on the "RStudio-2023.12.1-402.exe" for Windows. A download should be start
 2. Click on install
 3. Finish setup  
 4. You can now open the RStudio application
+
+### The MORPH-Mtb Shiny web application
+To make use of the MORPH-Mtb Shiny web application, you first have to open the MorphMTB.R script with RStudio (Right-click on the file and choose open with RStudio).   
+You will see a button with a green arrow and "Run App". Click on this button and the Shiny app will be started. You can choose to optionally open this in a web browser by clicking the "Open in Browser" button. 
+
+The web application consists out of 3 pages:
+1. **Gene centric query**  
+    You can use this page if you only want to use the implemented 6 datasets.  
+2. **Implement own expression** data    
+    You can use this page if you want to upload your own expression data and use this together with the 6 datasets for the analysis.  
+3. **About**  
+    This is an informative page about the MORPH-Mtb algorithm. 
