@@ -28,3 +28,25 @@ In this folder, the 4 scripts needed for the Shiny web application are stored:
     In this css script, the GUI of the Shiny app is changed to make it more pretty.
 
 ## Using the Shiny web application
+
+To make use of the Shiny web application, R and RStudio need to be installed first. 
+
+### Installing R on Windows
+
+Go to the website using [this link](https://cran.r-project.org/bin/windows/base/old/4.3.2/) to install version 4.3.2 for Windows. 
+
+Click on the "R-4.3.2-win.exe" link. A download should be started.  
+1. Open the downloaded file
+2. Choose English as installation language
+3. Start the setup
+4. Do not customize the startup options
+5. Finish setup
+
+### Installing RStudio on Windows
+Go to the website using [this link](https://dailies.rstudio.com/version/2023.12.1+402/) to install version 2023.12.1+402.  
+
+Click on the "RStudio-2023.12.1-402.exe" for Windows. A download should be started.  
+1. Open the downloaded file
+2. Click on install
+3. Finish setup  
+4. You can now open the RStudio application
