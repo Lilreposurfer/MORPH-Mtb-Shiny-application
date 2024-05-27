@@ -63,3 +63,22 @@ The web application consists out of 3 pages:
     You can use this page if you want to upload your own expression data and use this together with the 6 datasets for the analysis.  
 3. **About**  
     This is an informative page about the MORPH-Mtb algorithm. 
+
+
+#### Gene centric query
+You can use this page if you just want to use the 6 datasets automatically integrated in the analysis.  
+As input, the algorithm needs an input pathway. This can be given in the text area, enter-separating the gene IDs or uploading a file with enter-separated gene IDs.   
+
+Further, you can choose the number of random pathways generated, having the same length as the input pathway and the number of candidate pathways to display.  
+
+After clicking the start button, your input pathway will be given in a table, telling you if there are gene IDs in your pathway that are not of *Mycobacterium tuberculosis*.  
+In the next tab, Result random pathway, the AUSR-score of the random pathways is given and the average AUSR-score.  
+In the last tab, Result input pathway, the ranked candidate genes are given together with some extra information:  
+- The AUSR-score of your input pathway
+- The dataset and the clustering solution that gave the highest score
+- A table with the ranked candidate genes. Each gene gets a score and a description from NCBI
+
+This list of candidate genes can be downloaded in a .txt file by clicking the download link underneath the start button.  
+The inputs can be reset with the Reset inputs button.  
+
+Because the calculations can take some time, a spinning flower is shown while the application is working.
