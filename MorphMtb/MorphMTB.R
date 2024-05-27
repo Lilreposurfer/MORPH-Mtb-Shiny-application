@@ -4,11 +4,32 @@
 
 # Install and load required packages ----
 required_packages <- c(
-  "shiny", "shinyjs", "waiter", "shinythemes", "readr", 
-  "writexl", "WriteXLS", "readxl", "limma", "edgeR", 
-  "plyr", "dplyr", "data.table", "purrr", "rsample", 
-  "amap", "factoextra", "cluster", "dtwclust", "proxy", 
-  "kohonen", "caroline"
+  "shiny", 
+  "shinyjs", 
+  "waiter", 
+  "shinythemes", 
+  "readr", 
+  "writexl", 
+  "WriteXLS", 
+  "readxl", 
+  "limma", 
+  "edgeR", 
+  "plyr", 
+  "dplyr", 
+  "data.table", 
+  "purrr", 
+  "rsample", 
+  "amap", 
+  "factoextra", 
+  "cluster", 
+  "dtwclust", 
+  "proxy", 
+  "kohonen", 
+  "caroline", 
+  "DBI", 
+  "dtw", 
+  "ggplot2",
+  "RMySQL"
 )
 
 # Check for missing packages and install them
