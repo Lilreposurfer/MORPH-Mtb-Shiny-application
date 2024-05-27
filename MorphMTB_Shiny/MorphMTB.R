@@ -64,9 +64,6 @@ source("rentrez.R")
   
   # Define server logic
   server <-  function(input, output) {
-    ## set seed for reproducibility
-    #global_seed = reactive(input$chosen_seed)
-    #set.seed(2023)
     
     #what happens on page1 (gene centric query)
     output$page1 <- renderUI({
@@ -79,16 +76,16 @@ source("rentrez.R")
             helpText("Species currently available in MorphMtb: Mycobacterium tuberculosis."),
             # Draw horizontal line
             tags$hr(),
-            # Ask for numeric input
-            numericInput("random", "Max of random pathways generated:", 30, min = 1, max = 500),
-            numericInput("numbercandidates", "Max of candidate genes to display:", 30, min = 1, max = 1000),
-            # Draw horizontal line
-            tags$hr(),
             # Create text area for input genes/pathways
             textAreaInput("genes", "Enter the gene IDs for your input pathway of interest (enter-separated)", ""),
             # Possibility to upload file with genes/pathways
             fileInput("file","Or choose file", multiple = TRUE), # fileinput() function is used to get the file upload control option
             #uiOutput("selectfile"), #In case you upload multiple files --> you can select which one to use
+            # Draw horizontal line
+            tags$hr(),
+            # Ask for numeric input
+            numericInput("random", "Max of random pathways generated:", 30, min = 1, max = 500),
+            numericInput("numbercandidates", "Max of candidate genes to display:", 30, min = 1, max = 1000),
             # Draw horizontal line
             tags$hr(),
             # Action buttons to (re)start analysis
