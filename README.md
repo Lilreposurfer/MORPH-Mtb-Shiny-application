@@ -82,3 +82,17 @@ This list of candidate genes can be downloaded in a .txt file by clicking the do
 The inputs can be reset with the Reset inputs button.  
 
 Because the calculations can take some time, a spinning flower is shown while the application is working.
+
+#### Implement own expression data
+You can use this page if you have your own expression data that you want to implement in the analysis.   
+As input, the algorithm needs an uploaded file with the expression data and an input pathway (again enter-separated).  
+
+The elbows of the plotted k-means clustering and SOM clustering will have be defined. Further, you can choose the number of random pathways generated, having the same length as the input pathway and the number of candidate pathways to display.
+
+After clicking the start button, the expression data will be given in a table and a processed file will automatically be written to the folder you're working in. This file will be used further down in the analysis.  
+In the next tab, Filtered expression data, the percentage of genes kept after filtering will be given, so that you can decide if you want to work further with this data.  
+In the third tab, Clustering, two plots (k-means and SOM clustering) will be visualed. Based on these plots, you can change the elbow and two clustering files will automatically be written in the folder you're working in.  
+The next three tabs are the same as these of the first page and will give you the same output. The calculations will be done using the new expression data.  
+
+The inputs can, again, be reset by clicking the Reset inputs button.  
+The spinning flowers indicate if the algorithm is running.
