@@ -60,10 +60,10 @@ source("rentrez.R")
     # Include CSS script in Shiny web application
     tags$head(includeCSS("styles.css")),
     # Don't show error messages on Shiny web application
-    tags$style(type="text/css",
-               ".shiny-output-error { visibility: hidden; }",
-               ".shiny-output-error:before { visibility: hidden; }"
-    ),
+    #tags$style(type="text/css",
+    #           ".shiny-output-error { visibility: hidden; }",
+    #           ".shiny-output-error:before { visibility: hidden; }"
+    #),
     useShinyjs(),
     #Make page with multiple panels
     navbarPage(theme = shinytheme("cerulean"),
