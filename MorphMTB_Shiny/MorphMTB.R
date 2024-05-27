@@ -1,29 +1,24 @@
-# Load packages ----
-library(shiny)
-library(shinyjs)
-library(waiter)
-library(shinythemes)
-library(readr)           # Read package for txt file
-library(writexl)         # Write excel file .xlsx
-library(WriteXLS)        # Write excel file .xlsx
-library(readxl)          # Read package for xlsx file
-library(limma)           # Use TMM normalization on raw counts
-library(edgeR)           # Use TMM normalization on raw counts
-library(plyr)
-library(dplyr)
-library(data.table)      # fread function
-library(purrr)
-library(rsample) 
-library(amap)
-library(ggplot2)
-library(ggrepel)
-library(factoextra)      # fviz
-library(cluster)
-library(dtwclust)
-library(proxy)
-library(kohonen)         # SOM package
-library(pheatmap)        # Heatmap
-library(caroline)
+##############################################################################################################
+## MORPH-Mtb
+##############################################################################################################
+
+# Install and load required packages ----
+required_packages <- c(
+  "shiny", "shinyjs", "waiter", "shinythemes", "readr", 
+  "writexl", "WriteXLS", "readxl", "limma", "edgeR", 
+  "plyr", "dplyr", "data.table", "purrr", "rsample", 
+  "amap", "factoextra", "cluster", "dtwclust", "proxy", 
+  "kohonen", "caroline"
+)
+
+# Check for missing packages and install them
+missing_packages <- required_packages[!(required_packages %in% installed.packages()[, "Package"])]
+if(length(missing_packages)) install.packages(missing_packages)
+
+# Load the required packages
+lapply(required_packages, library, character.only = TRUE)
+
+###############################################################################################################
 
 # Source ----
 source("functions.R")
