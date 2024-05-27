@@ -120,17 +120,18 @@ source("rentrez.R")
                       min = 2, max = 10, value = 3),
           # Draw horizontal line
           tags$hr(),
-          # Ask for numeric input
-          numericInput("random2", "Max of random pathways generated:", 30, min = 1, max = 500),
-          numericInput("numbercandidates2", "Max of candidate genes to display:", 30, min = 1, max = 1000),
-          # Draw horizontal line
-          tags$hr(),
           # Create text area for input genes/pathways
           textAreaInput("genes2", "Enter the gene IDs for your input pathway of interest (enter-separated)", ""),
           # Possibility to upload file with genes/pathways
           fileInput("file2","Or choose file", multiple = TRUE), # fileinput() function is used to get the file upload control option
           # Draw horizontal line
           tags$hr(),
+          # Ask for numeric input
+          numericInput("random2", "Max of random pathways generated:", 30, min = 1, max = 500),
+          numericInput("numbercandidates2", "Max of candidate genes to display:", 30, min = 1, max = 1000),
+          # Draw horizontal line
+          tags$hr(),
+          
           # Action buttons to (re)start analysis
           actionButton("startbutton2","Start"),
           actionButton("reset_inputs2","Reset inputs",
