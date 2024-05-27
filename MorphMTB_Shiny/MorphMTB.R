@@ -188,11 +188,14 @@ source("rentrez.R")
                                 header = FALSE))})
       generawNoNA <- reactive({na.omit(generaw())})
       length(generawNoNA())
-      
     })
+    
     # Get length of input pathway submitted by text
     generaw2 <- reactive({
-      length(unlist(strsplit(input$genes, "\n")))
+      generaw <- unlist(strsplit(input$genes, "\n"))
+      generaw <- sapply(generaw, function(g) if (g == "" || g == " ") NA else g)
+      generaw <- na.omit(generaw)
+      length(generaw)
     })
       
     #collect input genes
@@ -229,17 +232,22 @@ source("rentrez.R")
             # If there is no genes in the text area, don't return anything
             if(is.null(input$genes)) {return()}
             # Get individual genes
-            gene <- unlist(strsplit(input$genes, "\n"))
+            gene <- reactive({
+              genes <- unlist(strsplit(input$genes, "\n"))
+              genes <- sapply(genes, function(g) if (g == "" || g == " ") NA else g)
+              na.omit(genes)
+            })
             # Check if genes start with Rv
-            MtbGene <- grepl("^Rv|^rv|^RV", gene)
+            MtbGene <- grepl("^Rv|^rv|^RV", gene())
             number2 <- sapply(1:generaw2(), function(i){i})
             # Check if all input genes are from Mtb
             if("FALSE" %in% MtbGene){
               return("This list contains at least 1 gene not from Mtb.")
             } else{
               # Make dataframe out of elements to put in table if genes of Mtb (start with Rv)
-              return(data.frame(No=number2,Genes=gene))
-            }},
+              return(data.frame(No=number2,Genes=gene()))
+            }
+            },
             # Color table every other line
             striped=TRUE)}
       })
