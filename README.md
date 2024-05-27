@@ -59,7 +59,7 @@ You will see a button with a green arrow and "Run App". Click on this button and
 The web application consists out of 3 pages:
 1. **Gene centric query**  
     You can use this page if you only want to use the implemented 6 datasets.  
-2. **Implement own expression** data    
+2. **Implement own expression data**    
     You can use this page if you want to upload your own expression data and use this together with the 6 datasets for the analysis.  
 3. **About**  
     This is an informative page about the MORPH-Mtb algorithm. 
