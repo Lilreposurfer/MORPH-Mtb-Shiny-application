@@ -29,10 +29,6 @@ library(caroline)
 source("functions.R")
 source("rentrez.R")
 
-#Define the js method that resets the page
-#jsResetCode <- "shinyjs.reset = function() {history.go(0)}"
-
-
 # Shiny web application ----
   
 ## User interface ##
@@ -202,8 +198,7 @@ source("rentrez.R")
     })
       
     #collect input genes
-    #output$contents <- eventReactive(input$startbutton, { #after clicking start button
-    observeEvent(input$startbutton, {
+    observeEvent(input$startbutton, { #after clicking start button
       output$contents <- reactive({
         # See what type of input is given and alter output to it 
         if(!is.null(input$file)){
@@ -356,12 +351,6 @@ source("rentrez.R")
       annotation <- desc()
       return(data.frame(No=number, ID=ids, Scored=head(format(round(Predictions(),6)), input$numbercandidates), Annotation=annotation))
     }, striped=TRUE) 
-    
-    #https://stackoverflow.com/questions/70317932/obtaining-data-from-ncbi-gene-database-with-r
-    #https://cran.r-project.org/web/packages/rentrez/vignettes/rentrez_tutorial.html
-    #https://statsandr.com/blog/web-scraping-in-r/
-    #https://bioconnector.github.io/workshops/r-ncbi.html
-    #chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://journal.r-project.org/archive/2017/RJ-2017-058/RJ-2017-058.pdf
     
     ###########################################################################  
     ## If user wants to download top candidate genes ##
@@ -651,8 +640,7 @@ source("rentrez.R")
     })
     
     #collect input genes
-    #output$contents <- eventReactive(input$startbutton, { #after clicking start button
-    observeEvent(input$startbutton2, {
+    observeEvent(input$startbutton2, { #after clicking start button
       output$contents2 <- reactive({
         # See what type of input is given and alter output to it 
         if(!is.null(input$file2)){
