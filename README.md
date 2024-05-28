@@ -26,6 +26,8 @@ In this folder, the 4 scripts needed for the Shiny web application are stored:
     In this R script, a connection with NCBI is made to retrieve information about the candidate genes.
 4. **styles.css**  
     In this css script, the GUI of the Shiny app is changed to make it more pretty.
+
+All of the data needed for the calculations is also present in this folder. The files in this folder are read and used in the calculations. Some files will be written in this folder when chosen to implement own expression data.
       
 
 ## Using the Shiny web application
@@ -34,9 +36,9 @@ To make use of the Shiny web application, R and RStudio need to be installed fir
 
 ### Installing R on Windows
 
-Go to the website using [this link](https://cran.r-project.org/bin/windows/base/old/4.3.2/) to install version 4.3.2 for Windows. (4.4.0)
+Go to the website using [this link](https://cran.r-project.org/bin/windows/base/) to install version 4.4.0 (the latest version at the moment) for Windows.
 
-Click on the "R-4.3.2-win.exe" link. A download should be started.  
+Click on the "Download R-4.4.0 for Windows" link. A download should be started.  
 1. Open the downloaded file
 2. Choose English as installation language
 3. Start the setup
@@ -44,9 +46,9 @@ Click on the "R-4.3.2-win.exe" link. A download should be started.
 5. Finish setup
 
 ### Installing RStudio on Windows
-Go to the website using [this link](https://dailies.rstudio.com/version/2023.12.1+402/) to install version 2023.12.1+402.  (2024.04.1+748)
+Go to the website using [this link](https://posit.co/download/rstudio-desktop/) to install version 2024.04.1+748 (the latest version at the moment) for Windows.  
 
-Click on the "RStudio-2023.12.1-402.exe" for Windows. A download should be started.  
+Click on the "Download RStudio desktop for Windows" button. A download should be started.  
 1. Open the downloaded file
 2. Click on install
 3. Finish setup  
@@ -54,7 +56,7 @@ Click on the "RStudio-2023.12.1-402.exe" for Windows. A download should be start
 
 ### The MORPH-Mtb Shiny web application
 To make use of the MORPH-Mtb Shiny web application, you first have to open the MorphMTB.R script with RStudio (Right-click on the file and choose open with RStudio).   
-You will see a button with a green arrow and "Run App". Click on this button and the Shiny app will be started. You can choose to optionally open this in a web browser by clicking the "Open in Browser" button. 
+You will see a button with a green arrow and "Run App". Click on this button and the Shiny application will be started. You can choose to optionally open this in a web browser by clicking the "Open in Browser" button. 
 
 The web application consists out of 3 pages:
 1. **Gene centric query**  
@@ -79,7 +81,7 @@ In the last tab, Result input pathway, the ranked candidate genes are given toge
 - A table with the ranked candidate genes. Each gene gets a score and a description from NCBI
 
 This list of candidate genes can be downloaded in a .txt file by clicking the download link underneath the start button.  
-The inputs can be reset with the Reset inputs button.  
+The application can be restarted by clicking the "New analysis" button.  
 
 Because the calculations can take some time, a spinning flower is shown while the application is working.
 
@@ -94,5 +96,5 @@ In the next tab, Filtered expression data, the percentage of genes kept after fi
 In the third tab, Clustering, two plots (k-means and SOM clustering) will be visualed. Based on these plots, you can change the elbow and two clustering files will automatically be written in the folder you're working in.  
 The next three tabs are the same as these of the first page and will give you the same output. The calculations will be done using the new expression data.  
 
-The inputs can, again, be reset by clicking the Reset inputs button.  
+The application can, again, be restarted by clicking the "New analysis" button.    
 The spinning flowers indicate if the algorithm is running.
