@@ -34,7 +34,7 @@ To make use of the Shiny web application, R and RStudio need to be installed fir
 
 ### Installing R on Windows
 
-Go to the website using [this link](https://cran.r-project.org/bin/windows/base/old/4.3.2/) to install version 4.3.2 for Windows. 
+Go to the website using [this link](https://cran.r-project.org/bin/windows/base/old/4.3.2/) to install version 4.3.2 for Windows. (4.4.0)
 
 Click on the "R-4.3.2-win.exe" link. A download should be started.  
 1. Open the downloaded file
@@ -44,7 +44,7 @@ Click on the "R-4.3.2-win.exe" link. A download should be started.
 5. Finish setup
 
 ### Installing RStudio on Windows
-Go to the website using [this link](https://dailies.rstudio.com/version/2023.12.1+402/) to install version 2023.12.1+402.  
+Go to the website using [this link](https://dailies.rstudio.com/version/2023.12.1+402/) to install version 2023.12.1+402.  (2024.04.1+748)
 
 Click on the "RStudio-2023.12.1-402.exe" for Windows. A download should be started.  
 1. Open the downloaded file

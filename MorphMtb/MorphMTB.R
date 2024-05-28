@@ -5,6 +5,7 @@
 # Install and load required packages ----
 required_packages <- c(
   "shiny", 
+  "BiocManager",
   "shinyjs", 
   "waiter", 
   "shinythemes", 
@@ -35,6 +36,10 @@ required_packages <- c(
 # Check for missing packages and install them
 missing_packages <- required_packages[!(required_packages %in% installed.packages()[, "Package"])]
 if(length(missing_packages)) install.packages(missing_packages)
+#update.packages(ask = FALSE)
+
+BiocManager::install("limma")
+BiocManager::install("edgeR")
 
 # Load the required packages
 lapply(required_packages, library, character.only = TRUE)
