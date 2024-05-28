@@ -38,8 +38,12 @@ missing_packages <- required_packages[!(required_packages %in% installed.package
 if(length(missing_packages)) install.packages(missing_packages)
 #update.packages(ask = FALSE)
 
-BiocManager::install("limma")
-BiocManager::install("edgeR")
+# Character vector of installed packages
+pkg <- installed.packages()[, "Package"]
+# Check if packages are installed
+# If package is not installed --> install!
+if(!('limma' %in% pkg)) {BiocManager::install("limma", force=TRUE)}
+if(!('edgeR' %in% pkg)) {BiocManager::install("edgeR", force=TRUE)}
 
 # Load the required packages
 lapply(required_packages, library, character.only = TRUE)
@@ -280,12 +284,16 @@ source("rentrez.R")
     InputGOI <- reactive({
       if (is.null(input$file)) {
         # Get individual genes if text input
-        unlist(strsplit(input$genes, "\n"))
+        genes <- unlist(strsplit(input$genes, "\n"))
+        genes_Rv <- sub("^rv|^RV", "Rv", genes)
+        genes_Rv
       } else {
         # Get individual genes if file uploaded
-        unlist(read.csv(file=input$file$datapath[], 
+        genes <- unlist(read.csv(file=input$file$datapath[], 
                         sep='\t', 
                         header = FALSE))}
+        genes_Rv <- sub("^rv|^RV", "Rv", genes)
+        genes_Rv
     }) 
     
     # Create morph input using function
