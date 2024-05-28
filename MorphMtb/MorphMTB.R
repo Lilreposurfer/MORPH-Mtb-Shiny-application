@@ -211,6 +211,7 @@ source("rentrez.R")
       generaw <- reactive({unlist(read.csv(file=input$file$datapath[], 
                                 sep='\t', 
                                 header = FALSE))})
+      # Remove lines with NA
       generawNoNA <- reactive({na.omit(generaw())})
       length(generawNoNA())
     })
@@ -218,7 +219,9 @@ source("rentrez.R")
     # Get length of input pathway submitted by text
     generaw2 <- reactive({
       generaw <- unlist(strsplit(input$genes, "\n"))
+      # Name empty lines NA
       generaw <- sapply(generaw, function(g) if (g == "" || g == " ") NA else g)
+      # Remove lines with NA
       generaw <- na.omit(generaw)
       length(generaw)
     })
@@ -249,8 +252,6 @@ source("rentrez.R")
             }},
             # Color table every other line
             striped=TRUE)}
-            
-            
         else {
           #retrieve genes from text input and put in table
           output$pathway <- renderTable({
@@ -285,6 +286,7 @@ source("rentrez.R")
       if (is.null(input$file)) {
         # Get individual genes if text input
         genes <- unlist(strsplit(input$genes, "\n"))
+        # Make all gene IDs start with 'Rv'
         genes_Rv <- sub("^rv|^RV", "Rv", genes)
         genes_Rv
       } else {
@@ -292,6 +294,7 @@ source("rentrez.R")
         genes <- unlist(read.csv(file=input$file$datapath[], 
                         sep='\t', 
                         header = FALSE))}
+        # Make all gene IDs start with 'Rv'
         genes_Rv <- sub("^rv|^RV", "Rv", genes)
         genes_Rv
     }) 
@@ -380,7 +383,6 @@ source("rentrez.R")
       
       
     output$TopPredictions <- renderTable({ 
-      #as.matrix(head(format(round(Predictions(),6)), input$numbercandidates))
       ids <- rownames(as.matrix(head(format(round(Predictions(),6)), input$numbercandidates)))
       number <- sapply(1:input$numbercandidates, function(i){i})
       annotation <- desc()
@@ -399,6 +401,7 @@ source("rentrez.R")
         paste0("PredictedGenes.txt")
       },
       content = function(file){
+        # What gets written in file
         writeLines(predictgenes(), file)
       },
       contentType = "text/csv"
@@ -604,13 +607,9 @@ source("rentrez.R")
       # Define files path
       file_path1 <- file.path(getwd(), "ExpressionData.txt")
       
-      #file_path3 <- file.path(getwd(), "somexpdata.txt")
-      
       # Write the file
       write.table(dataexpDownload(), file_path1, sep = "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
 
-      #write.table(dataexpSOMDownload(), file_path3, sep= "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
-      
       # Notify the user
       output$file_status <- renderText({
         paste("Processed expression data file written to:", file_path1)})
