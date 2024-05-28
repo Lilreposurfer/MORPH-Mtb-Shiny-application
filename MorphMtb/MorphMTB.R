@@ -88,7 +88,7 @@ source("rentrez.R")
 
   
   # Define server logic
-  server <-  function(input, output) {
+  server <-  function(input, output, session) {
     
     #what happens on page1 (gene centric query)
     output$page1 <- renderUI({
@@ -115,7 +115,7 @@ source("rentrez.R")
             tags$hr(),
             # Action buttons to (re)start analysis
             actionButton("startbutton","Start"),
-            actionButton("reset_inputs","Reset inputs",
+            actionButton("reset_inputs","New analysis",
                          onclick = "Shiny.setInputValue('startbutton', NULL);"),
             # Download link to download results
             downloadLink("downloadPathway", "Download candidate genes")
@@ -159,7 +159,7 @@ source("rentrez.R")
           
           # Action buttons to (re)start analysis
           actionButton("startbutton2","Start"),
-          actionButton("reset_inputs2","Reset inputs",
+          actionButton("reset_inputs2","New analysis",
                        onclick = "Shiny.setInputValue('startbutton', NULL);"),
           # Download link to download results
           downloadLink("downloadPathway2", "Download candidate genes")
@@ -199,12 +199,10 @@ source("rentrez.R")
     
     # Logic after pressing reset inputs button
     observeEvent(input$reset_inputs, {
-      shinyjs::reset("side-panel")
-      shinyjs::reset("main-panel")
+      #shinyjs::reset("side-panel")
+      #shinyjs::reset("main-panel")
+      session$reload()
     })
-    output$contents <- eventReactive(input$reset_inputs, {
-        return(NULL)
-      })
     
     # Get length of input pathway uploaded by file
     generaw1 <- reactive({
@@ -653,12 +651,11 @@ source("rentrez.R")
     
     # Logic after pressing reset inputs button
     observeEvent(input$reset_inputs2, {
-      shinyjs::reset("side-panel2")
-      shinyjs::reset("main-panel2")
+      #shinyjs::reset("side-panel2")
+      #shinyjs::reset("main-panel2")
+      session$reload()
     })
-    output$contents <- eventReactive(input$reset_inputs, {
-      return(NULL)
-    })
+
     
     # Get length of input pathway uploaded by file
     generaw12 <- reactive({
