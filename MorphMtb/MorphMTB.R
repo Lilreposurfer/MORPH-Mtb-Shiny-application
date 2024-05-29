@@ -84,10 +84,72 @@ source("rentrez.R")
     )
   )
 
-  
+##########################################################################################
+# Functions
 
-  
-  # Define server logic
+# Logic after pressing reset inputs button
+resetPage <- function(reload) {
+  observeEvent(reload, {
+    session$reload()
+  })
+}
+
+# Get length of input pathway uploaded by file
+getGenerawFile <- function(fileInput) {
+  generaw <- unlist(read.csv(file=fileInput$datapath[], 
+                             sep='\t', 
+                             header = FALSE))
+  # Remove lines with NA
+  generawNoNA <- na.omit(generaw)
+  return(length(generawNoNA))
+}
+
+# Get length of input pathway submitted by text
+getGeneraw <- function(geneInput) {
+  generaw <- unlist(strsplit(geneInput, "\n"))
+  # Name empty lines NA
+  generaw <- sapply(generaw, function(g) if (g == "" || g == " ") NA else g)
+  # Remove lines with NA
+  generaw <- na.omit(generaw)
+  return(length(generaw))
+}
+
+# Retrieve genes from input
+InputGOIs <- function(fileInput, geneInput) {
+  if (is.null(fileInput)) {
+    # Get individual genes if text input
+    genes <- unlist(strsplit(geneInput, "\n"))
+    # Make all gene IDs start with 'Rv'
+    genes_Rv <- sub("^rv|^RV", "Rv", genes)
+    genes_Rv
+  } else {
+    # Get individual genes if file uploaded
+    genes <- unlist(read.csv(file=fileInput$datapath[], 
+                             sep='\t', 
+                             header = FALSE))}
+  # Make all gene IDs start with 'Rv'
+  genes_Rv <- sub("^rv|^RV", "Rv", genes)
+  return(genes_Rv)
+} 
+
+## Removing Absent genes ##
+intersectGenes <- function(morphinput){
+  # Get pathway genes
+  G <- morphinput$pathway_genes
+  # Get clustering solution
+  C <- (morphinput$clustering_solution)[[1]]
+  # Get gene expression dataset
+  GE <- (morphinput$ge_datasets)[[1]]
+  # Get names of genes in dataset
+  GENames <- rownames(GE)
+  # Get names of genes from intersection
+  intersection <- removeAbscentGOIs(G,C,GENames)
+  return(intersection)
+}
+
+
+################################################################################################### 
+# Define server logic
   server <-  function(input, output, session) {
     
     #what happens on page1 (gene centric query)
@@ -197,70 +259,25 @@ source("rentrez.R")
    # shiny_busy(),
     
     
-    # Logic after pressing reset inputs button
-    resetPage <- function(reload) {
-      observeEvent(reload, {
-        session$reload()
-      })
-    }
+
     
-    #Use separate observeEvent calls for each input
+    #Logic after pressing reset inputs button
     observeEvent(input$reset_inputs, {
       resetPage(input$reset_inputs)
     })
-    observeEvent(input$reset_inputs2, {
-      resetPage(input$reset_inputs2)
-    })
-    
-    
+
     
     # Get length of input pathway uploaded by file
-    getGenerawFile <- function(fileInput) {
-        generaw <- unlist(read.csv(file=fileInput$datapath[], 
-                                             sep='\t', 
-                                             header = FALSE))
-        # Remove lines with NA
-        generawNoNA <- na.omit(generaw)
-        return(length(generawNoNA))
-    }
     generaw1 <- reactive({
       getGenerawFile(input$file)
     })
     
-    # Get length of input pathway uploaded by file
-    #generaw1 <- reactive({
-    #  generaw <- reactive({unlist(read.csv(file=input$file$datapath[], 
-    #                            sep='\t', 
-    #                            header = FALSE))})
-    #  # Remove lines with NA
-    #  generawNoNA <- reactive({na.omit(generaw())})
-    #  length(generawNoNA())
-    #})
-   
     
     # Get length of input pathway submitted by text
-    getGeneraw <- function(geneInput) {
-      generaw <- unlist(strsplit(geneInput, "\n"))
-      # Name empty lines NA
-      generaw <- sapply(generaw, function(g) if (g == "" || g == " ") NA else g)
-      # Remove lines with NA
-      generaw <- na.omit(generaw)
-      return(length(generaw))
-    }
     generaw2 <- reactive({
       getGeneraw(input$genes)
     })
     
-     
-    # Get length of input pathway submitted by text
-    #generaw2 <- reactive({
-    #  generaw <- unlist(strsplit(input$genes, "\n"))
-    #  # Name empty lines NA
-    #  generaw <- sapply(generaw, function(g) if (g == "" || g == " ") NA else g)
-    #  # Remove lines with NA
-    #  generaw <- na.omit(generaw)
-    #  length(generaw)
-    #})
       
     #collect input genes
     observeEvent(input$startbutton, { #after clicking start button
@@ -317,7 +334,7 @@ source("rentrez.R")
    
     
     ## MORPH Input ##
-    # Retrieve genes from input
+    
     #InputGOI <- reactive({
     #  if (is.null(input$file)) {
     #    # Get individual genes if text input
@@ -334,24 +351,10 @@ source("rentrez.R")
     #    genes_Rv <- sub("^rv|^RV", "Rv", genes)
     #    genes_Rv
     #})
-      InputGOIs <- function(fileInput, geneInput) {
-        if (is.null(fileInput)) {
-          # Get individual genes if text input
-          genes <- unlist(strsplit(geneInput, "\n"))
-          # Make all gene IDs start with 'Rv'
-          genes_Rv <- sub("^rv|^RV", "Rv", genes)
-          genes_Rv
-        } else {
-          # Get individual genes if file uploaded
-          genes <- unlist(read.csv(file=fileInput$datapath[], 
-                                   sep='\t', 
-                                   header = FALSE))}
-        # Make all gene IDs start with 'Rv'
-        genes_Rv <- sub("^rv|^RV", "Rv", genes)
-        return(genes_Rv)
-      } 
-      InputGOI <- reactive({
-        InputGOIs(input$file, input$genes)
+      
+    # Retrieve genes from input
+    InputGOI <- reactive({
+      InputGOIs(input$file, input$genes)
       })
     
     # Create morph input using function
@@ -368,30 +371,36 @@ source("rentrez.R")
     
     ## Removing Absent genes ##
     # Get pathway genes
-    G <- reactive({
-      morphinput()$pathway_genes 
-    })
+    #G <- reactive({
+    #  morphinput()$pathway_genes 
+    #})
     
     # Get clustering solution
-    C <- reactive({
-      (morphinput()$clustering_solution)[[1]] 
-    }) 
+    #C <- reactive({
+    #  (morphinput()$clustering_solution)[[1]] 
+    #}) 
     
     # Get gene expression dataset
-    GE <- reactive({
-      (morphinput()$ge_datasets)[[1]] 
-    }) 
+    #GE <- reactive({
+    #  (morphinput()$ge_datasets)[[1]] 
+    #}) 
     
     # Get names of genes in dataset
-    GENames <- reactive({
-      rownames(GE()) 
-    }) 
+    #GENames <- reactive({
+    #  rownames(GE()) 
+    #}) 
     
     # Get names of genes from intersection
+    #output$Intersection <- reactive({
+    #  intersect <- removeAbscentGOIs(G(),C(),GENames())
+    #  intersect
+    #}) 
+    
+
+    ## Removing Absent genes ##
     output$Intersection <- reactive({
-      intersect <- removeAbscentGOIs(G(),C(),GENames())
-      intersect
-    }) 
+      intersectGenes(morphinput)
+    })
     
     
     ## Validation ##
@@ -545,6 +554,12 @@ source("rentrez.R")
 #########################################################################################################  
 #########################################################################################################
 ### PAGE2 ###   
+    
+    #Logic after pressing reset inputs button
+    observeEvent(input$reset_inputs2, {
+      resetPage(input$reset_inputs2)
+    })
+    
     # Get data uploaded expression data file for output
     output$expressiondata <- reactive({
       # See if input is given  
@@ -794,6 +809,8 @@ source("rentrez.R")
       #                    sep='\t', 
       #                    header = FALSE))}
       #}) 
+      
+      # Retrieve genes from input
       InputGOI2 <- reactive({
         InputGOIs(input$file2, input$genes2)
       })
@@ -812,30 +829,35 @@ source("rentrez.R")
       
       ## Removing Absent genes ##
       # Get pathway genes
-      G2 <- reactive({
-        morphinput2()$pathway_genes 
-      })
+      #G2 <- reactive({
+      #  morphinput2()$pathway_genes 
+      #})
       
       # Get clustering solution
-      C2 <- reactive({
-        (morphinput2()$clustering_solution)[[1]] 
-      }) 
+      #C2 <- reactive({
+      #  (morphinput2()$clustering_solution)[[1]] 
+      #}) 
       
       # Get gene expression dataset
-      GE2 <- reactive({
-        (morphinput2()$ge_datasets)[[1]] 
-      }) 
+      #GE2 <- reactive({
+      #  (morphinput2()$ge_datasets)[[1]] 
+      #}) 
       
       # Get names of genes in dataset
-      GENames2 <- reactive({
-        rownames(GE2()) 
-      }) 
+      #GENames2 <- reactive({
+      #  rownames(GE2()) 
+      #}) 
       
       # Get names of genes from intersection
+      #output$Intersection2 <- reactive({
+      #  intersect <- removeAbscentGOIs(G2(),C2(),GENames2())
+      #  intersect
+      #}) 
+      
+      ## Removing Absent genes ##
       output$Intersection2 <- reactive({
-        intersect <- removeAbscentGOIs(G2(),C2(),GENames2())
-        intersect
-      }) 
+        intersectGenes(morphinput2)
+      })
       
       
       ## Validation ##
