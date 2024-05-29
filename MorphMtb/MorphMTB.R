@@ -213,6 +213,20 @@ source("rentrez.R")
     })
     
     
+    
+    # Get length of input pathway uploaded by file
+    #getGenerawFile <- function(fileInput) {
+    #    generaw <- reactive({unlist(read.csv(file=fileInput$datapath[], 
+    #                                         sep='\t', 
+    #                                         header = FALSE))})
+    #    # Remove lines with NA
+    #    generawNoNA <- reactive({na.omit(generaw)})
+    #    return(length(generaw))
+    #}
+    #generaw1 <- reactive({
+    #  getGenerawFile(input$file)
+    #})
+    
     # Get length of input pathway uploaded by file
     generaw1 <- reactive({
       generaw <- reactive({unlist(read.csv(file=input$file$datapath[], 
@@ -222,16 +236,31 @@ source("rentrez.R")
       generawNoNA <- reactive({na.omit(generaw())})
       length(generawNoNA())
     })
+   
     
     # Get length of input pathway submitted by text
-    generaw2 <- reactive({
-      generaw <- unlist(strsplit(input$genes, "\n"))
+    getGeneraw <- function(geneInput) {
+      generaw <- unlist(strsplit(geneInput, "\n"))
       # Name empty lines NA
       generaw <- sapply(generaw, function(g) if (g == "" || g == " ") NA else g)
       # Remove lines with NA
       generaw <- na.omit(generaw)
-      length(generaw)
+      return(length(generaw))
+    }
+    generaw2 <- reactive({
+      getGeneraw(input$genes)
     })
+    
+     
+    # Get length of input pathway submitted by text
+    #generaw2 <- reactive({
+    #  generaw <- unlist(strsplit(input$genes, "\n"))
+    #  # Name empty lines NA
+    #  generaw <- sapply(generaw, function(g) if (g == "" || g == " ") NA else g)
+    #  # Remove lines with NA
+    #  generaw <- na.omit(generaw)
+    #  length(generaw)
+    #})
       
     #collect input genes
     observeEvent(input$startbutton, { #after clicking start button
@@ -668,11 +697,14 @@ source("rentrez.R")
       length(generawNoNA())
     })
     # Get length of input pathway submitted by text
+    #generaw22 <- reactive({
+    #  generaw <- unlist(strsplit(input$genes2, "\n"))
+    #  generaw <- sapply(generaw, function(g) if (g == "" || g == " ") NA else g)
+    #  generaw <- na.omit(generaw)
+    #  length(generaw)
+    #})
     generaw22 <- reactive({
-      generaw <- unlist(strsplit(input$genes2, "\n"))
-      generaw <- sapply(generaw, function(g) if (g == "" || g == " ") NA else g)
-      generaw <- na.omit(generaw)
-      length(generaw)
+      getGeneraw(input$genes2)
     })
     
     #collect input genes
