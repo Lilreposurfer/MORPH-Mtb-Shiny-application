@@ -49,6 +49,7 @@ if(!('edgeR' %in% pkg)) {BiocManager::install("edgeR", force=TRUE)}
 lapply(required_packages, library, character.only = TRUE)
 
 ###############################################################################################################
+## UI logic
 
 # Source ----
 source("functions.R")
@@ -85,14 +86,7 @@ source("rentrez.R")
   )
 
 ##########################################################################################
-# Functions
-
-# Logic after pressing reset inputs button
-resetPage <- function(reload) {
-  observeEvent(reload, {
-    session$reload()
-  })
-}
+## Functions
 
 # Get length of input pathway uploaded by file
 getGenerawFile <- function(fileInput) {
@@ -149,7 +143,8 @@ intersectGenes <- function(morphinput){
 
 
 ################################################################################################### 
-# Define server logic
+## Server logic
+  # Define server logic
   server <-  function(input, output, session) {
     
     #what happens on page1 (gene centric query)
@@ -242,8 +237,9 @@ intersectGenes <- function(morphinput){
       )})
 
 ###############################################################################################   
-###############################################################################################    
-### PAGE1 ###    
+### PAGE1 ###
+###############################################################################################       
+    
    # shiny_busy <- function() {
   #    # use &nbsp; for some alignment, if needed
   #    HTML("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", paste0(
@@ -258,9 +254,12 @@ intersectGenes <- function(morphinput){
     # call from shiny ui with
    # shiny_busy(),
     
-    
-
-    
+    # Logic after pressing reset inputs button
+    resetPage <- function(reload) {
+      observeEvent(reload, {
+        session$reload()
+      })
+    }
     #Logic after pressing reset inputs button
     observeEvent(input$reset_inputs, {
       resetPage(input$reset_inputs)
@@ -271,7 +270,6 @@ intersectGenes <- function(morphinput){
     generaw1 <- reactive({
       getGenerawFile(input$file)
     })
-    
     
     # Get length of input pathway submitted by text
     generaw2 <- reactive({
@@ -334,24 +332,6 @@ intersectGenes <- function(morphinput){
    
     
     ## MORPH Input ##
-    
-    #InputGOI <- reactive({
-    #  if (is.null(input$file)) {
-    #    # Get individual genes if text input
-    #    genes <- unlist(strsplit(input$genes, "\n"))
-    #    # Make all gene IDs start with 'Rv'
-    #    genes_Rv <- sub("^rv|^RV", "Rv", genes)
-    #    genes_Rv
-    #  } else {
-    #    # Get individual genes if file uploaded
-    #    genes <- unlist(read.csv(file=input$file$datapath[], 
-    #                    sep='\t', 
-    #                    header = FALSE))}
-    #    # Make all gene IDs start with 'Rv'
-    #    genes_Rv <- sub("^rv|^RV", "Rv", genes)
-    #    genes_Rv
-    #})
-      
     # Retrieve genes from input
     InputGOI <- reactive({
       InputGOIs(input$file, input$genes)
@@ -367,34 +347,6 @@ intersectGenes <- function(morphinput){
     scores <- reactive({
       MORPH(morphinput())
     })
-    
-    
-    ## Removing Absent genes ##
-    # Get pathway genes
-    #G <- reactive({
-    #  morphinput()$pathway_genes 
-    #})
-    
-    # Get clustering solution
-    #C <- reactive({
-    #  (morphinput()$clustering_solution)[[1]] 
-    #}) 
-    
-    # Get gene expression dataset
-    #GE <- reactive({
-    #  (morphinput()$ge_datasets)[[1]] 
-    #}) 
-    
-    # Get names of genes in dataset
-    #GENames <- reactive({
-    #  rownames(GE()) 
-    #}) 
-    
-    # Get names of genes from intersection
-    #output$Intersection <- reactive({
-    #  intersect <- removeAbscentGOIs(G(),C(),GENames())
-    #  intersect
-    #}) 
     
 
     ## Removing Absent genes ##
@@ -437,21 +389,33 @@ intersectGenes <- function(morphinput){
     Predictions <- reactive({
       getMorphPredictions(scores())
     })
-    
     idrentrez <- reactive({
-      rownames(as.matrix(head(format(round(Predictions(),6)), input$numbercandidates)))
+      rownames(as.matrix(head(format(round(Predictions(),6)), input$numbercandidates2)))
     })
     desc <- reactive({
       Description(idrentrez())
     })
-      
-      
+    
+    topPredict <- function(idrentrez, predictions, numberCandidates, desc) {
+      ids <- idrentrez
+      number <- sapply(1:numberCandidates, function(i){i})
+      annotation <- desc
+      return(data.frame(No=number, ID=ids, Scored=head(format(round(predictions,6)), numberCandidates), Annotation=annotation))
+    }
+    
+    ## MORPH gene scores ##
     output$TopPredictions <- renderTable({ 
-      ids <- rownames(as.matrix(head(format(round(Predictions(),6)), input$numbercandidates)))
-      number <- sapply(1:input$numbercandidates, function(i){i})
-      annotation <- desc()
-      return(data.frame(No=number, ID=ids, Scored=head(format(round(Predictions(),6)), input$numbercandidates), Annotation=annotation))
-    }, striped=TRUE) 
+      topPredict(idrentrez, Predictions, input$numbercandidates, desc)
+    }, striped=TRUE)
+      
+    #output$TopPredictions <- renderTable({ 
+    #  ids <- rownames(as.matrix(head(format(round(Predictions(),6)), input$numbercandidates)))
+    #  number <- sapply(1:input$numbercandidates, function(i){i})
+    #  annotation <- desc()
+    #  return(data.frame(No=number, ID=ids, Scored=head(format(round(Predictions(),6)), input$numbercandidates), Annotation=annotation))
+    #}, striped=TRUE) 
+    
+
     
     ###########################################################################  
     ## If user wants to download top candidate genes ##
@@ -552,9 +516,9 @@ intersectGenes <- function(morphinput){
     })
 
 #########################################################################################################  
-#########################################################################################################
 ### PAGE2 ###   
-    
+#########################################################################################################    
+ 
     #Logic after pressing reset inputs button
     observeEvent(input$reset_inputs2, {
       resetPage(input$reset_inputs2)
@@ -604,7 +568,6 @@ intersectGenes <- function(morphinput){
       round((dataexpLengthFiltered()/dataexpLength())*100,2)
     })
     
-
     
     # Normalize and filter expression data
     datalog <- reactive({
@@ -723,23 +686,10 @@ intersectGenes <- function(morphinput){
 
     
     # Get length of input pathway uploaded by file
-    #generaw12 <- reactive({
-    #  generaw <- reactive({unlist(read.csv(file=input$file2$datapath[], 
-    #                                       sep='\t', 
-    #                                       header = FALSE))})
-    #  generawNoNA <- reactive({na.omit(generaw())})
-    #  length(generawNoNA())
-    #})
     generaw12 <- reactive({
       getGenerawFile(input$file2)
     })
     # Get length of input pathway submitted by text
-    #generaw22 <- reactive({
-    #  generaw <- unlist(strsplit(input$genes2, "\n"))
-    #  generaw <- sapply(generaw, function(g) if (g == "" || g == " ") NA else g)
-    #  generaw <- na.omit(generaw)
-    #  length(generaw)
-    #})
     generaw22 <- reactive({
       getGeneraw(input$genes2)
     })
@@ -799,18 +749,6 @@ intersectGenes <- function(morphinput){
       
       ## MORPH Input ##
       # Retrieve genes from input
-      #InputGOI2 <- reactive({
-      #  if (is.null(input$file2)) {
-      #    # Get individual genes if text input
-      #    unlist(strsplit(input$genes2, "\n"))
-      #  } else {
-      #    # Get individual genes if file uploaded
-      #    unlist(read.csv(file=input$file2$datapath[], 
-      #                    sep='\t', 
-      #                    header = FALSE))}
-      #}) 
-      
-      # Retrieve genes from input
       InputGOI2 <- reactive({
         InputGOIs(input$file2, input$genes2)
       })
@@ -827,33 +765,7 @@ intersectGenes <- function(morphinput){
       })
       
       
-      ## Removing Absent genes ##
-      # Get pathway genes
-      #G2 <- reactive({
-      #  morphinput2()$pathway_genes 
-      #})
-      
-      # Get clustering solution
-      #C2 <- reactive({
-      #  (morphinput2()$clustering_solution)[[1]] 
-      #}) 
-      
-      # Get gene expression dataset
-      #GE2 <- reactive({
-      #  (morphinput2()$ge_datasets)[[1]] 
-      #}) 
-      
-      # Get names of genes in dataset
-      #GENames2 <- reactive({
-      #  rownames(GE2()) 
-      #}) 
-      
-      # Get names of genes from intersection
-      #output$Intersection2 <- reactive({
-      #  intersect <- removeAbscentGOIs(G2(),C2(),GENames2())
-      #  intersect
-      #}) 
-      
+
       ## Removing Absent genes ##
       output$Intersection2 <- reactive({
         intersectGenes(morphinput2)
