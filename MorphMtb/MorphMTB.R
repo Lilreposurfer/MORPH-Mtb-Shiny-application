@@ -190,6 +190,12 @@ AUSRscores <- function(scorerandom) {
   number <- sapply(1:length(scorerandom), function(i){i})
   return(data.frame(No=number, Scores=format(round(randomPath,6)))) 
 }
+
+# Calculate the average of the AUSR scores of the random pathways
+AverageofRandom <- function(scorerandom) {
+  round(mean(unlist(sapply(1:length(scorerandom), function(i)
+  {scorerandom[[i]][[1]][["AUSR"]]}))), 6)
+}
 ################################################################################################### 
 ## Server logic
   # Define server logic
@@ -499,10 +505,10 @@ AUSRscores <- function(scorerandom) {
       AUSRscores(ScoreRandom())
     }, striped=TRUE)
     
+    
     # Calculate the average of the AUSR scores of the random pathways
     output$averageRandomPathways <- reactive({
-      round(mean(unlist(sapply(1:length(ScoreRandom()), function(i)
-      {ScoreRandom()[[i]][[1]][["AUSR"]]}))), 6)
+      AverageofRandom(ScoreRandom())
     })
     
       
@@ -870,13 +876,11 @@ AUSRscores <- function(scorerandom) {
         AUSRscores(ScoreRandom2())
       }, striped=TRUE)
       
+    
       # Calculate the average of the AUSR scores of the random pathways
       output$averageRandomPathways2 <- reactive({
-        round(mean(unlist(sapply(1:length(ScoreRandom2()), function(i)
-        {ScoreRandom2()[[i]][[1]][["AUSR"]]}))), 6)
+        AverageofRandom(ScoreRandom2())
       })
-    
-
     
     })
     
