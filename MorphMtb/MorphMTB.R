@@ -198,11 +198,20 @@ source("rentrez.R")
     
     
     # Logic after pressing reset inputs button
+    resetPage <- function(reload) {
+      observeEvent(reload, {
+        session$reload()
+      })
+    }
+    
+    #Use separate observeEvent calls for each input
     observeEvent(input$reset_inputs, {
-      #shinyjs::reset("side-panel")
-      #shinyjs::reset("main-panel")
-      session$reload()
+      resetPage(input$reset_inputs)
     })
+    observeEvent(input$reset_inputs2, {
+      resetPage(input$reset_inputs2)
+    })
+    
     
     # Get length of input pathway uploaded by file
     generaw1 <- reactive({
@@ -648,13 +657,6 @@ source("rentrez.R")
       })
     })
     ###########################################################################
-    
-    # Logic after pressing reset inputs button
-    observeEvent(input$reset_inputs2, {
-      #shinyjs::reset("side-panel2")
-      #shinyjs::reset("main-panel2")
-      session$reload()
-    })
 
     
     # Get length of input pathway uploaded by file
