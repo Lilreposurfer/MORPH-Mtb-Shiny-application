@@ -216,7 +216,7 @@ source("rentrez.R")
     
     # Get length of input pathway uploaded by file
     getGenerawFile <- function(fileInput) {
-        generaw <- unlist(read.csv(file=fileInput$datapath, 
+        generaw <- unlist(read.csv(file=fileInput$datapath[], 
                                              sep='\t', 
                                              header = FALSE))
         # Remove lines with NA
@@ -318,22 +318,41 @@ source("rentrez.R")
     
     ## MORPH Input ##
     # Retrieve genes from input
-    InputGOI <- reactive({
-      if (is.null(input$file)) {
-        # Get individual genes if text input
-        genes <- unlist(strsplit(input$genes, "\n"))
+    #InputGOI <- reactive({
+    #  if (is.null(input$file)) {
+    #    # Get individual genes if text input
+    #    genes <- unlist(strsplit(input$genes, "\n"))
+    #    # Make all gene IDs start with 'Rv'
+    #    genes_Rv <- sub("^rv|^RV", "Rv", genes)
+    #    genes_Rv
+    #  } else {
+    #    # Get individual genes if file uploaded
+    #    genes <- unlist(read.csv(file=input$file$datapath[], 
+    #                    sep='\t', 
+    #                    header = FALSE))}
+    #    # Make all gene IDs start with 'Rv'
+    #    genes_Rv <- sub("^rv|^RV", "Rv", genes)
+    #    genes_Rv
+    #})
+      InputGOIs <- function(fileInput, geneInput) {
+        if (is.null(fileInput)) {
+          # Get individual genes if text input
+          genes <- unlist(strsplit(geneInput, "\n"))
+          # Make all gene IDs start with 'Rv'
+          genes_Rv <- sub("^rv|^RV", "Rv", genes)
+          genes_Rv
+        } else {
+          # Get individual genes if file uploaded
+          genes <- unlist(read.csv(file=fileInput$datapath[], 
+                                   sep='\t', 
+                                   header = FALSE))}
         # Make all gene IDs start with 'Rv'
         genes_Rv <- sub("^rv|^RV", "Rv", genes)
-        genes_Rv
-      } else {
-        # Get individual genes if file uploaded
-        genes <- unlist(read.csv(file=input$file$datapath[], 
-                        sep='\t', 
-                        header = FALSE))}
-        # Make all gene IDs start with 'Rv'
-        genes_Rv <- sub("^rv|^RV", "Rv", genes)
-        genes_Rv
-    }) 
+        return(genes_Rv)
+      } 
+      InputGOI <- reactive({
+        InputGOIs(input$file, input$genes)
+      })
     
     # Create morph input using function
     morphinput <- reactive({
@@ -736,8 +755,6 @@ source("rentrez.R")
             }},
             # Color table every other line
             striped=TRUE)}
-        
-        
         else {
           #retrieve genes from text input and put in table
           output$pathway2 <- renderTable({
@@ -767,17 +784,19 @@ source("rentrez.R")
       
       ## MORPH Input ##
       # Retrieve genes from input
+      #InputGOI2 <- reactive({
+      #  if (is.null(input$file2)) {
+      #    # Get individual genes if text input
+      #    unlist(strsplit(input$genes2, "\n"))
+      #  } else {
+      #    # Get individual genes if file uploaded
+      #    unlist(read.csv(file=input$file2$datapath[], 
+      #                    sep='\t', 
+      #                    header = FALSE))}
+      #}) 
       InputGOI2 <- reactive({
-        if (is.null(input$file2)) {
-          # Get individual genes if text input
-          unlist(strsplit(input$genes2, "\n"))
-        } else {
-          # Get individual genes if file uploaded
-          unlist(read.csv(file=input$file2$datapath[], 
-                          sep='\t', 
-                          header = FALSE))}
-      }) 
-      
+        InputGOIs(input$file2, input$genes2)
+      })
       
       # Create morph input using function
       morphinput2 <- reactive({
