@@ -215,27 +215,27 @@ source("rentrez.R")
     
     
     # Get length of input pathway uploaded by file
-    #getGenerawFile <- function(fileInput) {
-    #    generaw <- reactive({unlist(read.csv(file=fileInput$datapath[], 
-    #                                         sep='\t', 
-    #                                         header = FALSE))})
-    #    # Remove lines with NA
-    #    generawNoNA <- reactive({na.omit(generaw)})
-    #    return(length(generaw))
-    #}
-    #generaw1 <- reactive({
-    #  getGenerawFile(input$file)
-    #})
+    getGenerawFile <- function(fileInput) {
+        generaw <- unlist(read.csv(file=fileInput$datapath, 
+                                             sep='\t', 
+                                             header = FALSE))
+        # Remove lines with NA
+        generawNoNA <- na.omit(generaw)
+        return(length(generawNoNA))
+    }
+    generaw1 <- reactive({
+      getGenerawFile(input$file)
+    })
     
     # Get length of input pathway uploaded by file
-    generaw1 <- reactive({
-      generaw <- reactive({unlist(read.csv(file=input$file$datapath[], 
-                                sep='\t', 
-                                header = FALSE))})
-      # Remove lines with NA
-      generawNoNA <- reactive({na.omit(generaw())})
-      length(generawNoNA())
-    })
+    #generaw1 <- reactive({
+    #  generaw <- reactive({unlist(read.csv(file=input$file$datapath[], 
+    #                            sep='\t', 
+    #                            header = FALSE))})
+    #  # Remove lines with NA
+    #  generawNoNA <- reactive({na.omit(generaw())})
+    #  length(generawNoNA())
+    #})
    
     
     # Get length of input pathway submitted by text
@@ -689,12 +689,15 @@ source("rentrez.R")
 
     
     # Get length of input pathway uploaded by file
+    #generaw12 <- reactive({
+    #  generaw <- reactive({unlist(read.csv(file=input$file2$datapath[], 
+    #                                       sep='\t', 
+    #                                       header = FALSE))})
+    #  generawNoNA <- reactive({na.omit(generaw())})
+    #  length(generawNoNA())
+    #})
     generaw12 <- reactive({
-      generaw <- reactive({unlist(read.csv(file=input$file2$datapath[], 
-                                           sep='\t', 
-                                           header = FALSE))})
-      generawNoNA <- reactive({na.omit(generaw())})
-      length(generawNoNA())
+      getGenerawFile(input$file2)
     })
     # Get length of input pathway submitted by text
     #generaw22 <- reactive({
