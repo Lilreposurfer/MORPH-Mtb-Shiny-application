@@ -181,6 +181,15 @@ LengthPathway <- function(fileInput, generaw1, generaw2) {
     return(generaw2)
   }
 }
+
+# Get the AUSR score of each of the random pathways
+AUSRscores <- function(scorerandom) {
+  vector("numeric", length(scorerandom))
+  randomPath <- unlist(sapply(1:length(scorerandom), function(i)
+  {scorerandom[[i]][[1]][["AUSR"]]}))
+  number <- sapply(1:length(scorerandom), function(i){i})
+  return(data.frame(No=number, Scores=format(round(randomPath,6)))) 
+}
 ################################################################################################### 
 ## Server logic
   # Define server logic
@@ -484,14 +493,11 @@ LengthPathway <- function(fileInput, generaw1, generaw2) {
       getScoresRandomPathway(g(), input$random, lengthPathway())
     })
     
+    
     # Get the AUSR score of each of the random pathways
     output$scoresAUSR <- renderTable({
-      vector("numeric", length(ScoreRandom()))
-      randomPath <- unlist(sapply(1:length(ScoreRandom()), function(i)
-                    {ScoreRandom()[[i]][[1]][["AUSR"]]}))
-      number <- sapply(1:length(ScoreRandom()), function(i){i})
-      return(data.frame(No=number, Scores=format(round(randomPath,6))))
-    }, striped=TRUE) 
+      AUSRscores(ScoreRandom())
+    }, striped=TRUE)
     
     # Calculate the average of the AUSR scores of the random pathways
     output$averageRandomPathways <- reactive({
@@ -858,14 +864,11 @@ LengthPathway <- function(fileInput, generaw1, generaw2) {
         getScoresRandomPathway(g(), input$random2, lengthPathway2())
       })
       
+ 
       # Get the AUSR score of each of the random pathways
       output$scoresAUSR2 <- renderTable({
-        vector("numeric", length(ScoreRandom2()))
-        randomPath2 <- unlist(sapply(1:length(ScoreRandom2()), function(i)
-        {ScoreRandom2()[[i]][[1]][["AUSR"]]}))
-       number2 <- sapply(1:length(ScoreRandom2()), function(i){i})
-        return(data.frame(No=number2, Scores=format(round(randomPath2,6))))
-      }, striped=TRUE) 
+        AUSRscores(ScoreRandom2())
+      }, striped=TRUE)
       
       # Calculate the average of the AUSR scores of the random pathways
       output$averageRandomPathways2 <- reactive({
