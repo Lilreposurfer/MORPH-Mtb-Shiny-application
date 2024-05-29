@@ -141,6 +141,13 @@ intersectGenes <- function(morphinput){
   return(intersection)
 }
 
+## MORPH gene scores ##
+topPredict <- function(idrentrez, predictions, numberCandidates, desc) {
+  ids <- idrentrez
+  number <- sapply(1:numberCandidates, function(i){i})
+  annotation <- desc
+  return(data.frame(No=number, ID=ids, Scored=head(format(round(predictions,6)), numberCandidates), Annotation=annotation))
+}
 
 ################################################################################################### 
 ## Server logic
@@ -386,37 +393,25 @@ intersectGenes <- function(morphinput){
     
     
     ## MORPH gene scores ##
+    #Get predictions
     Predictions <- reactive({
       getMorphPredictions(scores())
     })
+    # Get gene IDs
     idrentrez <- reactive({
-      rownames(as.matrix(head(format(round(Predictions(),6)), input$numbercandidates2)))
+      rownames(as.matrix(head(format(round(Predictions(),6)), input$numbercandidates)))
     })
+    # Get description genes
     desc <- reactive({
       Description(idrentrez())
     })
     
-    topPredict <- function(idrentrez, predictions, numberCandidates, desc) {
-      ids <- idrentrez
-      number <- sapply(1:numberCandidates, function(i){i})
-      annotation <- desc
-      return(data.frame(No=number, ID=ids, Scored=head(format(round(predictions,6)), numberCandidates), Annotation=annotation))
-    }
-    
-    ## MORPH gene scores ##
+    # top predictions table
     output$TopPredictions <- renderTable({ 
-      topPredict(idrentrez, Predictions, input$numbercandidates, desc)
+      topPredict(idrentrez(), Predictions(), input$numbercandidates, desc())
     }, striped=TRUE)
       
-    #output$TopPredictions <- renderTable({ 
-    #  ids <- rownames(as.matrix(head(format(round(Predictions(),6)), input$numbercandidates)))
-    #  number <- sapply(1:input$numbercandidates, function(i){i})
-    #  annotation <- desc()
-    #  return(data.frame(No=number, ID=ids, Scored=head(format(round(Predictions(),6)), input$numbercandidates), Annotation=annotation))
-    #}, striped=TRUE) 
-    
 
-    
     ###########################################################################  
     ## If user wants to download top candidate genes ##
     # Depict what content to download
@@ -764,7 +759,6 @@ intersectGenes <- function(morphinput){
         MORPH(morphinput2())
       })
       
-      
 
       ## Removing Absent genes ##
       output$Intersection2 <- reactive({
@@ -803,25 +797,23 @@ intersectGenes <- function(morphinput){
       
       
       ## MORPH gene scores ##
+      # Get predictions
       Predictions2 <- reactive({
         getMorphPredictions(scores2())
       })
-      
+      # Get gene IDs
       idrentrez2 <- reactive({
         rownames(as.matrix(head(format(round(Predictions2(),6)), input$numbercandidates2)))
       })
+      # Get description of genes
       desc2 <- reactive({
         Description(idrentrez2())
       })
       
-      
+      # top predictions table
       output$TopPredictions2 <- renderTable({ 
-        #as.matrix(head(format(round(Predictions(),6)), input$numbercandidates))
-        ids2 <- rownames(as.matrix(head(format(round(Predictions2(),6)), input$numbercandidates2)))
-        number2 <- sapply(1:input$numbercandidates2, function(i){i})
-        annotation2 <- desc2()
-        return(data.frame(No=number2, ID=ids2, Scored=head(format(round(Predictions2(),6)), input$numbercandidates2), Annotation=annotation2))
-      }, striped=TRUE) 
+        topPredict(idrentrez2(), Predictions2(), input$numbercandidates2, desc2())
+      }, striped=TRUE)
       
       ###########################################################################  
       ## If user wants to download top candidate genes ##
