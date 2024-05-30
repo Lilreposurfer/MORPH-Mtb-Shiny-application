@@ -408,31 +408,36 @@ for (sheet in sheet_names) {
 print(listPathways)
 
 #Solutions
-for (count in counter) {
+#for (pathwayName in listPathways) {
+  ## MORPH input
   InputConfig = "Configs.txt"
-  InputGOI = 
-}
-## MORPH Input
-InputConfig = "Configs.txt"
-InputGOI = "Pathway2.txt"
-morph_input = prepareMorphObjectFromFiles(InputConfig,InputGOI)
-Scores = MORPH(morph_input, view=TRUE)
-## Removing Absent genes
-G = morph_input$pathway_genes #Get pathway genes
-C = (morph_input$clustering_solution)[[1]] #Get clustering solution
-GE = (morph_input$ge_datasets)[[1]] #Get gene expression dataset
-GENames = rownames(GE) #Get names of genes in dataset
-Intersection = removeAbscentGOIs(G,C,GENames)
-print(Intersection)
-## Validation
-InputConfig = "Configs.txt"
-InputGOI = "Pathway2.txt"
-morph_input = prepareMorphObjectFromFiles(InputConfig,InputGOI)
-LOOCVc = LOOCV_MORPH(morph_input)
-print(LOOCVc) 
-## AUSR
-BestConfig <- getMorphResultBestConfig(Scores) 
-print(BestConfig$AUSR) 
-## MORPH gene scores
-Predictions <- getMorphPredictions(Scores)
-print(head(Predictions))
+  #InputGOI = paste0(pathwayName, ".txt")
+  InputGOI = "Pathway2.txt"
+  morph_input = prepareMorphObjectFromFiles(InputConfig, InputGOI)
+  Scores = MORPH(morph_input, view=TRUE)
+  ## Removing Absent genes
+  G = morph_input$pathway_genes #Get pathway genes
+  C = (morph_input$clustering_solution)[[1]] #Get clustering solution
+  GE = (morph_input$ge_datasets)[[1]] #Get gene expression dataset
+  GENames = rownames(GE) #Get names of genes in dataset
+  Intersection = removeAbscentGOIs(G,C,GENames)
+  print(Intersection)
+  ## AUSR
+  BestConfig <- getMorphResultBestConfig(Scores)
+  AUSRscore <- as.character(BestConfig$AUSR)
+  print(BestConfig$AUSR) 
+  ## MORPH gene scores
+  Predictions <- getMorphPredictions(Scores)
+  Candidates <- as.character(head(Predictions))
+  print(head(Predictions))
+  # Write file with AUSR score and candidate genes
+  #fileConn <- file(paste0(pathwayName, "_MORPHMtb.txt"))
+  writeLines("AUSR score:", "Pathway2_MORPHMtb.txt") #Create file
+  fileConn <- file("Pathway2_MORPHMtb.txt", "a") #Open connection to append
+  writeLines(AUSRscore, fileConn) #Append
+  writeLines("\n", fileConn)
+  writeLines("Top candidate genes:", fileConn)
+  writeLines(Candidates, fileConn)
+  close(fileConn) # Close connection
+#}
+
