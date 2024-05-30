@@ -392,9 +392,37 @@ for (sheet in sheet_names) {
   # Print counter
   print(counter)
   # Write files for each pathway
-  lapply(pathway, write, paste0(sheet, ".txt"), append=TRUE)
+  writeLines(pathway, paste0(sheet, ".txt"), sep="\t")
+  #lapply(pathway, write, paste0(sheet, ".txt"), append=TRUE)
   
   # Increment counter by 1
   counter <- counter + 1
 }
 
+#Solutions
+## MORPH Input
+InputConfig = "Configs.txt"
+InputGOI = "Pathway2.txt"
+morph_input = prepareMorphObjectFromFiles(InputConfig,InputGOI)
+Scores = MORPH(morph_input, view=TRUE)
+## Removing Absent genes
+G = morph_input$pathway_genes #Get pathway genes
+C = (morph_input$clustering_solution)[[1]] #Get clustering solution
+GE = (morph_input$ge_datasets)[[1]] #Get gene expression dataset
+GENames = rownames(GE) #Get names of genes in dataset
+Intersection = removeAbscentGOIs(G,C,GENames)
+print(Intersection)
+## Validation
+InputConfig = "Configs.txt"
+InputGOI = "Pathway2.txt"
+morph_input = prepareMorphObjectFromFiles(InputConfig,InputGOI)
+LOOCVc = LOOCV_MORPH(morph_input)
+print(LOOCVc) #0.8283571 #test: 0.5913871
+## AUSR
+Scores2 = LOOCV_MORPH(morph_input) # --> gives 1 score: 0.8283571
+BestConfig <- getMorphResultBestConfig(Scores) #Error in curr_res$AUSR : $ operator is invalid for atomic vectors
+print(names(BestConfig))
+print(BestConfig$AUSR) #0.8283571 #test: 0.6823548
+## MORPH gene scores
+Predictions <- getMorphPredictions(Scores)
+print(head(Predictions))
