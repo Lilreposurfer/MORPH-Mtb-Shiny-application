@@ -96,14 +96,19 @@ counter = 1
 # Loop through each sheet and perform operations
 for (sheet in sheet_names) {
   # Read the data from the current sheet
-  data <- read_excel(file_path, sheet = sheet)
+  pathway <- read_excel(file_path, sheet = sheet, col_names=FALSE)
+  # Get data 
+  pathway <- pathway$...1
   
   # Print the sheet name
   print(paste("Sheet:", sheet))
   
-  # Print the first few rows of the data (example operation)
-  print(head(data))
+  # Print the first few rows of the data 
+  print(head(pathway))
+  # Print counter
   print(counter)
+  # Write files for each pathway
+  lapply(pathway, write, paste0(sheet, ".txt"), append=TRUE)
   
   # Increment counter by 1
   counter <- counter + 1
