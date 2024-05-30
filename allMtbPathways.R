@@ -433,6 +433,7 @@ print(listPathways)
   CandidatesGenes <- rownames(Candidates)
   CandidatesScores <- as.character(Candidates)
   Candidates <- cbind(CandidatesGenes, CandidatesScores)
+  colnames(Candidates) <- NULL
   print(head(Predictions))
   # Write file with AUSR score and candidate genes
   #fileConn <- file(paste0(pathwayName, "_MORPHMtb.txt"))
@@ -441,8 +442,6 @@ print(listPathways)
   writeLines(AUSRscore, fileConn) #Append
   writeLines("\n", fileConn)
   writeLines("Top candidate genes:", fileConn)
-  #writeLines(rownames(Candidates), as.character(Candidates), fileConn, sep=\t)
-  #write.matrix(Candidates, "Pathway2_MORPHMtb.txt", append=TRUE, sep="\t", row.names = FALSE, col.names = FALSE)
   write.matrix(Candidates, fileConn, sep="\t")
   close(fileConn) # Close connection
 #}

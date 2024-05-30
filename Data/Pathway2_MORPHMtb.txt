@@ -3,7 +3,6 @@ AUSR score:
 
 
 Top candidate genes:
-CandidatesGenes	CandidatesScores
 Rv2459          	1.66757800030965
 Rv2457c         	1.62641898183758
 Rv0017c         	1.58495889465832
