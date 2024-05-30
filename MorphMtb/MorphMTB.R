@@ -831,8 +831,22 @@ AverageofRandom <- function(scorerandom) {
       })
       
       ### Solutions for each dataset for a specific pathway
-      #Scores[[1]]$AUSR   ## Numbers are corresponding to where the clustering solution is in Configs.txt
-      #head(Scores[[1]]$Ranking$Scored, 5)
+      output$ConfigTable2 <- renderTable({
+        dataset2 <- rep(c("clark.txt","drug.txt","ESX.txt","inaki.txt","primary.txt","timecourse.txt","ExpressionData.txt"), each =2)
+        cluster2 <- c("kmeansclark.txt","somclark.txt","kmeansdrug.txt","somdrug.txt","kmeansESX.txt","somESX.txt",
+                     "kmeansinaki.txt","sominaki.txt","kmeansprimary.txt","somprimary.txt","kmeanstimecourse.txt","somtimecourse.txt", "kmeansexpdata.txt", "somexpdata.txt")
+        ausr2 <- reactive({
+          sapply(1:14, function(i){
+            return(scores2()[[i]]$AUSR)})
+        })
+        # Ensure the reactive ausr() is called to get the actual values
+        scores2 <- ausr2()
+        #Create data frame
+        df2 <- data.frame(Dataset=dataset2,Cluster=cluster2,Score=scores2)
+        #Sort data frame by score in descending order
+        df2 <- df2[order(-df2$Score), ] 
+        return(df2)
+      })
       
       
       ## MORPH gene scores ##
@@ -919,6 +933,7 @@ AverageofRandom <- function(scorerandom) {
         tabPanel("Result random pathway", tags$h4("Average AUSR score:"), textOutput("averageRandomPathways2"), br(), tags$h4("Scores random pathways:"), br(), tableOutput("scoresAUSR2")),
         tabPanel("Result input pathway", tags$h4("AUSR:"), textOutput("AUSRBestConfig2"), br(), 
                  tags$h4("Best configuration:"), textOutput("BestConfigDataset2"), textOutput("BestConfigCluster2"), br(),
+                 tags$h4("Ranked configurations:"), tableOutput("ConfigTable2"), br(),
                  tags$h4("Top candidate genes:"), tableOutput("TopPredictions2"), br(), tags$h5("Click the download link to download list candidate genes."))
         )
 
