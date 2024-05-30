@@ -90,6 +90,9 @@ file_path <- "PathwaysMtb.xlsx"
 # Get the names of all sheets in the Excel file
 sheet_names <- excel_sheets(file_path)
 
+# Add counter
+counter = 1
+
 # Loop through each sheet and perform operations
 for (sheet in sheet_names) {
   # Read the data from the current sheet
@@ -100,6 +103,10 @@ for (sheet in sheet_names) {
   
   # Print the first few rows of the data (example operation)
   print(head(data))
+  print(counter)
+  
+  # Increment counter by 1
+  counter <- counter + 1
   
   # Add your custom operations here
   # For example, you could store each sheet's data in a list for further processing
