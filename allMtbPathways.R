@@ -242,9 +242,9 @@ MORPH = function(morph_obj, K=1000, view = FALSE)
     P = intersect(G,rownames(GE)) #Acquire relevant genes (those which appear both in the pathway-genes AND the gene-expression data).
     corr_matrices[[ge]] = cor(t(GE),t(GE[P,])) #Calculate and save coexpression (covariance) matrix into out list.
   }
-  if (view == TRUE){ #Is the "view" parameter set to TRUE?
-    pdf("Threshold_Plots.pdf", onefile=TRUE) #Open PDF formatted file to hold all self-ranking plots.
-  }
+  #if (view == TRUE){ #Is the "view" parameter set to TRUE?
+  #  pdf("Threshold_Plots.pdf", onefile=TRUE) #Open PDF formatted file to hold all self-ranking plots.
+  #}
   for (I in (1:length(List_C))){ #Go through all configurations (clustering solution vs. gene-expression dataset)
     #Acquire necessary information
     C = cl_solutions[[(List_C[I])]] #Clustering solution.
@@ -375,10 +375,19 @@ file_path <- "PathwaysMtb.xlsx"
 sheet_names <- excel_sheets(file_path)
 
 # Add counter
-counter = 1
+#counter = 0
+
+# List pathways
+listPathways <- c()
 
 # Loop through each sheet and perform operations
 for (sheet in sheet_names) {
+  # Increment counter by 1
+  #counter <- counter + 1
+  
+  # Add name sheet to list
+  listPathways <- c(listPathways, sheet)
+  
   # Read the data from the current sheet
   pathway <- read_excel(file_path, sheet = sheet, col_names=FALSE)
   # Get data 
@@ -390,16 +399,19 @@ for (sheet in sheet_names) {
   # Print the first few rows of the data 
   print(head(pathway))
   # Print counter
-  print(counter)
+  #print(counter)
   # Write files for each pathway
   writeLines(pathway, paste0(sheet, ".txt"), sep="\t")
-  #lapply(pathway, write, paste0(sheet, ".txt"), append=TRUE)
-  
-  # Increment counter by 1
-  counter <- counter + 1
+
 }
 
+print(listPathways)
+
 #Solutions
+for (count in counter) {
+  InputConfig = "Configs.txt"
+  InputGOI = 
+}
 ## MORPH Input
 InputConfig = "Configs.txt"
 InputGOI = "Pathway2.txt"
@@ -417,12 +429,10 @@ InputConfig = "Configs.txt"
 InputGOI = "Pathway2.txt"
 morph_input = prepareMorphObjectFromFiles(InputConfig,InputGOI)
 LOOCVc = LOOCV_MORPH(morph_input)
-print(LOOCVc) #0.8283571 #test: 0.5913871
+print(LOOCVc) 
 ## AUSR
-Scores2 = LOOCV_MORPH(morph_input) # --> gives 1 score: 0.8283571
-BestConfig <- getMorphResultBestConfig(Scores) #Error in curr_res$AUSR : $ operator is invalid for atomic vectors
-print(names(BestConfig))
-print(BestConfig$AUSR) #0.8283571 #test: 0.6823548
+BestConfig <- getMorphResultBestConfig(Scores) 
+print(BestConfig$AUSR) 
 ## MORPH gene scores
 Predictions <- getMorphPredictions(Scores)
 print(head(Predictions))
