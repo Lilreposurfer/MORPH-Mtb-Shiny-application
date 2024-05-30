@@ -407,15 +407,16 @@ for (sheet in sheet_names) {
 }
 
 print(listPathways)
+listPathways <- c("Pathway2", "Pathway3", "pathway4", "Pathway5")
 
 #Solutions
-#for (pathwayName in listPathways) {
+for (pathwayName in listPathways) {
   ## MORPH input
   InputConfig = "Configs.txt"
-  #InputGOI = paste0(pathwayName, ".txt")
-  InputGOI = "Pathway2.txt"
+  InputGOI = paste0(pathwayName, ".txt")
+  #InputGOI = "Pathway1.txt"
   morph_input = prepareMorphObjectFromFiles(InputConfig, InputGOI)
-  Scores = MORPH(morph_input, view=TRUE)
+  Scores = MORPH(morph_input)
   ## Removing Absent genes
   G = morph_input$pathway_genes #Get pathway genes
   C = (morph_input$clustering_solution)[[1]] #Get clustering solution
@@ -436,13 +437,13 @@ print(listPathways)
   colnames(Candidates) <- NULL
   print(head(Predictions))
   # Write file with AUSR score and candidate genes
-  #fileConn <- file(paste0(pathwayName, "_MORPHMtb.txt"))
-  writeLines("AUSR score:", "Pathway2_MORPHMtb.txt") #Create file
-  fileConn <- file("Pathway2_MORPHMtb.txt", "a") #Open connection to append
+  writeLines("AUSR score:", paste0(pathwayName, "_MORPHMtb.txt")) #Create file
+  fileConn <- file(paste0(pathwayName, "_MORPHMtb.txt"),"a")#Open connection to append
+  #fileConn <- file("Pathway2_MORPHMtb.txt", "a") 
   writeLines(AUSRscore, fileConn) #Append
   writeLines("\n", fileConn)
   writeLines("Top candidate genes:", fileConn)
   write.matrix(Candidates, fileConn, sep="\t")
   close(fileConn) # Close connection
-#}
+}
 
