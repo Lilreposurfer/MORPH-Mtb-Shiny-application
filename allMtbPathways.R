@@ -84,3 +84,25 @@ g <- c("Rv0001","Rv0002","Rv0003","Rv0004","Rv0005","Rv0006","Rv0007","Rv0008c",
     "Rv3801c","Rv3802c","Rv3803c","Rv3804c","Rv3805c","Rv3806c","Rv3807c","Rv3808c","Rv3809c","Rv3810","Rv3811","Rv3812","Rv3813c","Rv3814c","Rv3815c","Rv3816c","Rv3817","Rv3818","Rv3819","Rv3820c","Rv3821","Rv3822","Rv3823c","Rv3824c","Rv3825c","Rv3826","Rv3827c","Rv3828c","Rv3829c","Rv3830c","Rv3831","Rv3832c","Rv3833","Rv3834c","Rv3835","Rv3836","Rv3837c","Rv3838c","Rv3839","Rv3840","Rv3841","Rv3842c","Rv3843c","Rv3844","Rv3845","Rv3846","Rv3847","Rv3848","Rv3849","Rv3850","Rv3851","Rv3852","Rv3853","Rv3854c","Rv3855","Rv3856c","Rv3857c","Rv3858c","Rv3859c","Rv3860","Rv3861","Rv3862c","Rv3863","Rv3864","Rv3865","Rv3866","Rv3867","Rv3868","Rv3869","Rv3870","Rv3871","Rv3872","Rv3873","Rv3874","Rv3875","Rv3876","Rv3877","Rv3878","Rv3879c","Rv3880c","Rv3881c","Rv3882c","Rv3883c","Rv3884c","Rv3885c","Rv3886c","Rv3887c","Rv3888c","Rv3889c","Rv3890c","Rv3891c","Rv3892c","Rv3893c","Rv3894c","Rv3895c","Rv3896c","Rv3897c","Rv3898c","Rv3899c","Rv3900c","Rv3901c","Rv3902c","Rv3903c","Rv3904c","Rv3905c","Rv3906c","Rv3907c","Rv3908","Rv3909","Rv3910","Rv3911","Rv3912","Rv3913","Rv3914","Rv3915","Rv3916c","Rv3917c","Rv3918c","Rv3919c","Rv3920c","Rv3921c","Rv3922c","Rv3923c","Rv3924c","RVnc0001","RVnc0002","RVnc0003","RVnc0004","RVnc0005","RVnc0006","RVnc0008","RVnc0010","RVnc0012","RVnc0013","RVnc0015","RVnc0018","RVnc0021","RVnc0024","RVnc0034","RVnc0035","RVnc0036","RVnc0036a","RVnc0040","RVnc0046","RVnc0047","Rvnr01","Rvnr02","Rvnr03","Rvns01","Rvnt01","Rvnt02","Rvnt03","Rvnt04","Rvnt05","Rvnt06","Rvnt07","Rvnt08","Rvnt09","Rvnt10","Rvnt11","Rvnt12","Rvnt13","Rvnt14","Rvnt15","Rvnt16","Rvnt17","Rvnt18","Rvnt19","Rvnt20","Rvnt21","Rvnt22","Rvnt23","Rvnt24","Rvnt25","Rvnt26","Rvnt27","Rvnt28","Rvnt29","Rvnt30","Rvnt31","Rvnt32","Rvnt33","Rvnt34","Rvnt35","Rvnt36","Rvnt37","Rvnt38","Rvnt39","Rvnt40","Rvnt41","Rvnt42","Rvnt43","Rvnt44","Rvnt45")
 
 
+# Define the path to your Excel file
+file_path <- "PathwaysMtb.xlsx"
+
+# Get the names of all sheets in the Excel file
+sheet_names <- excel_sheets(file_path)
+
+# Loop through each sheet and perform operations
+for (sheet in sheet_names) {
+  # Read the data from the current sheet
+  data <- read_excel(file_path, sheet = sheet)
+  
+  # Print the sheet name
+  print(paste("Sheet:", sheet))
+  
+  # Print the first few rows of the data (example operation)
+  print(head(data))
+  
+  # Add your custom operations here
+  # For example, you could store each sheet's data in a list for further processing
+  # data_list[[sheet]] <- data
+}
+
