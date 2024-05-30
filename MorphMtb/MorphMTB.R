@@ -438,6 +438,21 @@ AverageofRandom <- function(scorerandom) {
       BestConfig()$C
     })
     
+    ### Solutions for each dataset for a specific pathway
+    output$ConfigTable <- renderTable({
+      dataset <- rep(c("clark.txt","drug.txt","ESX.txt","inaki.txt","primary.txt","timecourse.txt"), each =2)
+      cluster <- c("kmeansclark.txt","somclark.txt","kmeansdrug.txt","somdrug.txt","kmeansESX.txt","somESX.txt",
+                   "kmeansinaki.txt","sominaki.txt","kmeansprimary.txt","somprimary.txt","kmeanstimecourse.txt","somtimecourse.txt")
+      ausr <- reactive({
+        sapply(1:12, function(i){
+          return(scores()[[i]]$AUSR)})
+        })
+      scores <- ausr()
+      return(data.frame(Dataset=dataset,Cluster=cluster,Score=scores))
+    })
+    #Scores[[1]]$AUSR   ## Numbers are corresponding to where the clustering solution is in Configs.txt
+    #head(Scores[[1]]$Ranking$Scored, 5)
+    
     
     ## MORPH gene scores ##
     #Get predictions
@@ -521,6 +536,7 @@ AverageofRandom <- function(scorerandom) {
         tabPanel("Result random pathway", tags$h4("Average AUSR score:"), textOutput("averageRandomPathways"), br(), tags$h4("Scores random pathways:"), br(), tableOutput("scoresAUSR")),
         tabPanel("Result input pathway", tags$h4("AUSR:"), textOutput("AUSRBestConfig"), br(), 
                  tags$h4("Best configuration:"), textOutput("BestConfigDataset"), textOutput("BestConfigCluster"), br(),
+                 tags$h4("Configurations:"), tableOutput("ConfigTable"), br(),
                  tags$h4("Top candidate genes:"), tableOutput("TopPredictions"), br(), tags$h5("Click the download link to download list candidate genes.")))
         
     })
@@ -810,6 +826,10 @@ AverageofRandom <- function(scorerandom) {
       output$BestConfigCluster2 <- reactive({
         BestConfig2()$C
       })
+      
+      ### Solutions for each dataset for a specific pathway
+      #Scores[[1]]$AUSR   ## Numbers are corresponding to where the clustering solution is in Configs.txt
+      #head(Scores[[1]]$Ranking$Scored, 5)
       
       
       ## MORPH gene scores ##
