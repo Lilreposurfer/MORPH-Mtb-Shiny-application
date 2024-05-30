@@ -6,6 +6,8 @@ This Shiny web application was made based on the MORPH algorithm, originally des
 
 In this repository, two folders where attached named Data and MorphMtb.
 
+A separate R script called allMtbPathways.R is also present.
+
 ## Data folder
 This data file constist out of all files that are needed as input to the MORPH-Mtb algorithm, including 6 pre-processed data sets used in the algorithm:
 - ESX.txt
@@ -78,7 +80,8 @@ In the next tab, Result random pathway, the AUSR-score of the random pathways is
 In the last tab, Result input pathway, the ranked candidate genes are given together with some extra information:  
 - The AUSR-score of your input pathway
 - The dataset and the clustering solution that gave the highest score
-- A table with the ranked candidate genes. Each gene gets a score and a description from NCBI
+- A table with the AUSR-scores from the datasets with their clustering solutions
+- A table with the ranked candidate genes. Each gene gets a score and a description from NCBI.
 
 This list of candidate genes can be downloaded in a .txt file by clicking the download link underneath the start button.  
 The application can be restarted by clicking the "New analysis" button.  
@@ -98,3 +101,10 @@ The next three tabs are the same as these of the first page and will give you th
 
 The application can, again, be restarted by clicking the "New analysis" button.    
 The spinning flowers indicate if the algorithm is running.
+
+## allMtbPathways.R script
+
+This R script was made for advanced bioinformaticians and people who know how to code.  
+
+The input of this script is an Excel file with on each sheet a different pathway of Mtb. This data will be written in new files, which are then used to calculate the AUSR-score and the top 6 candidate genes. This will again be written in a new file so that the data is easily accessible.  
+This way, all of the pathways of Mtb can be analyzed at the same time.
