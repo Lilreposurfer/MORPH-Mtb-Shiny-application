@@ -350,12 +350,16 @@ AverageofRandom <- function(scorerandom) {
             MtbGeneFile <- sapply(geneNoNA, function(i){i %in% g})
             number1 <- sapply(1:generaw1(), function(i){i})
             # Check if all input genes are from Mtb
-            if("FALSE" %in% MtbGeneFile){
-              return("This list contains at least 1 gene not from Mtb.")
-            } else{
-              # Make dataframe out of elements to put in table
-              return(data.frame(No=number1,Genes=geneNoNA))
-            }},
+            updatedGenes <- sapply(seq_along(MtbGeneFile), function(i){
+              if(MtbGeneFile[i]) {
+                geneNoNA[i]
+              } else {
+                "This is not a Mtb gene"
+              }
+            })
+            # Make dataframe out of elements to put in table if genes of Mtb (start with Rv)
+            return(data.frame(No=number1,Genes=updatedGenes))
+            },
             # Color table every other line
             striped=TRUE)}
         else {
@@ -375,20 +379,15 @@ AverageofRandom <- function(scorerandom) {
             MtbGene <- sapply(gene(), function(i){i %in% g})
             number2 <- sapply(1:generaw2(), function(i){i})
             # Check if all input genes are from Mtb
-            #sapply(MtbGene, function(i){
-            #  if(i=="FALSE"){
-            #    return("This gene is not from Mtb")
-            #    return(i)
-            #  }})
-            #    # Make dataframe out of elements to put in table if genes of Mtb (start with Rv)
-            #    return(data.frame(No=number2,Genes=gene()))
-            #})
-            if("FALSE" %in% MtbGene){
-              return("This list contains at least 1 gene not from Mtb: ")
-            } else{
-              # Make dataframe out of elements to put in table if genes of Mtb (start with Rv)
-              return(data.frame(No=number2,Genes=gene()))
-            }
+            updatedGenes <- sapply(seq_along(MtbGene), function(i){
+              if(MtbGene[i]) {
+                gene()[i]
+              } else {
+                "This is not a Mtb gene"
+              }
+              })
+                # Make dataframe out of elements to put in table if genes of Mtb (start with Rv)
+                return(data.frame(No=number2,Genes=updatedGenes))
             },
             # Color table every other line
             striped=TRUE)}
@@ -754,12 +753,16 @@ AverageofRandom <- function(scorerandom) {
             MtbGeneFile2 <- sapply(geneNoNA2, function(i){i %in% g})
             number12 <- sapply(1:generaw12(), function(i){i})
             # Check if all input genes are from Mtb
-            if("FALSE" %in% MtbGeneFile2){
-              return("This list contains at least 1 gene not from Mtb.")
-            } else{
-              # Make dataframe out of elements to put in table
-              return(data.frame(No=number12,Genes=geneNoNA2))
-            }},
+            updatedGenes <- sapply(seq_along(MtbGeneFile2), function(i){
+              if(MtbGeneFile2[i]) {
+                geneNoNA2[i]
+              } else {
+                "This is not a Mtb gene"
+              }
+            })
+            # Make dataframe out of elements to put in table if genes of Mtb (start with Rv)
+            return(data.frame(No=number12,Genes=updatedGenes))
+            },
             # Color table every other line
             striped=TRUE)}
         else {
@@ -778,12 +781,16 @@ AverageofRandom <- function(scorerandom) {
             MtbGene2 <- sapply(gene2(), function(i){i %in% g})
             number22 <- sapply(1:generaw22(), function(i){i})
             # Check if all input genes are from Mtb
-            if("FALSE" %in% MtbGene2){
-              return("This list contains at least 1 gene not from Mtb.")
-            } else{
-              # Make dataframe out of elements to put in table if genes of Mtb (start with Rv)
-              return(data.frame(No=number22,Genes=gene2()))
-            }},
+            updatedGenes <- sapply(seq_along(MtbGene2), function(i){
+              if(MtbGene2[i]) {
+                gene2()[i]
+              } else {
+                "This is not a Mtb gene"
+              }
+            })
+            # Make dataframe out of elements to put in table if genes of Mtb (start with Rv)
+            return(data.frame(No=number22,Genes=updatedGenes))
+            },
             # Color table every other line
             striped=TRUE)}
       })
