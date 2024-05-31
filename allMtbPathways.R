@@ -333,36 +333,25 @@ file_path <- "PathwaysMtb.xlsx"
 # Get the names of all sheets in the Excel file
 sheet_names <- excel_sheets(file_path)
 
-
 # List pathways
 listPathways <- c()
 
 # Loop through each sheet and perform operations
 for (sheet in sheet_names) {
-  # Increment counter by 1
-  #counter <- counter + 1
-  
   # Add name sheet to list
   listPathways <- c(listPathways, sheet)
-  
   # Read the data from the current sheet
   pathway <- read_excel(file_path, sheet = sheet, col_names=FALSE)
   # Get data 
   pathway <- pathway$...1
-  
   # Print the sheet name
   print(paste("Sheet:", sheet))
-  
   # Print the first few rows of the data 
   print(head(pathway))
-
   # Write files for each pathway
   writeLines(pathway, paste0(sheet, ".txt"), sep="\t")
-
 }
-
 print(listPathways)
-
 
 #Solutions
 for (pathwayName in listPathways) {
