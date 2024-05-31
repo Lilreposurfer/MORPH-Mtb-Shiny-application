@@ -345,9 +345,8 @@ AverageofRandom <- function(scorerandom) {
                                              header = FALSE))})
             # Remove NA values
             geneNoNA <- na.omit(gene())
-            # Check if genes start with Rv
-            MtbGeneFile <- grepl("^Rv|^rv|^RV", geneNoNA)
-            #MtbGeneFile <- sapply(1:geneNoNA(), function(i){i %in% g})
+            # Check if genes are from Mtb
+            MtbGeneFile <- sapply(geneNoNA, function(i){i %in% g})
             number1 <- sapply(1:generaw1(), function(i){i})
             # Check if all input genes are from Mtb
             if("FALSE" %in% MtbGeneFile){
@@ -370,13 +369,8 @@ AverageofRandom <- function(scorerandom) {
               # Remove NA values
               na.omit(genes)
             })
-            # Check if genes start with Rv
-            MtbGene <- grepl("^Rv|^rv|^RV", gene())
-            #MtbGene <- reactive({
-            #  sapply(gene(), function(i){
-            #    any(i==as.vector(g))
-            #  })
-            #})
+            # Check if genes are from Mtb
+            MtbGene <- sapply(gene(), function(i){i %in% g})
             number2 <- sapply(1:generaw2(), function(i){i})
             # Check if all input genes are from Mtb
             if("FALSE" %in% MtbGene){
@@ -744,8 +738,8 @@ AverageofRandom <- function(scorerandom) {
                                               sep='\t', 
                                               header = FALSE))})
             geneNoNA2 <- na.omit(gene2())
-            # Check if genes start with Rv
-            MtbGeneFile2 <- grepl("^Rv|^rv|^RV", geneNoNA2)
+            # Check if genes are from Mtb
+            MtbGeneFile2 <- sapply(geneNoNA2, function(i){i %in% g})
             number12 <- sapply(1:generaw12(), function(i){i})
             # Check if all input genes are from Mtb
             if("FALSE" %in% MtbGeneFile2){
@@ -767,8 +761,8 @@ AverageofRandom <- function(scorerandom) {
               genes <- sapply(genes, function(g) if (g == "" || g == " ") NA else g)
               na.omit(genes)
             })
-            # Check if genes start with Rv
-            MtbGene2 <- grepl("^Rv|^rv|^RV", gene2())
+            # Check if genes are from Mtb
+            MtbGene2 <- sapply(gene2(), function(i){i %in% g})
             number22 <- sapply(1:generaw22(), function(i){i})
             # Check if all input genes are from Mtb
             if("FALSE" %in% MtbGene2){
