@@ -344,9 +344,11 @@ AverageofRandom <- function(scorerandom) {
             gene <- reactive({unlist(read.csv(file=input$file$datapath[], 
                                              sep='\t', 
                                              header = FALSE))})
+            # Remove NA values
             geneNoNA <- na.omit(gene())
             # Check if genes start with Rv
             MtbGeneFile <- grepl("^Rv|^rv|^RV", geneNoNA)
+            #MtbGeneFile <- sapply(1:geneNoNA(), function(i){i %in% g})
             number1 <- sapply(1:generaw1(), function(i){i})
             # Check if all input genes are from Mtb
             if("FALSE" %in% MtbGeneFile){
@@ -366,10 +368,16 @@ AverageofRandom <- function(scorerandom) {
             gene <- reactive({
               genes <- unlist(strsplit(input$genes, "\n"))
               genes <- sapply(genes, function(g) if (g == "" || g == " ") NA else g)
+              # Remove NA values
               na.omit(genes)
             })
             # Check if genes start with Rv
             MtbGene <- grepl("^Rv|^rv|^RV", gene())
+            #MtbGene <- reactive({
+            #  sapply(gene(), function(i){
+            #    any(i==as.vector(g))
+            #  })
+            #})
             number2 <- sapply(1:generaw2(), function(i){i})
             # Check if all input genes are from Mtb
             if("FALSE" %in% MtbGene){
@@ -429,13 +437,12 @@ AverageofRandom <- function(scorerandom) {
       format(round(BestConfig()$AUSR,7))
     })
     
-    # Get dataset of best score
-    output$BestConfigDataset <- reactive({
-      BestConfig()$GE
-    })
-    # Get cluster solution of best score
-    output$BestConfigCluster <- reactive({
-      BestConfig()$C
+    
+    # Get dataset and cluster solution of best score
+    output$BestConfigs <- renderTable({
+      dataset <- BestConfig()$GE
+      cluster <- BestConfig()$C
+      df <- data.frame(Dataset=dataset, Cluster=cluster)
     })
     
     ### Solutions for each dataset for a specific pathway
@@ -538,7 +545,7 @@ AverageofRandom <- function(scorerandom) {
         tabPanel("Input pathway", tableOutput("pathway"), tableOutput("contents")),
         tabPanel("Result random pathway", tags$h4("Average AUSR score:"), textOutput("averageRandomPathways"), br(), tags$h4("Scores random pathways:"), br(), tableOutput("scoresAUSR")),
         tabPanel("Result input pathway", tags$h4("AUSR:"), textOutput("AUSRBestConfig"), br(), 
-                 tags$h4("Best configuration:"), textOutput("BestConfigDataset"), textOutput("BestConfigCluster"), br(),
+                 tags$h4("Best configuration:"), tableOutput("BestConfigs"), br(),
                  tags$h4("Ranked configurations:"), tableOutput("ConfigTable"), br(),
                  tags$h4("Top candidate genes:"), tableOutput("TopPredictions"), br(), tags$h5("Click the download link to download list candidate genes.")))
         
@@ -821,13 +828,12 @@ AverageofRandom <- function(scorerandom) {
         format(round(BestConfig2()$AUSR,7))
       })
       
-      # Get dataset of best score
-      output$BestConfigDataset2 <- reactive({
-        BestConfig2()$GE
-      })
-      # Get cluster solution of best score
-      output$BestConfigCluster2 <- reactive({
-        BestConfig2()$C
+      
+      # Get dataset and cluster solution of best score
+      output$BestConfigs2 <- renderTable({
+        dataset <- BestConfig2()$GE
+        cluster <- BestConfig2()$C
+        df <- data.frame(Dataset=dataset, Cluster=cluster)
       })
       
       ### Solutions for each dataset for a specific pathway
@@ -932,7 +938,7 @@ AverageofRandom <- function(scorerandom) {
         tabPanel("Input pathway", tableOutput("pathway2"), tableOutput("contents2")),
         tabPanel("Result random pathway", tags$h4("Average AUSR score:"), textOutput("averageRandomPathways2"), br(), tags$h4("Scores random pathways:"), br(), tableOutput("scoresAUSR2")),
         tabPanel("Result input pathway", tags$h4("AUSR:"), textOutput("AUSRBestConfig2"), br(), 
-                 tags$h4("Best configuration:"), textOutput("BestConfigDataset2"), textOutput("BestConfigCluster2"), br(),
+                 tags$h4("Best configuration:"), tableOutput("BestConfigs2"), br(),
                  tags$h4("Ranked configurations:"), tableOutput("ConfigTable2"), br(),
                  tags$h4("Top candidate genes:"), tableOutput("TopPredictions2"), br(), tags$h5("Click the download link to download list candidate genes."))
         )
