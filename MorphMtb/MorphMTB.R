@@ -343,8 +343,9 @@ AverageofRandom <- function(scorerandom) {
             gene <- reactive({unlist(read.csv(file=input$file$datapath[], 
                                              sep='\t', 
                                              header = FALSE))})
+            gene <- sub("^rv|^RV", "Rv", gene())
             # Remove NA values
-            geneNoNA <- na.omit(gene())
+            geneNoNA <- na.omit(gene)
             # Check if genes are from Mtb
             MtbGeneFile <- sapply(geneNoNA, function(i){i %in% g})
             number1 <- sapply(1:generaw1(), function(i){i})
@@ -368,13 +369,22 @@ AverageofRandom <- function(scorerandom) {
               genes <- sapply(genes, function(g) if (g == "" || g == " ") NA else g)
               # Remove NA values
               na.omit(genes)
+              genes <- sub("^rv|^RV", "Rv", genes)
             })
             # Check if genes are from Mtb
             MtbGene <- sapply(gene(), function(i){i %in% g})
             number2 <- sapply(1:generaw2(), function(i){i})
             # Check if all input genes are from Mtb
+            #sapply(MtbGene, function(i){
+            #  if(i=="FALSE"){
+            #    return("This gene is not from Mtb")
+            #    return(i)
+            #  }})
+            #    # Make dataframe out of elements to put in table if genes of Mtb (start with Rv)
+            #    return(data.frame(No=number2,Genes=gene()))
+            #})
             if("FALSE" %in% MtbGene){
-              return("This list contains at least 1 gene not from Mtb.")
+              return("This list contains at least 1 gene not from Mtb: ")
             } else{
               # Make dataframe out of elements to put in table if genes of Mtb (start with Rv)
               return(data.frame(No=number2,Genes=gene()))
@@ -383,6 +393,7 @@ AverageofRandom <- function(scorerandom) {
             # Color table every other line
             striped=TRUE)}
       })
+  
   
    
     
@@ -737,7 +748,8 @@ AverageofRandom <- function(scorerandom) {
             gene2 <- reactive({unlist(read.csv(file=input$file2$datapath[], 
                                               sep='\t', 
                                               header = FALSE))})
-            geneNoNA2 <- na.omit(gene2())
+            gene2 <- sub("^rv|^RV", "Rv", gene2())
+            geneNoNA2 <- na.omit(gene2)
             # Check if genes are from Mtb
             MtbGeneFile2 <- sapply(geneNoNA2, function(i){i %in% g})
             number12 <- sapply(1:generaw12(), function(i){i})
@@ -760,6 +772,7 @@ AverageofRandom <- function(scorerandom) {
               genes <- unlist(strsplit(input$genes2, "\n"))
               genes <- sapply(genes, function(g) if (g == "" || g == " ") NA else g)
               na.omit(genes)
+              genes <- sub("^rv|^RV", "Rv", genes)
             })
             # Check if genes are from Mtb
             MtbGene2 <- sapply(gene2(), function(i){i %in% g})
