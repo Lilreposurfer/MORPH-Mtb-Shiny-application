@@ -357,6 +357,9 @@ AverageofRandom <- function(scorerandom) {
                 "This is not a Mtb gene"
               }
             })
+            genenames <- reactive({
+              GeneName(gene())
+            })
             # Make dataframe out of elements to put in table if genes of Mtb (start with Rv)
             return(data.frame(No=number1,Genes=updatedGenes))
             },
@@ -386,8 +389,11 @@ AverageofRandom <- function(scorerandom) {
                 "This is not a Mtb gene"
               }
               })
+            genenames <- reactive({
+              GeneName(updatedGenes)
+            })
                 # Make dataframe out of elements to put in table if genes of Mtb (start with Rv)
-                return(data.frame(No=number2,Genes=updatedGenes))
+                return(data.frame(No=number2,Genes=updatedGenes, Name=genenames()))
             },
             # Color table every other line
             striped=TRUE)}
