@@ -115,7 +115,6 @@ InputGOIs <- function(fileInput, geneInput) {
     genes <- unlist(strsplit(geneInput, "\n"))
     # Make all gene IDs start with 'Rv'
     genes_Rv <- sub("^rv|^RV", "Rv", genes)
-    genes_Rv
   } else {
     # Get individual genes if file uploaded
     genes <- unlist(read.csv(file=fileInput$datapath[], 
@@ -410,9 +409,12 @@ AverageofRandom <- function(scorerandom) {
     
     ## MORPH Input ##
     # Retrieve genes from input
-    InputGOI <- reactive({
+    inputGOI <- reactive({
       InputGOIs(input$file, input$genes)
       })
+    InputGOI <- reactive({
+      GeneID(inputGOI())
+    })
     
     # Create morph input using function
     morphinput <- reactive({
@@ -819,8 +821,11 @@ AverageofRandom <- function(scorerandom) {
       
       ## MORPH Input ##
       # Retrieve genes from input
-      InputGOI2 <- reactive({
+      inputGOI2 <- reactive({
         InputGOIs(input$file2, input$genes2)
+      })
+      InputGOI2 <- reactive({
+        GeneID(inputGOI2())
       })
       
       # Create morph input using function
