@@ -6,7 +6,7 @@ pkg <- installed.packages()[, "Package"]
 if(!('rentrez' %in% pkg)) {install.packages("rentrez")}
 library("rentrez")
 
-
+# get organism of given gene IDs
 Organism <- function(id){
   id = id
   geneOrg = c()
@@ -20,6 +20,7 @@ Organism <- function(id){
   return(geneOrg)
 }
 
+# get gene ID from given gene names
 GeneID <- function(names){
   id = names
   geneIDs = c()
@@ -34,6 +35,7 @@ GeneID <- function(names){
   return(geneIDs)
 }
 
+#Get gene names from given gene IDs
 GeneName <- function(id){
   id = id
   geneName = c()
@@ -47,7 +49,7 @@ GeneName <- function(id){
   return(geneName)
 }
 
-
+# Get description from given gene IDs
 Description <- function(id){
   id = id
   desc = c()
