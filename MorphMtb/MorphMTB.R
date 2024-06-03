@@ -353,17 +353,17 @@ AverageofRandom <- function(scorerandom) {
             updatedGenes <- sapply(seq_along(MtbGeneFile), function(i){
               if(MtbGeneFile[i]) {
                 geneNoNA[i]
+              #} else if () {
+                
               } else {
                 "This is not a Mtb gene"
               }
             })
             genenames <- reactive({
                 GeneName(updatedGenes)
-              
             })
             # Make dataframe out of elements to put in table if genes of Mtb (start with Rv)
-            return(data.frame(No=number1,Genes=updatedGenes, Name=genenames()
-                              ))
+            return(data.frame(No=number1,Genes=updatedGenes))
             },
             # Color table every other line
             striped=TRUE)}
@@ -394,8 +394,8 @@ AverageofRandom <- function(scorerandom) {
             genenames <- reactive({
               GeneName(updatedGenes)
             })
-                # Make dataframe out of elements to put in table if genes of Mtb (start with Rv)
-                return(data.frame(No=number2,Genes=updatedGenes, Name=genenames()))
+             # Make dataframe out of elements to put in table if genes of Mtb (start with Rv)
+            return(data.frame(No=number2,Genes=updatedGenes)) 
             },
             # Color table every other line
             striped=TRUE)}

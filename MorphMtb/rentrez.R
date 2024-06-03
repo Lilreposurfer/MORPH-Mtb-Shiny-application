@@ -7,12 +7,38 @@ if(!('rentrez' %in% pkg)) {install.packages("rentrez")}
 library("rentrez")
 
 
+Organism <- function(id){
+  id = id
+  geneOrg = c()
+  for (i in id){
+    res <- entrez_search(db="gene", term=paste("(", i, "[GENE] AND Mycobacterium tuberculosis[ORGN])"))
+    res$count
+    res$ids
+    esums <- entrez_summary(db="gene", id=res$ids)
+    geneOrg <- c(geneOrg, esums$organism$scientificname)
+  }
+  return(geneOrg)
+}
+
+GeneID <- 
+  id = "Rv1111c"
+id = id
+geneName = c()
+for (i in id){
+  res <- entrez_search(db="gene", term=paste("(", id, "[GENE] AND Mycobacterium tuberculosis[ORGN])"))
+  res$count
+  res$ids
+  esums <- entrez_summary(db="gene", id=res$ids)
+  geneName <- c(geneName, esums$name)
+}
+return(geneName)
+}
 
 GeneName <- function(id){
   id = id
   geneName = c()
     for (i in id){
-      res <- entrez_search(db="gene", term=paste("(", i, "[GENE] AND Mycobacterium tuberculosis[ORGN])"))
+      res <- entrez_search(db="gene", term=paste("(", id, "[GENE] AND Mycobacterium tuberculosis[ORGN])"))
       res$count
       res$ids
       esums <- entrez_summary(db="gene", id=res$ids)
