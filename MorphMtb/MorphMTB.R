@@ -211,8 +211,9 @@ AverageofRandom <- function(scorerandom) {
             helpText("Species currently available in MorphMtb: Mycobacterium tuberculosis."),
             # Draw horizontal line
             tags$hr(),
+            helpText("Use at least 10 genes that you consider as a biological pathway."),
             # Create text area for input genes/pathways
-            textAreaInput("genes", "Enter the gene IDs for your input pathway of interest (enter-separated)", ""),
+            textAreaInput("genes", "Enter the gene IDs/ gene names for your input pathway of interest (enter-separated)", ""),
             # Possibility to upload file with genes/pathways
             fileInput("file","Or choose file", multiple = TRUE), # fileinput() function is used to get the file upload control option
             #uiOutput("selectfile"), #In case you upload multiple files --> you can select which one to use
@@ -255,8 +256,9 @@ AverageofRandom <- function(scorerandom) {
                       min = 2, max = 10, value = 3),
           # Draw horizontal line
           tags$hr(),
+          helpText("Use at least 10 genes that you consider as a biological pathway."),
           # Create text area for input genes/pathways
-          textAreaInput("genes2", "Enter the gene IDs for your input pathway of interest (enter-separated)", ""),
+          textAreaInput("genes2", "Enter the gene IDs/ gene names for your input pathway of interest (enter-separated)", ""),
           # Possibility to upload file with genes/pathways
           fileInput("file2","Or choose file", multiple = TRUE), # fileinput() function is used to get the file upload control option
           # Draw horizontal line
