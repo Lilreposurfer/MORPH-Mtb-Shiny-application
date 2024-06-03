@@ -21,14 +21,16 @@ Organism <- function(id){
 }
 
 GeneID <- function(names){
-  id = id
+  id = names
+  #id = "Rv0170"
   geneIDs = c()
   for (i in id){
-    res <- entrez_search(db="gene", term=paste("(", id, "[GENE] AND Mycobacterium tuberculosis H37Rv [ORGN])"))
+    res <- entrez_search(db="gene", term=paste("(", i, "[GENE] AND Mycobacterium tuberculosis H37Rv [ORGN])"))
     res$count
     res$ids
     esums <- entrez_summary(db="gene", id=res$ids)
-    geneIDs <- c(geneIDs, esums$otheraliases)
+    geneIDs <- c(geneIDs, strsplit(esums$otheraliases, ",")[[1]][1])
+    
 }
   return(geneIDs)
 }
