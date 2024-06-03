@@ -141,11 +141,12 @@ intersectGenes <- function(morphinput){
 }
 
 ## MORPH gene scores ##
-topPredict <- function(idrentrez, predictions, numberCandidates, desc) {
+topPredict <- function(idrentrez, predictions, numberCandidates, desc, genename) {
   ids <- idrentrez
   number <- sapply(1:numberCandidates, function(i){i})
   annotation <- desc
-  return(data.frame(No=number, ID=ids, Scored=head(format(round(predictions,6)), numberCandidates), Annotation=annotation))
+  name <- genename
+  return(data.frame(No=number, ID=ids, Scored=head(format(round(predictions,6)), numberCandidates), Name=name, Annotation=annotation))
 }
 
 # Hard coding of all the 3978 genes in M. tuberculosis in g
@@ -494,10 +495,14 @@ AverageofRandom <- function(scorerandom) {
     desc <- reactive({
       Description(idrentrez())
     })
+    #Get gene names
+    geneName <- reactive({
+      GeneName(idrentrez())
+    })
     
     # top predictions table
     output$TopPredictions <- renderTable({ 
-      topPredict(idrentrez(), Predictions(), input$numbercandidates, desc())
+      topPredict(idrentrez(), Predictions(), input$numbercandidates, desc(), geneName())
     }, striped=TRUE)
       
 
@@ -532,7 +537,7 @@ AverageofRandom <- function(scorerandom) {
     
     ### Sampling for Real pathway recognition
     # Make variable that contains the length of the input pathway (genes/file)
-      lengthPathway <- reactive({
+    lengthPathway <- reactive({
       LengthPathway(input$file, generaw1(), generaw2())
     })
     
@@ -906,10 +911,14 @@ AverageofRandom <- function(scorerandom) {
       desc2 <- reactive({
         Description(idrentrez2())
       })
+      #Get gene names
+      geneName2 <- reactive({
+        GeneName(idrentrez2())
+      })
       
       # top predictions table
       output$TopPredictions2 <- renderTable({ 
-        topPredict(idrentrez2(), Predictions2(), input$numbercandidates2, desc2())
+        topPredict(idrentrez2(), Predictions2(), input$numbercandidates2, desc2(), geneName2())
       }, striped=TRUE)
       
       ###########################################################################  
