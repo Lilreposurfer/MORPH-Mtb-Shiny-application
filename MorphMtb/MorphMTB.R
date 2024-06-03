@@ -346,13 +346,16 @@ AverageofRandom <- function(scorerandom) {
             gene <- sub("^rv|^RV", "Rv", gene())
             # Remove NA values
             geneNoNA <- na.omit(gene)
+            genes <- reactive({
+              GeneID(geneNoNA)
+            })
             # Check if genes are from Mtb
-            MtbGeneFile <- sapply(geneNoNA, function(i){i %in% g})
+            MtbGeneFile <- sapply(genes(), function(i){i %in% g})
             number1 <- sapply(1:generaw1(), function(i){i})
             # Check if all input genes are from Mtb
             updatedGenes <- sapply(seq_along(MtbGeneFile), function(i){
               if(MtbGeneFile[i]) {
-                geneNoNA[i]
+                genes()[i]
               #} else if () {
                 
               } else {
@@ -384,7 +387,7 @@ AverageofRandom <- function(scorerandom) {
               GeneID(gene())
             })
             # Check if genes are from Mtb
-            MtbGene <- sapply(gene(), function(i){i %in% g})
+            MtbGene <- sapply(genes(), function(i){i %in% g})
             number2 <- sapply(1:generaw2(), function(i){i})
             # Check if all input genes are from Mtb
             updatedGenes <- sapply(seq_along(MtbGene), function(i){
