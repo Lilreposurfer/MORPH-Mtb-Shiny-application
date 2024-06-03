@@ -288,7 +288,13 @@ AverageofRandom <- function(scorerandom) {
     #what happens on page3 (About)
     output$page3 <- renderUI({
       mainPanel(
-        h4("About MORPH-Mtb")
+        h4("About MORPH-Mtb"),
+        renderText("Tuberculosis (TB), caused by Mycobacterium tuberculosis (Mtb), remains one of the major causes of global mortality. With 3978 genes linked to its impact, the bacteria causing the infectious disease can affect various body sites, predominantly the lungs. Despite progress in genomics, nearly a quarter (<1000 genes) of MTB's genetic code is still labeled with the non-informative 'unknown function’ annotation, leaving a gap in our understanding of crucial biological pathways essential for virulence and evasion of host defenses."), 
+        br(),
+        renderText("MORPH is an algorithm originally developed for gene discovery in plants. Utilizing Protein-Protein Interaction (PPI) networks, gene expression profiles (sourced from public domains or tailored by users), and specified pathways (in terms of gene IDs), the MORPH algorithm aids in discovering novel candidate genes, following the guilt by association principle, drawing from both proprietary and publicly available data sources."),
+        br(),
+        br(),
+        renderText("As input, the algorithm accepts a pathway gene set or gene expression data. These pathways can be given by using the gene IDs or by giving the full gene names (be carefull with capital letters). It then gives a ranking of candidate genes as output.")
       )})
 
 ###############################################################################################   
