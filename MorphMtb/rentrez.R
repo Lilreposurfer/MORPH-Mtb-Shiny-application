@@ -11,7 +11,7 @@ Organism <- function(id){
   id = id
   geneOrg = c()
   for (i in id){
-    res <- entrez_search(db="gene", term=paste("(", i, "[GENE] AND Mycobacterium tuberculosis[ORGN])"))
+    res <- entrez_search(db="gene", term=paste("(", i, "[GENE] AND Mycobacterium tuberculosis[ORGN] NOT discontinued[Properties])"))
     res$count
     res$ids
     esums <- entrez_summary(db="gene", id=res$ids)
@@ -40,7 +40,7 @@ GeneName <- function(id){
   id = id
   geneName = c()
     for (i in id){
-      res <- entrez_search(db="gene", term=paste("(", i, "[GENE] AND Mycobacterium tuberculosis[ORGN])"))
+      res <- entrez_search(db="gene", term=paste("(", i, "[GENE] AND Mycobacterium tuberculosis[ORGN] NOT discontinued[Properties])"))
       res$count
       res$ids
       esums <- entrez_summary(db="gene", id=res$ids)
@@ -54,7 +54,7 @@ Description <- function(id){
   id = id
   desc = c()
     for (i in id){
-      res <- entrez_search(db="gene", term=paste("(", i, "[GENE] AND Mycobacterium tuberculosis[ORGN])"))
+      res <- entrez_search(db="gene", term=paste("(", i, "[GENE] AND Mycobacterium tuberculosis[ORGN] NOT discontinued[Properties])"))
       res$count
       res$ids
       esums <- entrez_summary(db="gene", id=res$ids)
