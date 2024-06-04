@@ -29,8 +29,11 @@ GeneID <- function(names){
     res$count
     res$ids
     esums <- entrez_summary(db="gene", id=res$ids)
+    if (NULL){
+      geneIDs <- c(geneIDs, "FALSE")
+    } else {
     geneIDs <- c(geneIDs, strsplit(as.character(esums$otheraliases), ",")[[1]][1])
-    
+    }
 }
   return(geneIDs)
 }
