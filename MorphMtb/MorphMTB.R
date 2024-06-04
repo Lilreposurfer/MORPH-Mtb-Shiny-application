@@ -102,7 +102,7 @@ getGenerawFile <- function(fileInput) {
 getGeneraw <- function(geneInput) {
   generaw <- unlist(strsplit(geneInput, "\n"))
   # Name empty lines NA
-  generaw <- sapply(generaw, function(g) if (g == "" || g == " ") NA else g)
+  generaw <- sapply(generaw, function(g) if (g == "" || g == " ") {NA} else {g})
   # Remove lines with NA
   generaw <- na.omit(generaw)
   return(length(generaw))
@@ -301,20 +301,6 @@ AverageofRandom <- function(scorerandom) {
 ### PAGE1 ###
 ###############################################################################################       
     
-   # shiny_busy <- function() {
-  #    # use &nbsp; for some alignment, if needed
-  #    HTML("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", paste0(
-  #      '<span data-display-if="',
-  #      '$(&#39;html&#39;).attr(&#39;class&#39;)==&#39;shiny-busy&#39;',
-  #      '">',
-  #      '<i class="fa fa-spinner fa-pulse fa-fw" style="color:orange"></i>',
-  #      '</span>'
-  #    ))
-  #  }
-    
-    # call from shiny ui with
-   # shiny_busy(),
-    
     # Logic after pressing reset inputs button
     resetPage <- function(reload) {
       observeEvent(reload, {
@@ -385,9 +371,9 @@ AverageofRandom <- function(scorerandom) {
             # Get individual genes
             gene <- reactive({
               genes <- unlist(strsplit(input$genes, "\n"))
-              genes <- sapply(genes, function(g) if (g == "" || g == " ") NA else g)
+              genes <- sapply(genes, function(g) if (g == "" || g == " ") {NA} else {g})
               # Remove NA values
-              na.omit(genes)
+              genes <- na.omit(genes)
               # Make all gene IDs start with Rv
               genes <- sub("^rv|^RV", "Rv", genes)
             })
@@ -396,12 +382,12 @@ AverageofRandom <- function(scorerandom) {
               GeneID(gene())
             })
             # Check if genes are from Mtb
-            MtbGene <- sapply(genes(), function(i){i %in% g})
+            MtbGene <- sapply(gene(), function(i){i %in% g})
             number2 <- sapply(1:generaw2(), function(i){i})
             # Check if all input genes are from Mtb
             updatedGenes <- sapply(seq_along(MtbGene), function(i){
               if(MtbGene[i]) {
-                genes()[i]
+                gene()[i]
               } else {
                 "This is not a Mtb gene"
               }
@@ -805,7 +791,7 @@ AverageofRandom <- function(scorerandom) {
             gene2 <- reactive({
               genes <- unlist(strsplit(input$genes2, "\n"))
               genes <- sapply(genes, function(g) if (g == "" || g == " ") NA else g)
-              na.omit(genes)
+              genes <- na.omit(genes)
               genes <- sub("^rv|^RV", "Rv", genes)
             })
             # get geneIDs if gene names are given
