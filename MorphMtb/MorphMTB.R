@@ -78,9 +78,10 @@ source("rentrez.R")
     #Make page with multiple panels
     navbarPage(theme = shinytheme("cerulean"),
                "MORPH-Mtb", #title
-               tabPanel("Gene centric query", uiOutput('page1')),
-               tabPanel("Implement own expression data", uiOutput('page2')),
-               tabPanel("About", uiOutput('page3')),
+               tabPanel("Home", uiOutput('page1')),
+               tabPanel("Gene centric query", uiOutput('page2')),
+               tabPanel("Implement own expression data", uiOutput('page3')),
+               tabPanel("About", uiOutput('page4')),
                
     )
   )
@@ -200,8 +201,15 @@ AverageofRandom <- function(scorerandom) {
   # Define server logic
   server <-  function(input, output, session) {
     
-    #what happens on page1 (gene centric query)
+    # what happens on page1 (Home)
     output$page1 <- renderUI({
+      mainPanel(
+        
+      )
+    })
+    
+    #what happens on page2 (gene centric query)
+    output$page2 <- renderUI({
       sidebarLayout(
         sidebarPanel(
             shinyjs::useShinyjs(),
@@ -241,8 +249,8 @@ AverageofRandom <- function(scorerandom) {
       )
     })
     
-    # What happens on page2 (Implement own expression data)
-    output$page2 <- renderUI({
+    # What happens on page3 (Implement own expression data)
+    output$page3 <- renderUI({
       sidebarLayout(
         sidebarPanel(
           shinyjs::useShinyjs(),
@@ -285,8 +293,8 @@ AverageofRandom <- function(scorerandom) {
       
     })
     
-    #what happens on page3 (About)
-    output$page3 <- renderUI({
+    #what happens on page4 (About)
+    output$page4 <- renderUI({
       mainPanel(
         h4("About MORPH-Mtb"),
         renderText("Tuberculosis (TB), caused by Mycobacterium tuberculosis (Mtb), remains one of the major causes of global mortality. With 3978 genes linked to its impact, the bacteria causing the infectious disease can affect various body sites, predominantly the lungs. Despite progress in genomics, nearly a quarter (<1000 genes) of MTB's genetic code is still labeled with the non-informative 'unknown function’ annotation, leaving a gap in our understanding of crucial biological pathways essential for virulence and evasion of host defenses."), 
