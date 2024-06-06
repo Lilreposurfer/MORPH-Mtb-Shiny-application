@@ -223,7 +223,12 @@ AverageofRandom <- function(scorerandom) {
         renderText("If you click the 'New analysis' button, the application will be restarted and you can give a new input pathway."), br(),
         renderText("The calculations might take some time, so please be patient when using the application. A turning flower will indicate when the program is running."), br(), br(),
         h3("2. Implement own expression data"),
-        renderText(""),
+        renderText("You will only need to use this page when you want to add your own expression data to the analysis."), br(),
+        renderText("You get the same options as these of the 'Gene centric query' page, but you also have to upload a tab-separated file with your gene expression data. Again, a table is rendered and a file with the processed data is automatically written to your folder (path will be given). This file will be used in the analysis."), br(),
+        renderText("On the next tab, the percentage of genes kept after filtering is given. If genes are not expressed or very little, they will be filtered out. You can decide for yourself if you want to use this data set further down the analysis or use another one."), br(),
+        renderText("On the clustering tab, 2 elbow plots are given for K-means and SOM clustering. You have to adapt the elbow yourself with the sliders; this will move the red line. Again, some files are automatically written to your folder."), br(),
+        renderText("These automatically written files are overwritten when doing a new analysis and it is important not to rename them."), br(),
+        renderText("The other tabs are the same as those on the first page and you, again, get the possibility to download the candidate genes."), br(), br(),
         h3("3. About"),
         renderText("On this page, a short description of MORPH-Mtb is given.")
       )
