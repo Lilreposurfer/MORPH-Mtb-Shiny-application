@@ -435,3 +435,7 @@ zipped <- Map(function(x,y) list(x,y), bestcand, bestdescr)
 #bestpath2 <- data.frame(Candidate = zipped[[2]][[1]], Description = zipped[[2]][[2]])
 #bestpath3 <- data.frame(Candidate = zipped[[3]][[1]], Description = zipped[[3]][[2]])
 
+bestpath <- list()
+for (i in seq_along(zipped)) {
+  bestpath[[i]] <- data.frame(Candidate = zipped[[i]][[1]], Description = zipped[[i]][[2]])
+}
