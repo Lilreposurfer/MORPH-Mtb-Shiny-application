@@ -386,8 +386,6 @@ AverageofRandom <- function(scorerandom) {
             updatedGenes <- sapply(seq_along(MtbGeneFile), function(i){
               if(MtbGeneFile[i]) {
                 genes()[i]
-              #} else if () {
-                
               } else {
                 "This is not a Mtb gene"
               }
@@ -416,12 +414,12 @@ AverageofRandom <- function(scorerandom) {
               GeneID(gene())
             })
             # Check if genes are from Mtb
-            MtbGene <- sapply(gene(), function(i){i %in% g})
+            MtbGene <- sapply(genes(), function(i){i %in% g})
             number2 <- sapply(1:generaw2(), function(i){i})
             # Check if all input genes are from Mtb
             updatedGenes <- sapply(seq_along(MtbGene), function(i){
               if(MtbGene[i]) {
-                gene()[i]
+                genes()[i]
               } else {
                 "This is not a Mtb gene"
               }

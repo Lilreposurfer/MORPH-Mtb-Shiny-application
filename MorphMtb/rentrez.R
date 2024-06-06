@@ -27,16 +27,17 @@ GeneID <- function(names){
   for (i in id){
     res <- entrez_search(db="gene", term=paste("(", i, "[GENE] AND Mycobacterium tuberculosis H37Rv [ORGN] NOT discontinued[Properties])"))
     res$count
-    res$ids
-    esums <- entrez_summary(db="gene", id=res$ids)
-    if (NULL){
+    if (res$count == 0){
       geneIDs <- c(geneIDs, "FALSE")
     } else {
+    res$ids
+    esums <- entrez_summary(db="gene", id=res$ids)
     geneIDs <- c(geneIDs, strsplit(as.character(esums$otheraliases), ",")[[1]][1])
     }
 }
   return(geneIDs)
 }
+
 
 #Get gene names from given gene IDs
 GeneName <- function(id){
