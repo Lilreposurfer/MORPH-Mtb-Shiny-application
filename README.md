@@ -104,7 +104,9 @@ The spinning flowers indicate if the algorithm is running.
 
 ## allMtbPathways.R script
 
-This R script was made for advanced bioinformaticians and people who know how to code.  
+This R script was made for advanced bioinformaticians and people who know how to code. You can run this script with all of the Mtb pathways and get the candidate genes and AUSR score of each of them as output.  
 
-The input of this script is an Excel file with on each sheet a different pathway of Mtb. This data will be written in new files, which are then used to calculate the AUSR-score and the top 6 candidate genes. This will again be written in a new file so that the data is easily accessible.  
-This way, all of the pathways of Mtb can be analyzed at the same time.
+The input of this script is an Excel file with on each sheet a different pathway of Mtb. This data will be written in new tab-separated files, which are then used to calculate the AUSR-score and the top 6 candidate genes. This will again be written in a new file so that the data is easily accessible.  
+This way, all of the pathways of Mtb can be analyzed at the same time.  
+
+You will have to adjust some code to get the script to run. First of all, the path to the folder where your excel file is stored on your laptop and then what the file is called. At the moment, only the first 6 candidate genes will be generated, but this can be altered.  
