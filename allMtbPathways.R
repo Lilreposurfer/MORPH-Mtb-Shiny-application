@@ -313,19 +313,23 @@ getMorphPredictions = function(morph_res_obj){
   return (getMorphResultBestConfig(morph_res_obj)$Ranking$Scored) #Acquire and return scores of best configuration.}
   }
 
+# Get description from given gene IDs
+Description <- function(id){
+  id = id
+  desc = c()
+  for (i in id){
+    res <- entrez_search(db="gene", term=paste("(", i, "[GENE] AND Mycobacterium tuberculosis[ORGN] NOT discontinued[Properties])"))
+    res$count
+    res$ids
+    esums <- entrez_summary(db="gene", id=res$ids)
+    extracteddesc <- extract_from_esummary(esums, "description")
+    desc <- c(desc, extracteddesc)
+  }
+  return(desc)
+}
 ###############################################################################################################
 # Set working directory -- needs to be personalized
 setwd("C:/Users/elise/Documents/Schuul/Stage/Project/Data")
-
-## Config
-#A=c("clark.txt","clark.txt", "drug.txt", "drug.txt", "ESX.txt", "ESX.txt", "inaki.txt", 
-#    "inaki.txt", "primary.txt", "primary.txt", "timecourse.txt", "timecourse.txt")
-#B=c("kmeansclark.txt", "somclark.txt", "kmeansdrug.txt", "somdrug.txt", 
-#    "kmeansESX.txt", "somESX.txt", "kmeansinaki.txt", "sominaki.txt",
-#    "kmeansprimary.txt", "somprimary.txt", "kmeanstimecourse.txt", "somtimecourse.txt")
-#Configs=data.frame(A,B)
-#write.delim(Configs, "Configs.txt", sep="\t", col.names=FALSE, row.names=FALSE)
-
 
 # Define the path to your Excel file
 file_path <- "PathwaysMtb.xlsx"
@@ -354,6 +358,8 @@ for (sheet in sheet_names) {
 print(listPathways)
 
 #Solutions
+dfpathway <- c()
+dfscore <- c()
 for (pathwayName in listPathways) {
   ## MORPH input
   InputConfig = "Configs.txt"
@@ -389,5 +395,13 @@ for (pathwayName in listPathways) {
   writeLines("Top candidate genes:", fileConn)
   write.matrix(Candidates, fileConn, sep="\t")
   close(fileConn) # Close connection
+  dfpathway <- c(dfpathway, pathwayName)
+  dfscore <- c(dfscore, AUSRscore)
 }
+
+# Make dataframe from pathways with their AUSR scores
+dfBestAUSR <- data.frame(Pathway = dfpathway, Score = dfscore)
+# Make variable with pathway names from 3 pathways with the highest AUSR score
+BestAUSRpathways <- head(dfBestAUSR[order(dfBestAUSR$Score, decreasing = TRUE), 1],3)
+
 
