@@ -204,11 +204,12 @@ AverageofRandom <- function(scorerandom) {
     # what happens on page1 (Home)
     output$page1 <- renderUI({
       mainPanel(
-        h4("Welcome"),
+        h3("Welcome"),
         renderText("Best user"), 
         br(), renderText("First of all, we want to thank you for using this Shiny web application."),
-        br(), renderText("Because 1000 genes of Mycobacterium tuberculosis (Mtb) genetic code still have an unknown function - leaving a gap in our understanding of crucial biological pathways essential for virulence and evasion of host defenses - this application was designed.
-                         As input, the algorithm accepts a pathway gene set or expression data. By comparing expression patterns from gene expression profiles and specified pathways with genes in the target pathway, using the guilt by association principle, novel candidate genes can be discovered. These ranked candidate genes are then given as output. "), br(),
+        br(), renderText("Because 1000 genes of Mycobacterium tuberculosis (Mtb) genetic code still have an unknown function - leaving a gap in our understanding of crucial biological pathways essential for virulence and evasion of host defenses - this application was designed."), br(),
+        renderText("As input, the algorithm accepts a pathway gene set or expression data. By comparing expression patterns from gene expression profiles and specified pathways with genes in the target pathway, using the guilt by association principle, novel candidate genes can be discovered. These ranked candidate genes are then given as output. "), br(),
+        renderText("These ranked candidate genes can then be used to discover new drug resistant genes in Mtb for example."), br(),
         h4("Gene cenetric query"),
         h4("Implement own expression data"),
         h4("About"),
