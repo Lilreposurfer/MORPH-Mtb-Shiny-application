@@ -67,6 +67,7 @@ GetGOIs = function(GOI_File)
 {
   GOI = readLines(GOI_File, n=1) #Reads the first (and only) line from the pathway-genes file.
   GOI = strsplit(GOI,"\t")[[1]] #Splits names into a vector by tabs.
+  GOI = sub("^rv|^RV", "Rv", GOI)
   return(GOI)
 }
 
