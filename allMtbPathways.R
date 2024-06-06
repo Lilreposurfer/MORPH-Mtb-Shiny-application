@@ -404,4 +404,16 @@ dfBestAUSR <- data.frame(Pathway = dfpathway, Score = dfscore)
 # Make variable with pathway names from 3 pathways with the highest AUSR score
 BestAUSRpathways <- head(dfBestAUSR[order(dfBestAUSR$Score, decreasing = TRUE), 1],3)
 
-
+for (bestPathway in BestAUSRpathways) {
+  ## MORPH input
+  InputConfig = "Configs.txt"
+  InputGOI = paste0(bestPathway, ".txt")
+  morph_input = prepareMorphObjectFromFiles(InputConfig, InputGOI)
+  Scores = MORPH(morph_input)
+  ## MORPH gene scores
+  Predictions <- getMorphPredictions(Scores)
+  Candidates <- as.matrix(head(Predictions))
+  CandidatesGenes <- rownames(Candidates)
+  descr <- Description(CandidatesGenes)
+  dfdesc <- data.frame(Genes = CandidatesGenes, Description = descr)
+}
