@@ -444,3 +444,6 @@ for (i in seq_along(BestAUSRpathways)) {
   hypotheticalProt[[i]]$Pathway <- BestAUSRpathways[i]
 }
 
+# Print hypotheticalProt 
+print(hypotheticalProt)
+
