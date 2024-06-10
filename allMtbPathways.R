@@ -429,13 +429,22 @@ for (bestPathway in BestAUSRpathways) {
 #  bestdescr[y]
 #})
 
+# zip candidate genes and their descriptions together
 zipped <- Map(function(x,y) list(x,y), bestcand, bestdescr)
 
 #bestpath1 <- data.frame(Candidate = zipped[[1]][[1]], Description = zipped[[1]][[2]])
 #bestpath2 <- data.frame(Candidate = zipped[[2]][[1]], Description = zipped[[2]][[2]])
 #bestpath3 <- data.frame(Candidate = zipped[[3]][[1]], Description = zipped[[3]][[2]])
 
+#make data frames from genes with their description
 bestpath <- list()
 for (i in seq_along(zipped)) {
   bestpath[[i]] <- data.frame(Candidate = zipped[[i]][[1]], Description = zipped[[i]][[2]])
 }
+
+#get the candidate genes with description "hypothetical protein" 
+hypotheticalProt <- list()
+for (i in seq_along(bestpath)) {
+      hypotheticalProt[[i]] <- subset(bestpath[[i]], Description == "hypothetical protein")
+}
+#print(hypotheticalProt)
