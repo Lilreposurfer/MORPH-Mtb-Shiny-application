@@ -439,4 +439,8 @@ hypotheticalProt <- list()
 for (i in seq_along(bestpath)) {
       hypotheticalProt[[i]] <- subset(bestpath[[i]], Description == "hypothetical protein")
 }
+# Add pathwayname to dataframe with "hypothetical protein" candidate genes
+for (i in seq_along(BestAUSRpathways)) {
+  hypotheticalProt[[i]]$Pathway <- BestAUSRpathways[i]
+}
 
