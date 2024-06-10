@@ -404,7 +404,10 @@ for (pathwayName in listPathways) {
 dfBestAUSR <- data.frame(Pathway = dfpathway, Score = dfscore)
 # Make variable with pathway names from 3 pathways with the highest AUSR score
 BestAUSRpathways <- head(dfBestAUSR[order(dfBestAUSR$Score, decreasing = TRUE), 1],3)
+# Print name of top 3 AUSR-scored pathways
+print(BestAUSRpathways)
 
+#Get scores and descriptions of top 3 AUSR-scored pathways
 bestcand <- list()
 bestdescr <- list()
 for (bestPathway in BestAUSRpathways) {
