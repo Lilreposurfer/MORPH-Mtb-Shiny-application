@@ -410,6 +410,7 @@ print(BestAUSRpathways)
 #Get scores and descriptions of top 3 AUSR-scored pathways
 bestcand <- list()
 bestdescr <- list()
+bestscore <- list()
 for (bestPathway in BestAUSRpathways) {
   ## MORPH input
   InputConfig = "Configs.txt"
@@ -420,18 +421,20 @@ for (bestPathway in BestAUSRpathways) {
   Predictions <- getMorphPredictions(Scores)
   Candidates <- as.matrix(head(Predictions))
   CandidatesGenes <- rownames(Candidates)
+  CandidatesScores <- as.character(Candidates)
   descr <- Description(CandidatesGenes)
   bestcand <- append(bestcand, list(CandidatesGenes))
   bestdescr <- append(bestdescr, list(descr))
+  bestscore <- append(bestscore, list(CandidatesScores))
 }
 
 # zip candidate genes and their descriptions together
-zipped <- Map(function(x,y) list(x,y), bestcand, bestdescr)
+zipped <- Map(function(x,y,z) list(x,y,z), bestcand, bestdescr, bestscore)
 
 #make data frames from genes with their description
 bestpath <- list()
 for (i in seq_along(zipped)) {
-  bestpath[[i]] <- data.frame(Candidate = zipped[[i]][[1]], Description = zipped[[i]][[2]])
+  bestpath[[i]] <- data.frame(Candidate = zipped[[i]][[1]], Description = zipped[[i]][[2]], Score = zipped[[i]][[3]])
 }
 
 #get the candidate genes with description "hypothetical protein" 
