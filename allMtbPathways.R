@@ -421,7 +421,7 @@ for (bestPathway in BestAUSRpathways) {
   Predictions <- getMorphPredictions(Scores)
   Candidates <- as.matrix(head(Predictions))
   CandidatesGenes <- rownames(Candidates)
-  CandidatesScores <- as.character(Candidates)
+  CandidatesScores <- round(Candidates,6)
   descr <- Description(CandidatesGenes)
   bestcand <- append(bestcand, list(CandidatesGenes))
   bestdescr <- append(bestdescr, list(descr))
