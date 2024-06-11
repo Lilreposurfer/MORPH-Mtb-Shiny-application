@@ -434,8 +434,12 @@ zipped <- Map(function(x,y,z) list(x,y,z), bestcand, bestdescr, bestscore)
 #make data frames from genes with their description
 bestpath <- list()
 for (i in seq_along(zipped)) {
-  bestpath[[i]] <- data.frame(Candidate = zipped[[i]][[1]], Description = zipped[[i]][[2]], Score = zipped[[i]][[3]])
+  bestpath[[i]] <- data.frame(Candidate = zipped[[i]][[1]], 
+                              Description = zipped[[i]][[2]], 
+                              Score = zipped[[i]][[3]])
 }
+# Print bestpath
+print(bestpath)
 
 #get the candidate genes with description "hypothetical protein" 
 hypotheticalProt <- list()
