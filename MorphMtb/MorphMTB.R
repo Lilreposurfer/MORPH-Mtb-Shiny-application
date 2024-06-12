@@ -205,32 +205,31 @@ AverageofRandom <- function(scorerandom) {
     output$page1 <- renderUI({
       mainPanel(
         h2("Welcome"),
-        renderText("Best user"), 
+        strong("Dear user"), br(),
         br(), renderText("First of all, we want to thank you for using this Shiny web application."),
-        br(), renderText("Because 1000 genes of Mycobacterium tuberculosis (Mtb) genetic code still have an unknown function - leaving a gap in our understanding of crucial biological pathways essential for virulence and evasion of host defenses - this application was designed."), br(),
-        renderText("As input, the algorithm accepts a pathway gene set or expression data. By comparing expression patterns from gene expression profiles and specified pathways with genes in the target pathway, using the guilt by association principle, novel candidate genes can be discovered. These ranked candidate genes are then given as output. "), br(),
-        renderText("These ranked candidate genes can then be used to discover new drug resistant genes in Mtb for example."), br(),
+        br(), span("Because 1000 genes of Mycobacterium tuberculosis (Mtb) genetic code still have an unknown function -"), em("leaving a gap in our understanding of crucial biological pathways essential for virulence and evasion of host defenses"),  span("- this application was designed."), br(),
+        span("As"), strong(" input,"),span(" the algorithm accepts a pathway gene set or expression data. By comparing expression patterns from gene expression profiles and specified pathways with genes in the target pathway, using the guilt by association principle, novel candidate genes can be discovered. These ranked candidate genes are then given as "), strong("output "), span("and can then be used to discover new drug resistant genes in Mtb for example."), br(),
         renderText("This web application consists of a few pages, each with their own function. More information about this can be found below."), br(), br(),
         h3("1. Gene cenetric query"),
         renderText("This is the page you probably will be using most of the time."), br(),
-        renderText("As input, a list of genes - that you consider as a biological pathway - is needed. It is recommended to use a pathway with at least 10 genes for optimal results. You can use gene IDs or the gene name (as it is depicted on NCBI - be aware of capital letters!) and upload a file with a list in or enter the genes in the text area, enter-separated."), br(),
+        span("As input, a list of genes - that you consider as a biological pathway - is needed. It is recommended to use a pathway with"), em("at least 10 genes"), span("for optimal results. You can use gene IDs or the gene name (as it is depicted on NCBI -"), strong("be aware of capital letters!"), span("and upload a file with a list in or enter the genes in the text area,"), em("enter-separated."), br(),
         renderText("Further, you have the possibility to depict how much random pathways you want to have calculated and how much candidate genes you want. The random pathways have the same length as your input pathway and prove that the scores of the candidate genes are in fact significant and not just pure luck."), br(),
-        renderText("Once you have successfully given your input pathway and the desired amount of candidate genes, you can click on the 'Start' button to start the analysis. This will give you 3 tabs. On the first tab, you will get a table with your input pathway. If there is a gene present in your list that is not recognized as a Mtb gene, a message will be given."), br(),
+        span("Once you have successfully given your input pathway and the desired amount of candidate genes, you can click on the "), strong("'Start'"), span("button to start the analysis. This will give you 3 tabs. On the first tab, you will get a table with your input pathway. If there is a gene present in your list that is not recognized as a Mtb gene, a "),em("message"), span("will be given."), br(),
         renderText("On the second tab, you will get the scores of your random pathways and an average score of them all. Finally, on the last tab, the AUSR score of the input pathway is given, together with the best configuration."), br(),
         renderText("The MORPH algorithm uses 6 data sets, each clustered with 2 clustering methods; K-means and SOM. The score of all of the combinations is calculated and the best of these is taken as the AUSR score."), br(),
-        renderText("Underneath this table, you can find the ranked candidate genes with their score and their annotation and gene name from NCBI. It is possible to download a mist of these candidate genes by clicking the download link next to the 'New analysis' button. 
+        span("Underneath this table, you can find the ranked candidate genes with their score and their annotation and gene name from NCBI. It is possible to download a list of these candidate genes by clicking the"), strong("download link"), span("next to the 'New analysis' button. 
                    This will give you a text file with only the gene IDs of the candidate genes underneath each other, so they can easily be used for other analyses."), br(),
-        renderText("If you click the 'New analysis' button, the application will be restarted and you can give a new input pathway."), br(),
-        renderText("The calculations might take some time, so please be patient when using the application. A turning flower will indicate when the program is running."), br(), br(),
+        span("If you click the "), strong("'New analysis'"), span("button, the application will be restarted and you can give a new input pathway."), br(),
+        span("The calculations might take some time, so please be patient when using the application."), em("A turning flower will indicate when the program is running."), br(), br(),
         h3("2. Implement own expression data"),
         renderText("You will only need to use this page when you want to add your own expression data to the analysis."), br(),
         renderText("You get the same options as these of the 'Gene centric query' page, but you also have to upload a tab-separated file with your gene expression data. Again, a table is rendered and a file with the processed data is automatically written to your folder (path will be given). This file will be used in the analysis."), br(),
         renderText("On the next tab, the percentage of genes kept after filtering is given. If genes are not expressed or very little, they will be filtered out. You can decide for yourself if you want to use this data set further down the analysis or use another one."), br(),
-        renderText("On the clustering tab, 2 elbow plots are given for K-means and SOM clustering. You have to adapt the elbow yourself with the sliders; this will move the red line. Again, some files are automatically written to your folder."), br(),
-        renderText("These automatically written files are overwritten when doing a new analysis and it is important not to rename them."), br(),
+        span("On the clustering tab, 2 elbow plots are given for K-means and SOM clustering."), strong("You have to adapt the elbow yourself with the sliders;"), span("this will move the red line. Again, two files are automatically written to your folder."), br(),
+        span("These automatically written files are overwritten when doing a new analysis and"), em("it is important not to rename them."), br(),
         renderText("The other tabs are the same as those on the first page and you, again, get the possibility to download the candidate genes."), br(), br(),
         h3("3. About"),
-        renderText("On this page, a short description of MORPH-Mtb is given.")
+        renderText("On this page, a short description of MORPH-Mtb is given."), br(), br()
       )
     })
     
