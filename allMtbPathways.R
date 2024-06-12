@@ -429,14 +429,15 @@ for (bestPathway in BestAUSRpathways) {
 }
 
 # zip candidate genes and their descriptions together
-zipped <- Map(function(x,y,z) list(x,y,z), bestcand, bestdescr, bestscore)
+zipped <- Map(function(x,y,z,w) list(x,y,z,w), bestcand, bestdescr, bestscore, BestAUSRpathways)
 
 #make data frames from genes with their description
 bestpath <- list()
 for (i in seq_along(zipped)) {
   bestpath[[i]] <- data.frame(Candidate = zipped[[i]][[1]], 
                               Description = zipped[[i]][[2]], 
-                              Score = zipped[[i]][[3]])
+                              Score = zipped[[i]][[3]],
+                              Pathway = zipped[[i]][[4]])
 }
 # Print bestpath
 print(bestpath)
