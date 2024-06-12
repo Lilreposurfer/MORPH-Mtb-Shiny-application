@@ -428,6 +428,8 @@ for (bestPathway in BestAUSRpathways) {
   bestscore <- append(bestscore, list(CandidatesScores))
 }
 
+length <- length(bestcand[[1]])
+
 # zip candidate genes and their descriptions together
 zipped <- Map(function(x,y,z,w) list(x,y,z,w), bestcand, bestdescr, bestscore, BestAUSRpathways)
 
@@ -438,6 +440,10 @@ for (i in seq_along(zipped)) {
                               Description = zipped[[i]][[2]], 
                               Score = zipped[[i]][[3]],
                               Pathway = zipped[[i]][[4]])
+  # get number of rows in the data frame
+  num_rows <- nrow(bestpath[[i]])
+  # set the row names to numbers
+  rownames(bestpath[[i]])<- seq_len(num_rows)
 }
 # Print bestpath
 print(bestpath)
