@@ -59,7 +59,8 @@ source("rentrez.R")
   
 ## User interface ##
   # Define UI for application
-  ui <- fluidPage(
+  #ui <- fluidPage(
+  ui <- tagList(
     # Loader
     #https://waiter.john-coene.com/#/waiter/examples
     autoWaiter(color="white",
@@ -75,6 +76,8 @@ source("rentrez.R")
                ".shiny-output-error:before { visibility: hidden; }"
     ),
     useShinyjs(),
+    # Logo in navbar
+    tags$head(tags$script(type="text/javascript", src = "code.js")),
     #Make page with multiple panels
     navbarPage(theme = shinytheme("cerulean"),
                "MORPH-Mtb", #title
