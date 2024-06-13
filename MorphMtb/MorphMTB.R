@@ -82,7 +82,6 @@ source("rentrez.R")
                tabPanel("Gene centric query", uiOutput('page2')),
                tabPanel("Implement own expression data", uiOutput('page3')),
                tabPanel("About", uiOutput('page4')),
-               
     )
   )
 
@@ -322,7 +321,8 @@ AverageofRandom <- function(scorerandom) {
     #what happens on page4 (About)
     output$page4 <- renderUI({
       mainPanel(
-        h4("About MORPH-Mtb"),
+        img(src="MORPHrobot.png", height="18%", width="18%", align="right"),
+        h4("About MORPH-Mtb"), br(), br(),
         renderText("Tuberculosis (TB), caused by Mycobacterium tuberculosis (Mtb), remains one of the major causes of global mortality. With 3978 genes linked to its impact, the bacteria causing the infectious disease can affect various body sites, predominantly the lungs. Despite progress in genomics, nearly a quarter (<1000 genes) of MTB's genetic code is still labeled with the non-informative 'unknown function’ annotation, leaving a gap in our understanding of crucial biological pathways essential for virulence and evasion of host defenses."), 
         br(),
         renderText("MORPH is an algorithm originally developed for gene discovery in plants. Utilizing Protein-Protein Interaction (PPI) networks, gene expression profiles (sourced from public domains or tailored by users), and specified pathways (in terms of gene IDs), the MORPH algorithm aids in discovering novel candidate genes, following the guilt by association principle, drawing from both proprietary and publicly available data sources."),
