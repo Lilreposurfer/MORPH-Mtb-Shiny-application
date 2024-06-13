@@ -75,10 +75,10 @@ source("rentrez.R")
                ".shiny-output-error:before { visibility: hidden; }"
     ),
     useShinyjs(),
-    # Logo in navbar
+    # Logo in navbar by including javascript in web application 
     tags$head(tags$script(type="text/javascript", src = "code.js")),
     #Make page with multiple panels
-    navbarPage(theme = shinytheme("cerulean"),
+    navbarPage(theme = shinytheme("cerulean"), #theme
                "MORPH-Mtb", #title
                tabPanel("Home", uiOutput('page1')),
                tabPanel("Gene centric query", uiOutput('page2')),
@@ -205,7 +205,9 @@ AverageofRandom <- function(scorerandom) {
     # what happens on page1 (Home)
     output$page1 <- renderUI({
       mainPanel(
+        #import image of robot
         img(src="MORPHrobot.png", height="18%", width="18%", align="right"),
+        # text
         h2("Welcome"),
         strong("Dear user"), br(),
         br(), renderText("First of all, we want to thank you for using this Shiny web application."),
@@ -323,7 +325,9 @@ AverageofRandom <- function(scorerandom) {
     #what happens on page4 (About)
     output$page4 <- renderUI({
       mainPanel(
+        #import robot image
         img(src="MORPHrobot.png", height="18%", width="18%", align="right"),
+        # text
         h4("About MORPH-Mtb"), br(), br(),
         renderText("Tuberculosis (TB), caused by Mycobacterium tuberculosis (Mtb), remains one of the major causes of global mortality. With 3978 genes linked to its impact, the bacteria causing the infectious disease can affect various body sites, predominantly the lungs. Despite progress in genomics, nearly a quarter (<1000 genes) of MTB's genetic code is still labeled with the non-informative 'unknown function’ annotation, leaving a gap in our understanding of crucial biological pathways essential for virulence and evasion of host defenses."), 
         br(),
@@ -340,6 +344,7 @@ AverageofRandom <- function(scorerandom) {
     # Logic after pressing reset inputs button
     resetPage <- function(reload) {
       observeEvent(reload, {
+        # session reloads after pressing "New analysis" button
         session$reload()
       })
     }
@@ -471,20 +476,21 @@ AverageofRandom <- function(scorerandom) {
     
     
     ## AUSR ##
+    # get best configuration
     BestConfig <- reactive({
       getMorphResultBestConfig(scores())
     })
-    
+    # get names of best configuration
     output$NamesBestConfig <- reactive({
       names(BestConfig())
     })
-    
+    # get AUSR score of best configuration
     output$AUSRBestConfig <- reactive({
       format(round(BestConfig()$AUSR,7))
     })
     
     
-    # Get dataset and cluster solution of best score
+    # Get name data set and cluster solution of best score
     output$BestConfigs <- renderTable({
       dataset <- BestConfig()$GE
       cluster <- BestConfig()$C
@@ -497,6 +503,7 @@ AverageofRandom <- function(scorerandom) {
       cluster <- c("kmeansclark.txt","somclark.txt","kmeansdrug.txt","somdrug.txt","kmeansESX.txt","somESX.txt",
                    "kmeansinaki.txt","sominaki.txt","kmeansprimary.txt","somprimary.txt","kmeanstimecourse.txt","somtimecourse.txt")
       ausr <- reactive({
+        # get scores of all 12 configurations
         sapply(1:12, function(i){
           return(scores()[[i]]$AUSR)})
         })
@@ -887,14 +894,15 @@ AverageofRandom <- function(scorerandom) {
       
       
       ## AUSR ##
+      # get best configurations
       BestConfig2 <- reactive({
         getMorphResultBestConfig(scores2())
       })
-      
+      # get names of best configuration
       output$NamesBestConfig2 <- reactive({
         names(BestConfig2())
       })
-      
+      # get AUSR scores of best configuration
       output$AUSRBestConfig2 <- reactive({
         format(round(BestConfig2()$AUSR,7))
       })
@@ -1021,8 +1029,7 @@ AverageofRandom <- function(scorerandom) {
     })
 
   }
-    
-  
+#########################################################################################################     
   
 
   # Run the application 
