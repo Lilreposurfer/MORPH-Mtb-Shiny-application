@@ -206,7 +206,7 @@ AverageofRandom <- function(scorerandom) {
     output$page1 <- renderUI({
       mainPanel(
         #import image of robot
-        img(src="MORPHrobot.png", height="18%", width="18%", align="right"),
+        img(src="MORPHrobot.png", height="18%", width="18%", style="opacity:0.5;", align="right"),
         # text
         h2("Welcome"),
         strong("Dear user"), br(),
@@ -326,7 +326,7 @@ AverageofRandom <- function(scorerandom) {
     output$page4 <- renderUI({
       mainPanel(
         #import robot image
-        img(src="MORPHrobot.png", height="10%", width="10%", align="right"),
+        img(src="MORPHrobot.png", height="10%", width="10%", style="opacity:0.5;", align="right"),
         # text
         h4("About MORPH-Mtb"), br(), br(),
         renderText("Tuberculosis (TB), caused by Mycobacterium tuberculosis (Mtb), remains one of the major causes of global mortality. With 3978 genes linked to its impact, the bacteria causing the infectious disease can affect various body sites, predominantly the lungs. Despite progress in genomics, nearly a quarter (<1000 genes) of MTB's genetic code is still labeled with the non-informative 'unknown function’ annotation, leaving a gap in our understanding of crucial biological pathways essential for virulence and evasion of host defenses."), 
