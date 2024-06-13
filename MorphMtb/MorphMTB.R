@@ -204,7 +204,7 @@ AverageofRandom <- function(scorerandom) {
     # what happens on page1 (Home)
     output$page1 <- renderUI({
       mainPanel(
-        img(src="MORPHrobot.png", align="right"),
+        img(src="MORPHrobot.png", height="18%", width="18%", align="right"),
         h2("Welcome"),
         strong("Dear user"), br(),
         br(), renderText("First of all, we want to thank you for using this Shiny web application."),
