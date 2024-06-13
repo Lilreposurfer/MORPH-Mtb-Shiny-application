@@ -59,7 +59,6 @@ source("rentrez.R")
   
 ## User interface ##
   # Define UI for application
-  #ui <- fluidPage(
   ui <- tagList(
     # Loader
     #https://waiter.john-coene.com/#/waiter/examples
