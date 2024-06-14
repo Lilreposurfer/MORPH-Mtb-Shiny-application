@@ -31,7 +31,8 @@ required_packages <- c(
   "dtw", 
   "ggplot2",
   "RMySQL",
-  "MASS"
+  "MASS",
+  "htmlTable"
 )
 
 # Check for missing packages and install them
