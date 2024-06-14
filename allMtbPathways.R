@@ -465,5 +465,12 @@ for (i in seq_along(BestAUSRpathways)) {
 print(hypotheticalProt)
 
 ###############################################################################################################
-
+##FARIDA##
+##Use gene ontology to get gene IDs and calculate pathways instead of giving the input pathways
+## Maybe first use an if-statement to see what is given as input; excel file or gene ontology 
+## Get gene IDs
+## Use MORPH algorithm to get AUSR scores and candidate genes
+## get top ... pathways with best AUSR scores
+## get their candidate genes
+## highlight the genes with description "hypothetical protein" 
 
