@@ -105,9 +105,6 @@ somclustersss <- function(gene_ids, somc){
 }
 
 
-
-
-
 ########################################################################################################################
 ## MORPH ALGORITHM ##
 # Functions
@@ -426,16 +423,6 @@ getMorphResultBestConfig = function(morph_res_obj){ # list of lists [like PERL h
       gene_expression = morph_res_obj[[i]]$GE #Acquire the gene-expression data file name.
     }
   }
-  
-  #lapply(1:length(morph_res_obj), function(i){
-  #  #curr_res = morph_res_obj[[i]]
-  #  ausr = morph_res_obj[[i]]$AUSR
-  #  if (ausr>best_ausr){
-  #    best_ind = i; best_ausr = ausr
-  #    clustering_solution = morph_res_obj[[i]]$C
-  #    gene_expression = morph_res_obj[[i]]$GE
-  #  }
-  #})
   
   # Create and return a list containing information regarding best configuration (for more information see function description).
   morph_best_res = list(AUSR = best_ausr, Ranking = morph_res_obj[[best_ind]]$Ranking, C = clustering_solution, GE = gene_expression)

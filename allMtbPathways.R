@@ -1,5 +1,5 @@
 ##############################################################################################################
-## MORPH-Mtb
+## allMtbPathways with MORPH-Mtb
 ##############################################################################################################
 
 # Install and load required packages ----
@@ -428,7 +428,7 @@ for (bestPathway in BestAUSRpathways) {
   bestscore <- append(bestscore, list(CandidatesScores))
 }
 
-length <- length(bestcand[[1]])
+#length <- length(bestcand[[1]])
 
 # zip candidate genes and their descriptions together
 zipped <- Map(function(x,y,z,w) list(x,y,z,w), bestcand, bestdescr, bestscore, BestAUSRpathways)
