@@ -252,9 +252,7 @@ rankGenes <- function(G,C,GE,corrs_mat = NULL) #Ranks all candidates-vs-GOIs for
     CurrentG = na.omit(names(G_Clusters[(G_Clusters[,1]==Cluster),]))  #Acquire current pathway-genes
     CurrentB = rownames(C)[which(C[,1]==Cluster)] #Acquire current background genes.
     Candidates = setdiff(CurrentB,CurrentG) #setdiff function filters Candidates are genes which are present at the background but NOT in our pathway-genes group.
-    #print(CurrentG)
-    #print(CurrentB)
-    #print(Candidates)
+
     
     #Create an ordered vector containing the normalized covariance scores for all candidates vs. pathway-genes.
     NormalizedCorrelations = getNormalizedCorrelations(corrs_mat, CurrentG, Candidates) #Calculate normalized scores.

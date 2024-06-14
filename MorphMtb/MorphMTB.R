@@ -619,6 +619,7 @@ AverageofRandom <- function(scorerandom) {
     })
     
     # Get data uploaded expression data file for output
+    observeEvent(input$startbutton2, { #after clicking start button
     output$expressiondata <- reactive({
       # See if input is given  
       if(!is.null(input$file_expressiondata)){
@@ -789,7 +790,7 @@ AverageofRandom <- function(scorerandom) {
     })
     
     #collect input genes
-    observeEvent(input$startbutton2, { #after clicking start button
+    #observeEvent(input$startbutton2, { #after clicking start button
       output$contents2 <- reactive({
         # See what type of input is given and alter output to it 
         if(!is.null(input$file2)){
@@ -1028,7 +1029,8 @@ AverageofRandom <- function(scorerandom) {
 
     })
 
-  }
+    }
+
 #########################################################################################################     
   
 

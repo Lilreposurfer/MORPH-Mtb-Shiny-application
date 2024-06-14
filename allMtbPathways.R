@@ -446,7 +446,9 @@ for (i in seq_along(zipped)) {
   rownames(bestpath[[i]])<- seq_len(num_rows)
 }
 # Print bestpath
+## This should be written to a file
 print(bestpath)
+
 
 #get the candidate genes with description "hypothetical protein" 
 hypotheticalProt <- list()
@@ -458,6 +460,10 @@ for (i in seq_along(BestAUSRpathways)) {
   hypotheticalProt[[i]]$Pathway <- BestAUSRpathways[i]
 }
 
-# Print hypotheticalProt 
+# Print hypotheticalProt
+## This should be written to a file
 print(hypotheticalProt)
+
+###############################################################################################################
+
 
