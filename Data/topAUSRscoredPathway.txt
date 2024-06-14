@@ -1,0 +1,31 @@
+Top 3 AUSR-scored pathways:
+
+
+1. Pathway2
+
+
+1		Rv2459		1.667578		MFS-type transporter
+2		Rv2457c		1.626419		ATP-dependent CLP protease ATP-binding subunit ClpX
+3		Rv0017c		1.584959		cell division protein RodA
+4		Rv0175		1.567205		Mce associated membrane protein
+5		Rv2374c		1.551404		heat-inducible transcription repressor HrcA
+6		Rv2409c		1.527463		hypothetical protein
+
+
+Hypothetical proteins: 
+Top 3 AUSR-scored pathways:
+
+
+1. Pathway2
+
+
+1		Rv2459		1.667578		MFS-type transporter
+2		Rv2457c		1.626419		ATP-dependent CLP protease ATP-binding subunit ClpX
+3		Rv0017c		1.584959		cell division protein RodA
+4		Rv0175		1.567205		Mce associated membrane protein
+5		Rv2374c		1.551404		heat-inducible transcription repressor HrcA
+6		Rv2409c		1.527463		hypothetical protein
+
+
+Hypothetical proteins: 
+6		Rv2409c		1.527463		hypothetical protein
