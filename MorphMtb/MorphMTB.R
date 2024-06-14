@@ -499,9 +499,9 @@ AverageofRandom <- function(scorerandom) {
     
     ### Solutions for each dataset for a specific pathway
     output$ConfigTable <- renderTable({
-      dataset <- rep(c("clark.txt","drug.txt","ESX.txt","inaki.txt","primary.txt","timecourse.txt"), each =2)
-      cluster <- c("kmeansclark.txt","somclark.txt","kmeansdrug.txt","somdrug.txt","kmeansESX.txt","somESX.txt",
-                   "kmeansinaki.txt","sominaki.txt","kmeansprimary.txt","somprimary.txt","kmeanstimecourse.txt","somtimecourse.txt")
+      dataset <- rep(c("methylation_dataset.txt","drug_cholesterol_toxin.txt","ESX_WT_mutant.txt","MTBc_all_lineages.txt","primary_drug.txt","timecourse_nitricacid.txt"), each =2)
+      cluster <- c("kmeansmethylation.txt","sommethylation.txt","kmeansdrug.txt","somdrug.txt","kmeansESX.txt","somESX.txt",
+                   "kmeansMTBc_lineages.txt","somMTBc_lineages.txt","kmeansprimary.txt","somprimary.txt","kmeanstimecourse.txt","somtimecourse.txt")
       ausr <- reactive({
         # get scores of all 12 configurations
         sapply(1:12, function(i){
@@ -619,7 +619,7 @@ AverageofRandom <- function(scorerandom) {
     })
     
     # Get data uploaded expression data file for output
-    observeEvent(input$startbutton2, { #after clicking start button
+    #observeEvent(input$startbutton2, { #after clicking start button
     output$expressiondata <- reactive({
       # See if input is given  
       if(!is.null(input$file_expressiondata)){
@@ -790,7 +790,7 @@ AverageofRandom <- function(scorerandom) {
     })
     
     #collect input genes
-    #observeEvent(input$startbutton2, { #after clicking start button
+    observeEvent(input$startbutton2, { #after clicking start button
       output$contents2 <- reactive({
         # See what type of input is given and alter output to it 
         if(!is.null(input$file2)){
