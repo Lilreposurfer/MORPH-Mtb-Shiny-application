@@ -390,7 +390,6 @@ for (pathwayName in listPathways) {
   # Write file with AUSR score and candidate genes
   writeLines("AUSR score:", paste0(pathwayName, "_MORPHMtb.txt")) #Create file
   fileConn <- file(paste0(pathwayName, "_MORPHMtb.txt"),"a")#Open connection to append
-  #fileConn <- file("Pathway2_MORPHMtb.txt", "a") 
   writeLines(AUSRscore, fileConn) #Append
   writeLines("\n", fileConn)
   writeLines("Top candidate genes:", fileConn)
@@ -446,7 +445,6 @@ for (i in seq_along(zipped)) {
   rownames(bestpath[[i]])<- seq_len(num_rows)
 }
 # Print bestpath
-## This should be written to a file
 print(bestpath)
 
 
@@ -461,8 +459,24 @@ for (i in seq_along(BestAUSRpathways)) {
 }
 
 # Print hypotheticalProt
-## This should be written to a file
 print(hypotheticalProt)
+
+
+# get file with candidate genes for top 3 AUSR-scored pathways 
+bestpathfile <- bestpath[[1]][, c(1,3,2)]
+#for (i in seq_along(bestpath)) {
+  fileConn <- file("topAUSRscoredPathway.txt","a")#Open connection to append
+  writeLines("Top 3 AUSR-scored pathways:", fileConn)
+  writeLines("\n", fileConn)
+  writeLines("1.", fileConn)
+  writeLines(BestAUSRpathways[1], fileConn) #Append
+  writeLines("\n", fileConn)
+  write.table(bestpathfile, fileConn, sep="\t\t", quote=FALSE, col.names=FALSE)
+  writeLines("\n", fileConn)
+  #writeLines("Top candidate genes:", fileConn)
+  #write.matrix(Candidates, fileConn, sep="\t")
+  close(fileConn) # Close connection
+#}
 
 ###############################################################################################################
 ##FARIDA##
