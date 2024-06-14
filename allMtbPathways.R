@@ -464,7 +464,6 @@ print(hypotheticalProt)
 
 
 # get file with candidate genes for top 3 AUSR-scored pathways 
-
 for (i in seq_along(bestpath)) {
   bestpathfile <- as.matrix(bestpath[[i]][, c(1,3,2)])
   fileConn <- file("topAUSRscoredPathway.txt","a")#Open connection to append
