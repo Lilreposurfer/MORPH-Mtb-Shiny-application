@@ -464,19 +464,20 @@ print(hypotheticalProt)
 
 
 # get file with candidate genes for top 3 AUSR-scored pathways 
-bestpathfile <- as.matrix(bestpath[[1]][, c(1,3,2)])
-#for (i in seq_along(bestpath)) {
+
+for (i in seq_along(bestpath)) {
+  bestpathfile <- as.matrix(bestpath[[i]][, c(1,3,2)])
   fileConn <- file("topAUSRscoredPathway.txt","a")#Open connection to append
-  writeLines("Top 3 AUSR-scored pathways:", fileConn)
   writeLines("\n", fileConn)
-  writeLines(paste("1.", BestAUSRpathways[1]), fileConn)#Append
-  writeLines("\n", fileConn)
+  writeLines(paste0(i,"."),fileConn)#Append
+  writeLines(BestAUSRpathways[i], fileConn)
   write.table(bestpathfile, fileConn, sep="\t\t", quote=FALSE, col.names=FALSE)
   writeLines("\n", fileConn)
   writeLines("Hypothetical proteins: ", fileConn)
-  write.table(hypotheticalProt[[1]][, c(1,3,2)], fileConn, sep="\t\t", quote=FALSE, col.names=FALSE)
+  write.table(hypotheticalProt[[i]][, c(1,3,2)], fileConn, sep="\t\t", quote=FALSE, col.names=FALSE)
+  writeLines("---------------------------------------------------------------------------------------------------------------", fileConn)
   close(fileConn) # Close connection
-#}
+}
 
 ###############################################################################################################
 ##FARIDA##
