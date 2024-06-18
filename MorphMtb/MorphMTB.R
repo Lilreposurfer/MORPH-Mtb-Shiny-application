@@ -81,7 +81,7 @@ source("rentrez.R")
     navbarPage(theme = shinytheme("cerulean"), #theme
                "MORPH-Mtb", #title
                tabPanel("Home", uiOutput('page1')),
-               tabPanel("Gene centric query", uiOutput('page2')),
+               tabPanel("Running MORPH", uiOutput('page2')),
                tabPanel("Implement own expression data", uiOutput('page3')),
                tabPanel("About", uiOutput('page4')),
     )
@@ -338,7 +338,7 @@ AverageofRandom <- function(scorerandom) {
       )})
 
 ###############################################################################################   
-### PAGE1 ###
+### PAGE2 ###
 ###############################################################################################       
     
     # Logic after pressing reset inputs button
@@ -599,7 +599,7 @@ AverageofRandom <- function(scorerandom) {
     # What is shown in output different tabs page1 
     output$tb <- renderUI({
       tabsetPanel(
-        tabPanel("Input pathway", tableOutput("pathway"), tableOutput("contents")),
+        tabPanel("Input pathway", tableOutput("pathway"), tableOutput("contents"), tags$h5("Go to next tab for results.")),
         tabPanel("Result random pathway", tags$h4("Average AUSR score:"), textOutput("averageRandomPathways"), br(), tags$h4("Scores random pathways:"), br(), tableOutput("scoresAUSR")),
         tabPanel("Result input pathway", tags$h4("AUSR:"), textOutput("AUSRBestConfig"), br(), 
                  tags$h4("Best configuration:"), tableOutput("BestConfigs"), br(),
@@ -610,7 +610,7 @@ AverageofRandom <- function(scorerandom) {
     })
 
 #########################################################################################################  
-### PAGE2 ###   
+### PAGE3 ###   
 #########################################################################################################    
  
     #Logic after pressing reset inputs button
